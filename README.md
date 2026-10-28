@@ -5,32 +5,34 @@ Full-stack application built with:
 - **Frontend**: React 19, TypeScript, Vite, Prettier, ESLint
 - **Database & Auth**: Supabase (PostgreSQL via Docker)
 - **Task Runner**: `just`
-- **Deployment**: Vercel ready
+- **Deployment**: Vercel ready (Serverless Python + Vite frontend)
+- **AI Agent Skills**: Pre-configured guidelines for Codex, Claude Code, Copilot, and Antigravity
 
 ---
 
 ## Getting Started
 
-### Option A: VS Code Users (Recommended for Team)
-The repository is pre-configured with a Visual Studio Code Dev Container containing all necessary runtimes (Python 3.12, Node.js 20, uv, just, Supabase CLI).
+### Option A: VS Code Dev Containers (Recommended for Team)
+The repository includes a ready-to-use Dev Container with all runtimes pre-installed (Python 3.12, Node.js 20, `uv`, `just`, Supabase CLI, Docker-in-Docker).
 
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and ensure Docker is running.
-2. Install [Visual Studio Code](https://code.visualstudio.com/) and the [Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
+1. **Docker**: Ensure [Docker Desktop](https://www.docker.com/products/docker-desktop/) (or Docker Engine on Linux) is installed and running.
+   > **Windows users**: Install Docker Desktop on Windows (with WSL 2 engine and WSL integration enabled for your distro) and clone the repo inside WSL (`~/proiect-colectiv`) for maximum filesystem performance.
+2. **VS Code**: Install [VS Code](https://code.visualstudio.com/) and the [Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
 3. Open this folder in VS Code.
 4. When prompted, click **Reopen in Container** (or press `Ctrl+Shift+P` / `Cmd+Shift+P` -> `Dev Containers: Reopen in Container`).
-5. In the VS Code terminal, run:
+5. The container will build and automatically run `just setup` via `postCreateCommand`.
+6. In the integrated terminal, simply run:
    ```bash
-   just setup
    just dev
    ```
 
 ---
 
-### Option B: Neovim / CLI Users (Native Host)
-If you prefer running natively on your host machine without containers:
+### Option B: Native Host (Neovim / CLI Users)
+If running directly on your host machine without containers:
 
-1. **Prerequisites**: Ensure you have installed:
-   - `docker` (for local Supabase database)
+1. **Prerequisites**:
+   - `docker` (running, for local Supabase database)
    - `just` (`sudo apt install just` or `cargo install just`)
    - `node` & `npm` (Node 20+)
    - `uv` (`curl -LsSf https://astral.sh/uv/install.sh | sh`)
@@ -45,7 +47,50 @@ If you prefer running natively on your host machine without containers:
 
 ---
 
-## Ports & URLs
+## Project Structure & Architecture
+
+```text
+├── .agents/skills/      # AI agent skills for Codex, Copilot, Antigravity
+├── .claude/skills/      # AI agent skills for Claude Code
+├── .devcontainer/       # VS Code Dev Container setup (Dockerfile & settings)
+├── backend/
+│   ├── api/
+│   │   └── index.py     # Flask entrypoint (handles /api/* locally & on Vercel)
+│   ├── pyproject.toml   # Python package definitions managed by uv
+│   ├── requirements.txt # Pinned export for Vercel deployments
+│   └── uv.lock          # Reproducible lockfile
+├── frontend/
+│   ├── src/
+│   │   ├── api/         # Frontend API calls & service integrations
+│   │   ├── components/  # Reusable UI components
+│   │   ├── hooks/       # Custom React hooks
+│   │   ├── pages/       # Page views / screens
+│   │   ├── types/       # TypeScript types & interfaces
+│   │   ├── assets/      # Static assets (images, logos)
+│   │   ├── App.tsx      # Main application component
+│   │   └── main.tsx     # React DOM entrypoint
+│   ├── package.json
+│   └── vite.config.ts   # Configured with /api proxy to Flask backend
+├── supabase/            # Supabase local config & database migrations
+├── Justfile             # Project task runner recipes
+└── vercel.json          # Production deployment routing & serverless build config
+```
+
+---
+
+## API Communication (Zero CORS)
+
+- **Local Development**: Vite proxies any frontend request starting with `/api` directly to `http://localhost:5000` (Flask).
+- **Production (Vercel)**: `vercel.json` rewrites `/api/(.*)` directly to `backend/api/index.py` as a serverless function.
+- **Frontend Code**: Always fetch from relative URLs without hardcoding host or port:
+  ```ts
+  const res = await fetch('/api/health');
+  const data = await res.json();
+  ```
+
+---
+
+## Ports & Local URLs
 
 | Service | Local URL | Port |
 | :--- | :--- | :--- |
@@ -59,9 +104,11 @@ If you prefer running natively on your host machine without containers:
 
 ## Available Commands (`just`)
 
-- `just setup` — Installs frontend and backend dependencies, syncs lockfiles, and initializes Supabase.
-- `just dev` — Starts local Supabase, Flask backend, and Vite frontend concurrently.
-- `just start-db` — Starts local Supabase containers.
-- `just lint` — Runs Ruff on Python files and ESLint + Prettier check on React files.
-- `just format` — Automatically formats Python and TypeScript/React code.
-- `just export-reqs` — Exports pinned `requirements.txt` from `uv` for Vercel deployment.
+| Command | Description | When to use |
+| :--- | :--- | :--- |
+| `just dev` | Starts local Supabase, Flask backend, and Vite frontend concurrently. | Every day when developing. |
+| `just setup` | Copies `.env.example` $\rightarrow$ `.env`, runs `npm install`, runs `uv sync`, exports `requirements.txt`, and initializes Supabase. | Runs automatically in Dev Container; run manually after `git pull` if dependencies change. |
+| `just start-db` | Starts local Supabase Docker containers only. | When you only need the database running. |
+| `just lint` | Runs Ruff on Python and ESLint + Prettier check on React/TypeScript. | Before committing code. |
+| `just format` | Auto-formats code with Ruff (Python) and Prettier (TypeScript/React). | To fix formatting automatically. |
+| `just export-reqs` | Exports pinned `requirements.txt` from `uv` for Vercel deployment. | After adding backend packages via `uv add`. |
