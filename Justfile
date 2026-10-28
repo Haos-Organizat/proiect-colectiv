@@ -5,6 +5,7 @@ default:
 
 # Setup monorepo dependencies
 setup:
+    @if [ ! -f .env ] && [ -f .env.example ]; then cp .env.example .env && echo "Created .env from .env.example"; fi
     @if [ -f frontend/package.json ]; then cd frontend && npm install; else echo "Note: frontend/package.json not initialized yet."; fi
     cd backend && uv sync
     cd backend && uv export --format requirements-txt -o requirements.txt --no-hashes

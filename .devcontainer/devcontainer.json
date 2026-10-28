@@ -4,7 +4,8 @@
   "features": {
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
   },
-  "forwardPorts": [5173, 5000, 5432, 54321],
+  "forwardPorts": [5173, 5000, 54321, 54322, 54323],
+  "postCreateCommand": "just setup",
   "customizations": {
     "vscode": {
       "settings": {
