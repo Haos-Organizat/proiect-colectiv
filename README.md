@@ -90,6 +90,19 @@ If running directly on your host machine without containers:
 
 ---
 
+## Database Management & Migrations
+
+Local database migrations live in `supabase/migrations/` and test seed data lives in `supabase/seed.sql`.
+
+- **Reset / Apply Migrations locally**: Run `just reset-db` (or `just db-reset`). This resets your local database, executes all SQL migration files in timestamp order, and populates `seed.sql`.
+- **Create a new migration**:
+  ```bash
+  npx supabase migration new <migration_name>
+  ```
+- **Sync to Supabase Cloud**: Link your project (`npx supabase link --project-ref <id>`) and push with `npx supabase db push`.
+
+---
+
 ## Ports & Local URLs
 
 | Service | Local URL | Port |
@@ -109,6 +122,7 @@ If running directly on your host machine without containers:
 | `just dev` | Starts local Supabase, Flask backend, and Vite frontend concurrently. | Every day when developing. |
 | `just setup` | Copies `.env.example` $\rightarrow$ `.env`, runs `npm install`, runs `uv sync`, exports `requirements.txt`, and initializes Supabase. | Runs automatically in Dev Container; run manually after `git pull` if dependencies change. |
 | `just start-db` | Starts local Supabase Docker containers only. | When you only need the database running. |
+| `just reset-db` | Resets local database, runs all migration files from scratch, and loads `seed.sql`. (Alias: `just db-reset`) | When database migrations change, or to reset state to a clean slate. |
 | `just lint` | Runs Ruff on Python and ESLint + Prettier check on React/TypeScript. | Before committing code. |
 | `just format` | Auto-formats code with Ruff (Python) and Prettier (TypeScript/React). | To fix formatting automatically. |
 | `just export-reqs` | Exports pinned `requirements.txt` from `uv` for Vercel deployment. | After adding backend packages via `uv add`. |

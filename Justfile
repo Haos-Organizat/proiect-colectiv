@@ -15,6 +15,12 @@ setup:
 start-db:
     @if command -v supabase >/dev/null 2>&1; then supabase start; else npx -y supabase start; fi
 
+# Reset local database (re-runs all migrations and seed.sql)
+reset-db:
+    @if command -v supabase >/dev/null 2>&1; then supabase db reset; else npx -y supabase db reset; fi
+
+alias db-reset := reset-db
+
 # Export backend dependencies for Vercel deployment
 export-reqs:
     cd backend && uv export --format requirements-txt -o requirements.txt --no-hashes
