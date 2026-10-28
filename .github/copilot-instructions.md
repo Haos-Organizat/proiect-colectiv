@@ -1,18 +1,10 @@
 # Copilot Instructions for Proiect Colectiv
 
-## Project Architecture
-- **Backend**: Python 3.12, Flask, Supabase Python Client. Managed with `uv`.
-- **Frontend**: Vite SPA. Formatting with Prettier.
-- **Database / Auth**: Supabase (PostgreSQL).
-- **Task Runner**: `just`.
+See [AGENTS.md](../AGENTS.md) for full context, architecture decisions, and workflow guidelines.
 
-## Code Style & Standards
-
-### Python (Backend)
-- Adhere to PEP 8 and Ruff guidelines (line length 100).
-- Strict type checking with Pyright. Always include explicit type annotations on functions, methods, and parameters.
-- Use Flask application factory pattern and blueprints for routing.
-
-### Frontend
-- Keep components modular and reusable.
-- Follow Prettier formatting rules (2-space indent, single quotes, trailing commas).
+## Quick Summary
+- **Backend**: Python 3.12, Flask, Supabase Client (`uv` package manager). Thin entrypoint in `backend/api/index.py`, routes organized in `backend/blueprints/`.
+- **Frontend**: React 19, TypeScript, Vite. Organized in `frontend/src/{api,components,hooks,pages,types,assets}`.
+- **API Calls**: Always use relative paths (`fetch('/api/...')`).
+- **Database**: Supabase PostgreSQL. Migrations in `supabase/migrations/`. Reset with `just reset-db`.
+- **Task Runner**: `just` (`just dev`, `just setup`, `just lint`, `just format`).
