@@ -13,7 +13,7 @@ setup:
 
 # Start local database
 start-db:
-    supabase start
+    @if command -v supabase >/dev/null 2>&1; then supabase start; else npx -y supabase start; fi
 
 # Export backend dependencies for Vercel deployment
 export-reqs:
