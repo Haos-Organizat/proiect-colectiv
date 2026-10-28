@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "flask-python": {
+      "source": "mindrally/skills",
+      "sourceType": "github",
+      "skillPath": "flask-python/SKILL.md",
+      "computedHash": "9387a280ffd3495419c44aafffb67932181bb3036d3ed82d7ec44dc5c2a31395"
+    },
+    "typescript": {
+      "source": "mindrally/skills",
+      "sourceType": "github",
+      "skillPath": "typescript/SKILL.md",
+      "computedHash": "2cf21c271b9e9125a1ecd7aa1ffd550cd2f8eb0cf42d00e521e82ccdee8284ed"
+    },
+    "vercel-composition-patterns": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/composition-patterns/SKILL.md",
+      "computedHash": "575757e3e25761c8c562d6e395d29f0b76c98b1273c0bd72d88e6ab1bc9c7d42"
+    },
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "computedHash": "ca7b0c0c6e5f2750043f7f0cd72d16ac4e2abc48f9b5500d047a4b77a2506212"
+    }
+  }
+}
