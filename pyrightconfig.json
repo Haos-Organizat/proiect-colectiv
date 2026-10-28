@@ -1,0 +1,8 @@
+{
+  "include": ["backend/src", "backend/api"],
+  "venvPath": "backend",
+  "venv": ".venv",
+  "typeCheckingMode": "strict",
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": false
+}
