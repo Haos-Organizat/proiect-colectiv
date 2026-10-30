@@ -4,7 +4,39 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>UniConnect</title>
+    <!-- Defaults for bots that do not run JavaScript; pages override them via <Seo>. -->
+    <meta
+      data-seo-default
+      name="description"
+      content="Student events in one place: concerts, hackathons, career fairs and parties. Buy tickets in a few taps and show the QR code at the door."
+    />
+    <meta data-seo-default property="og:site_name" content="UniConnect" />
+    <meta
+      data-seo-default
+      property="og:title"
+      content="UniConnect: student events, tickets and QR check-in"
+    />
+    <meta data-seo-default property="og:image" content="/mock/events/hero.webp" />
+    <meta data-seo-default name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#0b0a09" />
+    <title data-seo-default>UniConnect</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&family=Schibsted+Grotesk:wght@400..900&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      // Apply the saved theme (or the OS preference) before first paint to avoid a flash.
+      (function () {
+        var saved = null;
+        try {
+          saved = localStorage.getItem('uc-theme');
+        } catch (e) {}
+        var dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.classList.toggle('dark', dark);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

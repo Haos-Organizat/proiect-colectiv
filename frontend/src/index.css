@@ -1,109 +1,293 @@
+@import 'tailwindcss';
+
+/* Ember theme. Token values come from brand_guidelines.md, section 3. */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --background: #f4eee3;
+  --foreground: #17130f;
+  --card: #fbf7f0;
+  --card-foreground: #17130f;
+  --popover: #fbf7f0;
+  --popover-foreground: #17130f;
+  --muted: #e9e1d3;
+  --muted-foreground: #5e554b;
+  --primary: #ff5b22;
+  --primary-foreground: #17130f;
+  --primary-hover: #e84a12;
+  --primary-text: #a8330b;
+  --secondary: #17130f;
+  --secondary-foreground: #f4eee3;
+  --secondary-hover: #2e2720;
+  --accent: #e9e1d3;
+  --accent-foreground: #17130f;
+  --border: #d9cfbf;
+  --input: #8c8174;
+  --ring: #a8330b;
+  --destructive: #b0173a;
+  --destructive-foreground: #ffffff;
+  --destructive-hover: #921230;
+  --success: #1e7a46;
+  --success-foreground: #ffffff;
+  --scrollbar-thumb: #b3a796;
+  --scrollbar-thumb-hover: #8c8174;
+  color-scheme: light;
+}
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+.dark {
+  --background: #0b0a09;
+  --foreground: #f4eee3;
+  --card: #17130f;
+  --card-foreground: #f4eee3;
+  --popover: #17130f;
+  --popover-foreground: #f4eee3;
+  --muted: #211c17;
+  --muted-foreground: #a39a8e;
+  --primary: #ff5b22;
+  --primary-foreground: #0b0a09;
+  --primary-hover: #ff7240;
+  --primary-text: #ff5b22;
+  --secondary: #f4eee3;
+  --secondary-foreground: #0b0a09;
+  --secondary-hover: #e3dacb;
+  --accent: #241e18;
+  --accent-foreground: #f4eee3;
+  --border: #2e2720;
+  --input: #6e6458;
+  --ring: #ff5b22;
+  --destructive: #ff6b85;
+  --destructive-foreground: #0b0a09;
+  --destructive-hover: #ff8a9e;
+  --success: #4fd18b;
+  --success-foreground: #0b0a09;
+  --scrollbar-thumb: #4a4137;
+  --scrollbar-thumb-hover: #6e6458;
+  color-scheme: dark;
+}
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Sections that are always dark, whatever the theme (poster bands, hero). */
+.surface-ink {
+  --background: #0b0a09;
+  --foreground: #f4eee3;
+  --card: #17130f;
+  --card-foreground: #f4eee3;
+  --muted: #211c17;
+  --muted-foreground: #a39a8e;
+  --primary-text: #ff5b22;
+  --secondary: #f4eee3;
+  --secondary-foreground: #0b0a09;
+  --secondary-hover: #e3dacb;
+  --accent: #241e18;
+  --accent-foreground: #f4eee3;
+  --border: #2e2720;
+  --input: #6e6458;
+  --ring: #ff5b22;
+  background-color: var(--background);
+  color: var(--foreground);
+}
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-text: var(--primary-text);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-hover: var(--destructive-hover);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+}
+
+@theme {
+  --font-display: 'Archivo', 'Arial Narrow', system-ui, sans-serif;
+  --font-sans: 'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  --radius-card: 16px;
+  --radius-input: 12px;
+
+  --ease-brand: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --animate-ticket-in: ticket-in 360ms var(--ease-brand) both;
+  --animate-panel-in: panel-in 200ms var(--ease-brand) both;
+  --animate-fade-in: fade-in 200ms ease-out both;
+
+  @keyframes ticket-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+  }
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  @keyframes skeleton-sweep {
+    to {
+      transform: translateX(100%);
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
   }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
+  body {
+    @apply bg-background font-sans text-base text-foreground antialiased lg:text-[17px];
+    line-height: 1.55;
   }
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-}
-
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
   }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
+  /* Themed scrollbars. Standard properties for Chrome, Edge and Firefox; the
+     ::-webkit-scrollbar rules cover Safari. Inner scroll areas get a transparent track. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+  html {
+    scrollbar-width: auto;
+    scrollbar-color: var(--scrollbar-thumb) var(--background);
+  }
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background: var(--scrollbar-thumb) padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+  }
+  /* iOS zooms into fields smaller than 16px: never go below it. */
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1em);
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+  /* Brand rule: only the documented moments animate, and none with reduced motion. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+    }
   }
 }
-p {
-  margin: 0;
-}
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
+@layer components {
+  /* Loading placeholder. The sweep is the one looping animation the brand allows: it
+     only exists while data loads and is removed with prefers-reduced-motion. The
+     gradient is the moving highlight itself, so it counts as functional. */
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    background-color: var(--muted);
+  }
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--card) 75%, transparent),
+      transparent
+    );
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .skeleton::after {
+      animation: skeleton-sweep 1.4s ease-in-out infinite;
+    }
+  }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+  .type-display {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-stretch: 112%;
+    font-size: clamp(48px, 7vw + 22px, 104px);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+  .type-h1 {
+    font-family: var(--font-display);
+    font-weight: 850;
+    font-stretch: 108%;
+    font-size: clamp(36px, 4vw + 21px, 64px);
+    line-height: 0.95;
+    letter-spacing: -0.015em;
+  }
+  .type-h2 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: 104%;
+    font-size: clamp(28px, 2.4vw + 19px, 44px);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .type-h3 {
+    font-family: var(--font-display);
+    font-weight: 760;
+    font-size: clamp(22px, 1vw + 18px, 28px);
+    line-height: 1.1;
+  }
+  .type-h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(18px, 0.4vw + 16.5px, 20px);
+    line-height: 1.2;
+  }
+  .type-label {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  @media (min-width: 1024px) {
+    .type-label {
+      font-size: 13px;
+    }
+  }
 }

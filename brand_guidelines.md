@@ -12,7 +12,7 @@ These apply to every screen, component, email and piece of copy. Reviewers shoul
 
 1. **No em dashes and no bullet point characters (U+2022)** in copy, CSS `content`, or code comments. Use commas, colons, periods or plain hyphens.
 2. **No gradients** unless there is a real functional need (for example a scrim that keeps text readable over a photo). Decorative gradients are not allowed.
-3. **No live activity indicators.** No pulsing dots, blinking "live" badges, breathing elements, marquees, or any animation with `infinite` iterations.
+3. **No live activity indicators.** No pulsing dots, blinking "live" badges, breathing elements, marquees, or any animation with `infinite` iterations. The single exception is the loading skeleton sweep (section 10), which only exists while data loads.
 4. **Phosphor icons only**, used plain. Never put an icon inside a bordered box, a circle, or a tinted background chip. An icon sits next to text or alone.
 5. **Mobile first.** Design and build at 375px wide first, then scale up.
 6. **Inputs are at least 16px.** Every `input`, `select` and `textarea` uses `font-size: 16px` or larger so iOS Safari never zooms on focus. Do not "fix" zoom with `maximum-scale` or `user-scalable=no`.
@@ -266,6 +266,16 @@ Pill shape, 48px tall (40px for `sm`), Schibsted Grotesk 600 at 16px, 8px gap to
 - Focus: border becomes `ring` plus a 3px soft ring (`ring` at 28% opacity).
 - Labels sit above the field in Schibsted Grotesk 600, 15px. Hints below in 14px `muted-foreground`.
 - Checkboxes are 22px with `accent-color: primary`.
+- Fields in the same row always line up: each field pins its content to the top (`content-start`), so a hint or error under one field never stretches or shifts its neighbours.
+- No native browser pickers. Use the custom controls in `frontend/src/components/ui/`, all 48px tall with the same border, focus ring and error state as text inputs:
+  - **Select** (Radix Select): dropdown panel in `popover`, 16px radius, 44px rows, highlighted row in `accent`, check mark in `primary-text` for the chosen value.
+  - **DatePicker**: field-style button that opens a Monday-first month calendar. Selected day is an ember circle, today is underlined in `primary-text`, past days are disabled when a `min` is set. Arrow keys, PageUp/PageDown, Home/End and Enter work.
+  - **TimeSelect**: Select with 15 minute steps, times in IBM Plex Mono. An empty list opens scrolled to 18:00.
+- Popovers and dropdown panels open and close instantly, no animation.
+
+### Scrollbars
+
+Themed in both modes: thumb `#b3a796` (hover `#8c8174`) in light, `#4a4137` (hover `#6e6458`) in dark, on the page background. Inner scroll areas (dropdown lists) use a thin scrollbar on a transparent track.
 
 ### Form validation
 
@@ -327,7 +337,7 @@ Common icons: `Ticket`, `CalendarBlank`, `MapPin`, `Clock`, `QrCode`, `User`, `S
 
 ## 10. Motion
 
-Only four moments move. Everything else holds still. All motion is wrapped in `@media (prefers-reduced-motion: no-preference)`; with reduced motion, things appear instantly. Every animation runs **once**.
+Only these moments move. Everything else holds still. All motion is wrapped in `@media (prefers-reduced-motion: no-preference)`; with reduced motion, things appear instantly. Every animation runs **once**.
 
 | Moment | Animation | Duration | Easing |
 | :--- | :--- | :--- | :--- |
@@ -335,14 +345,17 @@ Only four moments move. Everything else holds still. All motion is wrapped in `@
 | Log in / Register switch | Panel fade plus 8px rise | 200ms | `cubic-bezier(0.2, 0.8, 0.2, 1)` |
 | Form result (purchase or sign-in confirmation) | Opacity only | 200ms | `ease-out` |
 | Control feedback (buttons, tags, inputs) | Background, border, color and shadow transitions | 150ms | `ease` |
+| Loading skeleton | A soft highlight sweeps left to right across `muted` placeholder shapes, looping only until the data arrives | 1.4s | `ease-in-out` |
+
+Skeletons are shaped like the content they replace (event card: photo block plus three text lines; ticket: header lines plus QR square), so nothing jumps when data lands. With reduced motion the sweep is off and the shapes stay static. The sweep highlight is a gradient; that is a functional use, not decoration.
 
 Never:
 
-- Infinite animations of any kind (pulsing, breathing, shimmer, marquees, idle spinners).
+- Infinite animations of any kind (pulsing, breathing, marquees, idle spinners), except the skeleton sweep above.
 - Parallax, scroll-jacking, or reveal-on-scroll for regular content.
 - Scale or bounce effects on buttons.
 - An animated theme switch.
-- Shimmer loading. Use static skeleton blocks or a text label.
+- Plain "Loading..." text or spinners where a skeleton can show the page shape instead.
 
 ---
 
