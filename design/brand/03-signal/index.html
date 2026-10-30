@@ -1,0 +1,1482 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UniConnect Signal Identity</title>
+<meta name="description" content="Brand direction 03 Signal for a student events web app: tokens, type, components and example screens.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400..700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<script>
+  /* Apply a saved theme before first paint. With nothing saved, the page follows prefers-color-scheme. */
+  (function () {
+    try {
+      var saved = localStorage.getItem('uniconnect-theme');
+      if (saved === 'light' || saved === 'dark') document.documentElement.setAttribute('data-theme', saved);
+    } catch (e) {}
+    document.documentElement.classList.add('js');
+  })();
+</script>
+<style>
+/* ============ TOKENS ============
+   shadcn/ui naming. Light is the default, dark follows the OS unless data-theme says otherwise.
+   .theme-light / .theme-dark force a theme on a single element (used by the swatch panels). */
+:root,
+:root[data-theme="light"],
+.theme-light {
+  color-scheme: light;
+  --background: #FAF7F2;
+  --foreground: #1A1512;
+  --card: #FFFFFF;
+  --card-foreground: #1A1512;
+  --muted: #F0EBE3;
+  --muted-foreground: #6B6058;
+  --primary: #D0261A;
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #B01E14;
+  --secondary: #EDE6DB;
+  --secondary-foreground: #1A1512;
+  --accent: #FFE6E0;
+  --accent-foreground: #8A1A10;
+  --border: #E2D9CD;
+  --input: #8C8076;
+  --ring: #D0261A;
+  --destructive: #B4135A;
+  --destructive-foreground: #FFFFFF;
+  --success: #1F7A4A;
+  --brand: #FF4130;
+  --brand-foreground: #14110F;
+  --ink-block: #1A1512;
+  --ink-block-foreground: #F6F1EA;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --background: #14110F;
+    --foreground: #F6F1EA;
+    --card: #1E1A17;
+    --card-foreground: #F6F1EA;
+    --muted: #2A2420;
+    --muted-foreground: #B3A89D;
+    --primary: #FF4130;
+    --primary-foreground: #14110F;
+    --primary-hover: #FF5E4F;
+    --secondary: #2A2420;
+    --secondary-foreground: #F6F1EA;
+    --accent: #3A1D18;
+    --accent-foreground: #FFB4A8;
+    --border: #352E29;
+    --input: #7A6D63;
+    --ring: #FF4130;
+    --destructive: #FF6B9E;
+    --destructive-foreground: #14110F;
+    --success: #5BD68A;
+    --brand: #FF4130;
+    --brand-foreground: #14110F;
+    --ink-block: #2E2722;
+    --ink-block-foreground: #F6F1EA;
+  }
+}
+:root[data-theme="dark"],
+.theme-dark {
+  color-scheme: dark;
+  --background: #14110F;
+  --foreground: #F6F1EA;
+  --card: #1E1A17;
+  --card-foreground: #F6F1EA;
+  --muted: #2A2420;
+  --muted-foreground: #B3A89D;
+  --primary: #FF4130;
+  --primary-foreground: #14110F;
+  --primary-hover: #FF5E4F;
+  --secondary: #2A2420;
+  --secondary-foreground: #F6F1EA;
+  --accent: #3A1D18;
+  --accent-foreground: #FFB4A8;
+  --border: #352E29;
+  --input: #7A6D63;
+  --ring: #FF4130;
+  --destructive: #FF6B9E;
+  --destructive-foreground: #14110F;
+  --success: #5BD68A;
+  --brand: #FF4130;
+  --brand-foreground: #14110F;
+  --ink-block: #2E2722;
+  --ink-block-foreground: #F6F1EA;
+}
+.theme-light, .theme-dark { background: var(--background); color: var(--foreground); }
+
+:root {
+  --font-display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "DM Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --gutter: 16px;
+}
+@media (min-width: 768px) { :root { --gutter: 32px; } }
+
+/* ============ BASE ============ */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.55;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  margin: 0;
+  color: inherit;
+  text-wrap: balance;
+}
+p { margin: 0; }
+a { color: var(--primary); text-underline-offset: 3px; }
+a:hover { color: var(--primary-hover); }
+img, svg { display: block; max-width: 100%; }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+.mono { font-family: var(--font-mono); }
+.label {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.muted { color: var(--muted-foreground); }
+
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 var(--gutter); }
+
+/* Phosphor icons sit inline with text, nothing behind them */
+.ph, .ph-bold, .ph-fill { line-height: 1; vertical-align: -0.125em; }
+.inline-icon { display: inline-flex; align-items: center; gap: 0.4em; }
+
+/* ============ PAGE CHROME ============ */
+.topbar {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
+}
+.topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 60px; }
+.topnav { display: none; gap: 20px; }
+.topnav a { color: var(--muted-foreground); text-decoration: none; font-size: 0.9375rem; }
+.topnav a:hover { color: var(--foreground); }
+@media (min-width: 900px) { .topnav { display: flex; } }
+
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-size: 1.75rem;
+  color: var(--foreground);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: baseline;
+}
+.wordmark .uni { color: var(--primary); font-weight: 800; }
+.wordmark .connect { font-weight: 500; letter-spacing: -0.035em; }
+
+.section { padding: 56px 0; border-bottom: 1px solid var(--border); }
+@media (min-width: 768px) { .section { padding: 88px 0; } }
+.section-head { display: grid; gap: 10px; margin-bottom: 32px; max-width: 760px; }
+.section-head h2 { font-size: clamp(1.75rem, 1.3rem + 2vw, 2.75rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; }
+.section-head p { color: var(--muted-foreground); }
+
+/* ============ IDENTITY HEADER ============ */
+.identity { padding: 48px 0 56px; border-bottom: 1px solid var(--border); }
+@media (min-width: 768px) { .identity { padding: 96px 0 104px; } }
+.identity-grid { display: grid; gap: 32px; }
+@media (min-width: 960px) { .identity-grid { grid-template-columns: 1.4fr 1fr; align-items: end; } }
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(3rem, 1.5rem + 7vw, 7rem);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+}
+.display em { font-style: normal; color: var(--primary); }
+.lede { font-size: 1.125rem; max-width: 34ch; margin-top: 20px; }
+.logo-row { display: grid; gap: 10px; }
+.logo-tile {
+  border-radius: var(--radius);
+  min-height: 112px;
+  display: grid; place-items: center;
+  padding: 16px;
+  border: 1px solid var(--border);
+}
+.logo-tile .wordmark { font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem); }
+.logo-tile.on-brand { background: var(--brand); border-color: var(--brand); }
+.logo-tile.on-brand .wordmark { color: var(--brand-foreground); }
+.logo-tile.on-brand .wordmark .uni { color: var(--brand-foreground); }
+.facts { display: grid; gap: 4px; margin-top: 16px; }
+
+/* ============ SWATCHES ============ */
+.theme-panels { display: grid; gap: 16px; }
+@media (min-width: 960px) { .theme-panels { grid-template-columns: 1fr 1fr; } }
+.theme-panel { border-radius: var(--radius-lg); border: 1px solid var(--border); padding: 20px; }
+.theme-panel h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: baseline; }
+.swatches { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+@media (min-width: 560px) { .swatches { grid-template-columns: repeat(3, 1fr); } }
+.swatch { display: grid; gap: 6px; }
+.swatch-chip { height: 56px; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+.swatch-name { font-family: var(--font-mono); font-size: 0.75rem; color: var(--foreground); }
+.swatch-hex { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted-foreground); }
+.contrast-table { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 0.9375rem; }
+.contrast-table th, .contrast-table td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.contrast-table th { font-family: var(--font-mono); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted-foreground); }
+.table-scroll { overflow-x: auto; }
+
+/* ============ TYPE SCALE ============ */
+.type-list { display: grid; border-top: 1px solid var(--border); }
+.type-row { display: grid; gap: 8px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+@media (min-width: 900px) { .type-row { grid-template-columns: 240px 1fr; gap: 24px; align-items: baseline; } }
+.type-meta { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted-foreground); line-height: 1.6; }
+.type-meta strong { color: var(--foreground); font-weight: 500; }
+.t-display { font-family: var(--font-display); font-weight: 800; font-size: clamp(3rem, 1.6rem + 6vw, 6rem); line-height: 0.92; letter-spacing: -0.04em; }
+.t-h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.25rem, 1.7rem + 2.4vw, 3.5rem); line-height: 1; letter-spacing: -0.03em; }
+.t-h2 { font-family: var(--font-display); font-weight: 750; font-size: clamp(1.75rem, 1.45rem + 1.4vw, 2.5rem); line-height: 1.05; letter-spacing: -0.025em; }
+.t-h3 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.375rem, 1.25rem + 0.6vw, 1.75rem); line-height: 1.15; letter-spacing: -0.015em; }
+.t-h4 { font-family: var(--font-display); font-weight: 650; font-size: clamp(1.125rem, 1.08rem + 0.2vw, 1.25rem); line-height: 1.25; letter-spacing: -0.01em; }
+.t-body { font-size: clamp(1rem, 0.98rem + 0.1vw, 1.0625rem); line-height: 1.55; max-width: 60ch; }
+.t-small { font-size: 0.875rem; line-height: 1.5; }
+.t-label { font-family: var(--font-mono); font-weight: 500; font-size: clamp(0.75rem, 0.73rem + 0.1vw, 0.8125rem); letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* ============ COMPONENTS ============ */
+.comp-grid { display: grid; gap: 16px; }
+@media (min-width: 900px) { .comp-grid { grid-template-columns: 1fr 1fr; } }
+.comp {
+  background: var(--card); color: var(--card-foreground);
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 20px; display: grid; gap: 16px; align-content: start;
+}
+.comp > h3 { font-size: 1.125rem; font-weight: 700; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.state-caption { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.08em; }
+
+.btn {
+  -webkit-appearance: none; appearance: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 20px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  font-family: var(--font-body); font-size: 1rem; font-weight: 600; line-height: 1;
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+  background: transparent; color: var(--foreground);
+}
+.btn:focus-visible, .btn.is-focus { outline: 2px solid var(--ring); outline-offset: 3px; }
+.btn-primary { background: var(--primary); color: var(--primary-foreground); }
+.btn-primary:hover, .btn-primary.is-hover { background: var(--primary-hover); color: var(--primary-foreground); }
+.btn-secondary { background: var(--secondary); color: var(--secondary-foreground); border-color: var(--border); }
+.btn-secondary:hover, .btn-secondary.is-hover { border-color: var(--input); }
+.btn-ghost { color: var(--foreground); }
+.btn-ghost:hover, .btn-ghost.is-hover { background: var(--muted); }
+.btn-destructive { background: var(--destructive); color: var(--destructive-foreground); }
+.btn-destructive:hover, .btn-destructive.is-hover { filter: brightness(0.92); }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; filter: none; }
+.btn-block { width: 100%; }
+.btn-lg { min-height: 52px; font-size: 1.0625rem; padding: 0 24px; }
+.btn-link { background: none; border: 0; padding: 0; min-height: 0; color: var(--primary); font-weight: 600; font-size: 0.9375rem; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-family: var(--font-body); }
+
+.field { display: grid; gap: 6px; }
+.field label, .field .field-label { font-weight: 600; font-size: 0.9375rem; }
+.hint { font-size: 0.875rem; color: var(--muted-foreground); }
+.input, .select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  font-family: var(--font-body);
+  font-size: 16px; /* never below 16px: prevents iOS Safari zoom on focus */
+  color: var(--foreground);
+  background: var(--card);
+  border: 1px solid var(--input);
+  border-radius: var(--radius-sm);
+}
+.input::placeholder { color: var(--muted-foreground); opacity: 1; }
+.input:hover:not(:disabled), .select:hover:not(:disabled) { border-color: var(--foreground); }
+.input:focus-visible, .select:focus-visible, .input.is-focus {
+  outline: none;
+  border-color: var(--ring);
+  box-shadow: 0 0 0 1px var(--ring), 0 0 0 4px var(--accent);
+}
+.input[aria-invalid="true"], .select[aria-invalid="true"] {
+  border-color: var(--destructive);
+  border-width: 2px;
+  padding: 0 13px;
+}
+.input[aria-invalid="true"]:focus-visible, .select[aria-invalid="true"]:focus-visible { box-shadow: 0 0 0 1px var(--destructive); }
+.input:disabled, .select:disabled { background: var(--muted); color: var(--muted-foreground); border-color: var(--border); cursor: not-allowed; }
+.field-error {
+  display: flex; align-items: flex-start; gap: 6px;
+  color: var(--destructive);
+  font-size: 0.875rem; font-weight: 600; line-height: 1.4;
+}
+.field-error i { font-size: 1.05rem; flex: none; margin-top: 1px; }
+.form-status { display: flex; align-items: flex-start; gap: 8px; font-size: 0.9375rem; font-weight: 600; color: var(--success); }
+.form-status i { font-size: 1.15rem; flex: none; margin-top: 2px; }
+
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 0.9375rem; cursor: pointer; }
+.check input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--primary); font-size: 16px; flex: none; cursor: pointer; }
+.check input[aria-invalid="true"] { outline: 2px solid var(--destructive); outline-offset: 1px; }
+
+.badge {
+  display: inline-flex; align-items: center;
+  min-height: 24px; padding: 0 10px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  background: var(--secondary); color: var(--secondary-foreground);
+  border: 1px solid var(--border);
+}
+.badge-accent { background: var(--accent); color: var(--accent-foreground); border-color: transparent; }
+.badge-solid { background: var(--primary); color: var(--primary-foreground); border-color: transparent; }
+.badge-outline { background: transparent; }
+
+.icon-demo { display: grid; gap: 10px; }
+.icon-demo p { display: flex; align-items: center; gap: 8px; }
+.icon-demo i { font-size: 1.25rem; }
+
+/* ============ SCREENS ============ */
+.screens { display: grid; gap: 40px; }
+.screen-group { display: grid; gap: 16px; }
+.screen-group > h3 { font-size: 1.375rem; font-weight: 750; letter-spacing: -0.02em; }
+.frames { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+.frame-wrap { display: grid; gap: 8px; width: 100%; }
+.frame-wrap.mobile { max-width: 375px; }
+.frame-wrap.desktop { flex: 1 1 560px; min-width: 0; }
+.frame {
+  container-type: inline-size;
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+}
+.frame-wrap.desktop .frame { border-radius: var(--radius-lg); }
+.frame-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+}
+.frame-bar .wordmark { font-size: 1.375rem; }
+.frame-bar nav { display: none; gap: 18px; font-size: 0.9375rem; }
+.frame-bar nav a { color: var(--muted-foreground); text-decoration: none; }
+.frame-bar nav a[aria-current="page"] { color: var(--foreground); font-weight: 600; }
+@container (min-width: 700px) { .frame-bar nav { display: flex; } .frame-bar .menu-btn { display: none; } }
+.icon-btn {
+  -webkit-appearance: none; appearance: none; background: none; border: 0; padding: 8px;
+  color: var(--foreground); font-size: 1.375rem; cursor: pointer; line-height: 0; border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--primary); }
+.screen { padding: 20px 16px 28px; display: grid; gap: 20px; }
+@container (min-width: 700px) { .screen { padding: 40px 32px 48px; gap: 28px; } }
+
+.s-display { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.75rem, 1rem + 9cqi, 5.5rem); line-height: 0.9; letter-spacing: -0.045em; }
+.s-h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 1rem + 5cqi, 3rem); line-height: 1; letter-spacing: -0.03em; }
+.s-h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; line-height: 1.15; letter-spacing: -0.015em; }
+
+.hero-block { display: grid; gap: 16px; }
+@container (min-width: 700px) { .hero-block { grid-template-columns: 1.3fr 1fr; align-items: end; gap: 32px; } }
+.search-row { display: flex; gap: 8px; }
+.search-row .input { flex: 1; min-width: 0; border-radius: var(--radius-pill); padding: 0 18px; }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.chip {
+  -webkit-appearance: none; appearance: none;
+  min-height: 36px; padding: 0 14px; border-radius: var(--radius-pill);
+  border: 1px solid var(--border); background: transparent; color: var(--foreground);
+  font-family: var(--font-body); font-size: 0.9375rem; font-weight: 500; white-space: nowrap; cursor: pointer;
+}
+.chip[aria-pressed="true"] { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+.chip:hover:not([aria-pressed="true"]) { border-color: var(--input); }
+
+.event-grid { display: grid; gap: 16px; }
+@container (min-width: 560px) { .event-grid { grid-template-columns: repeat(2, 1fr); } }
+@container (min-width: 900px) { .event-grid { grid-template-columns: repeat(3, 1fr); } }
+.event-card {
+  background: var(--card); color: var(--card-foreground);
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  overflow: hidden; display: grid;
+  text-decoration: none;
+}
+a.event-card:hover { border-color: var(--input); color: var(--card-foreground); }
+.event-card:hover h3 { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.event-body { padding: 14px 16px 16px; display: grid; gap: 8px; }
+.event-meta { display: flex; align-items: center; gap: 6px; font-size: 0.9375rem; color: var(--muted-foreground); }
+.event-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 4px; }
+.price { font-family: var(--font-mono); font-weight: 500; font-size: 0.9375rem; }
+
+/* image placeholders: solid blocks with simple shapes, no photos */
+.photo { position: relative; aspect-ratio: 16 / 10; overflow: hidden; }
+.photo svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.photo-label {
+  position: absolute; left: 12px; bottom: 10px;
+  font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.photo--brand { background: var(--brand); color: var(--brand-foreground); }
+.photo--ink { background: var(--ink-block); color: var(--ink-block-foreground); }
+.photo--paper { background: var(--muted); color: var(--foreground); }
+.photo-poster {
+  position: absolute; left: 12px; top: 12px; right: 12px;
+  font-family: var(--font-display); font-weight: 800; letter-spacing: -0.04em; line-height: 0.88;
+  font-size: clamp(1.75rem, 1rem + 6cqi, 2.5rem);
+}
+
+/* auth */
+.tabs { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border); }
+.tab {
+  -webkit-appearance: none; appearance: none; background: none; border: 0;
+  min-height: 48px; font-family: var(--font-body); font-size: 1rem; font-weight: 600;
+  color: var(--muted-foreground); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px;
+}
+.tab[aria-selected="true"] { color: var(--foreground); border-bottom-color: var(--primary); }
+.tab:hover { color: var(--foreground); }
+.form { display: grid; gap: 16px; }
+.form-row-between { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+
+/* event detail */
+.detail-meta { display: grid; gap: 8px; }
+.detail-meta p { display: flex; align-items: center; gap: 10px; }
+.detail-meta i { font-size: 1.2rem; color: var(--primary); }
+.buy-box {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 16px; display: grid; gap: 16px;
+}
+.stepper { display: flex; align-items: center; gap: 4px; }
+.stepper .input { width: 76px; text-align: center; font-family: var(--font-mono); font-size: 18px; padding: 0 8px; }
+.stepper .input[aria-invalid="true"] { padding: 0 7px; }
+.step-btn {
+  -webkit-appearance: none; appearance: none; background: none; border: 0;
+  width: 44px; height: 44px; display: grid; place-items: center;
+  color: var(--foreground); font-size: 1.375rem; cursor: pointer; border-radius: var(--radius-sm);
+}
+.step-btn:hover:not(:disabled) { color: var(--primary); }
+.step-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.total-row { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px dashed var(--border); padding-top: 14px; }
+.total-row .price { font-size: 1.5rem; }
+
+/* tickets */
+.ticket {
+  position: relative;
+  background: var(--card); color: var(--card-foreground);
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.ticket-top { background: var(--brand); color: var(--brand-foreground); padding: 16px; display: grid; gap: 6px; }
+.ticket-top .label { color: var(--brand-foreground); }
+.ticket-title { font-family: var(--font-display); font-weight: 800; font-size: 1.875rem; line-height: 0.95; letter-spacing: -0.035em; }
+.ticket-info { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; padding: 16px; }
+.ticket-info dt { font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-foreground); }
+.ticket-info dd { margin: 2px 0 0; font-weight: 600; }
+.ticket-perf { position: relative; border-top: 2px dashed var(--border); margin: 0 16px; }
+.ticket-perf::before, .ticket-perf::after {
+  content: ""; position: absolute; top: -12px; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--background); border: 1px solid var(--border);
+}
+.ticket-perf::before { left: -28px; }
+.ticket-perf::after { right: -28px; }
+.ticket-qr { padding: 20px 16px; display: grid; justify-items: center; gap: 10px; }
+.qr-box { background: #FFFFFF; padding: 10px; border-radius: var(--radius-sm); width: 100%; max-width: 220px; }
+.qr-box svg { width: 100%; height: auto; }
+.ticket-code { font-family: var(--font-mono); font-size: 1rem; font-weight: 500; letter-spacing: 0.12em; }
+.ticket-list-item {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card);
+}
+
+/* favicon display */
+.fav-grid { display: grid; gap: 16px; }
+@media (min-width: 900px) { .fav-grid { grid-template-columns: 1fr 1fr; } }
+.fav-panel { border-radius: var(--radius-lg); border: 1px solid var(--border); padding: 24px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 24px; }
+.fav-item { display: grid; gap: 8px; justify-items: start; }
+.fav-item img { image-rendering: auto; }
+.fav-item span { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted-foreground); }
+
+/* motion + do/dont */
+.notes-grid { display: grid; gap: 16px; }
+@media (min-width: 900px) { .notes-grid { grid-template-columns: 1.2fr 1fr; align-items: start; } }
+.motion-list { margin: 0; padding-left: 1.2em; display: grid; gap: 10px; }
+.motion-list strong { font-weight: 600; }
+.code { font-family: var(--font-mono); font-size: 0.875rem; background: var(--muted); padding: 1px 6px; border-radius: 6px; }
+.dodont { display: grid; gap: 16px; }
+@media (min-width: 768px) { .dodont { grid-template-columns: 1fr 1fr; } }
+.dodont ul { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; }
+.dodont h3 { font-size: 1.25rem; font-weight: 750; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.do-title i { color: var(--success); }
+.dont-title i { color: var(--destructive); }
+
+footer { padding: 40px 0 56px; color: var(--muted-foreground); font-size: 0.875rem; }
+
+/* ============ MOTION ============
+   Only three places move: auth panel switch, ticket reveal, button press.
+   Everything is gated on no-preference, nothing loops. */
+@media (prefers-reduced-motion: no-preference) {
+  .btn, .chip, .input, .select, .tab, .step-btn, .icon-btn, .event-card {
+    transition: background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out, box-shadow 150ms ease-out;
+  }
+  .btn:active:not(:disabled) { transform: scale(0.98); transition-duration: 80ms; }
+
+  @keyframes panel-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+  .tab-panel.is-entering { animation: panel-in 220ms var(--ease-out) both; }
+
+  @keyframes ticket-in {
+    from { opacity: 0; transform: translateY(24px) scale(0.985); }
+    to { opacity: 1; transform: none; }
+  }
+  .js .reveal { opacity: 0; }
+  .js .reveal.is-revealed { animation: ticket-in 480ms var(--ease-out) both; }
+  .js .reveal.is-revealed .ticket-qr { animation: panel-in 320ms var(--ease-out) 200ms both; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="#top" aria-label="UniConnect, home"><span class="uni">Uni</span><span class="connect">Connect</span></a>
+    <nav class="topnav" aria-label="Sections">
+      <a href="#tokens">Color</a>
+      <a href="#type">Type</a>
+      <a href="#components">Components</a>
+      <a href="#screens">Screens</a>
+      <a href="#motion">Motion</a>
+    </nav>
+    <button class="btn btn-ghost" id="theme-toggle" type="button">
+      <i class="ph-bold ph-moon" aria-hidden="true"></i><span>Dark mode</span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- a. IDENTITY -->
+<section class="identity" aria-labelledby="id-title">
+  <div class="wrap identity-grid">
+    <div>
+      <p class="label">Direction 03, Signal</p>
+      <h1 id="id-title" class="display" style="margin-top:14px">Campus nights, <em>connected.</em></h1>
+      <p class="lede">UniConnect, loud like a gig poster, friendly like the person handing out flyers on the quad. One red signal that tells you where to look, and plenty of room around it.</p>
+      <div class="facts">
+        <p class="label">Name: UniConnect</p>
+        <p class="label">Accent: Signal red #FF4130</p>
+      </div>
+    </div>
+    <div>
+      <div class="logo-row" role="list" aria-label="Wordmark on three backgrounds">
+        <div class="logo-tile theme-light" role="listitem"><span class="wordmark"><span class="uni">Uni</span><span class="connect">Connect</span></span></div>
+        <div class="logo-tile theme-dark" role="listitem"><span class="wordmark"><span class="uni">Uni</span><span class="connect">Connect</span></span></div>
+        <div class="logo-tile on-brand" role="listitem"><span class="wordmark"><span class="uni">Uni</span><span class="connect">Connect</span></span></div>
+      </div>
+      <p class="hint" style="margin-top:12px">Wordmark: one word, two weights. "Uni" in Bricolage Grotesque 800 and signal red, "Connect" in Bricolage 500 in ink, tight tracking (-0.04em). On a red field the whole word turns ink and the weight change alone carries the split.</p>
+    </div>
+  </div>
+</section>
+
+<!-- b. COLOR TOKENS -->
+<section class="section" id="tokens" aria-labelledby="tokens-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">01, Color tokens</p>
+      <h2 id="tokens-title">Warm ink, paper white, one signal red.</h2>
+      <p>shadcn/ui token names. The swatches below read their values straight from the CSS variables, so this page runs on the same tokens it documents. In light mode the red shifts darker (#D0261A) so it passes as text and as a button fill with white type. The bright #FF4130 stays as <span class="mono">--brand</span> for big poster blocks and the logo dot.</p>
+    </div>
+
+    <div class="theme-panels">
+      <div class="theme-panel theme-light" data-swatches>
+        <h3>Light <span class="label">paper</span></h3>
+        <div class="swatches"></div>
+      </div>
+      <div class="theme-panel theme-dark" data-swatches>
+        <h3>Dark <span class="label">warm ink</span></h3>
+        <div class="swatches"></div>
+      </div>
+    </div>
+
+    <h3 class="t-h4" style="margin-top:40px">Errors are not the brand red</h3>
+    <p class="t-body muted" style="margin-top:8px">The brand owns red-orange (hue around 5 degrees). Destructive moves to raspberry in light mode (#B4135A, hue around 335) and pink in dark mode (#FF6B9E). On top of the hue shift, an error is never color alone: it always carries the <i class="ph-bold ph-warning-circle" aria-hidden="true"></i> icon, a written message, and a 2px border, so it reads correctly for color-blind users too.</p>
+
+    <div class="table-scroll">
+      <table class="contrast-table">
+        <caption class="sr-only">Contrast ratios checked</caption>
+        <thead><tr><th scope="col">Pair</th><th scope="col">Light</th><th scope="col">Dark</th><th scope="col">Need</th></tr></thead>
+        <tbody>
+          <tr><td>foreground on background</td><td>16.9:1</td><td>16.7:1</td><td>4.5</td></tr>
+          <tr><td>muted-foreground on background</td><td>5.7:1</td><td>8.1:1</td><td>4.5</td></tr>
+          <tr><td>muted-foreground on muted</td><td>5.2:1</td><td>6.5:1</td><td>4.5</td></tr>
+          <tr><td>primary as text on background</td><td>4.9:1</td><td>5.4:1</td><td>4.5</td></tr>
+          <tr><td>primary as text on card</td><td>5.3:1</td><td>5.0:1</td><td>4.5</td></tr>
+          <tr><td>primary-foreground on primary (buttons)</td><td>5.3:1</td><td>5.4:1</td><td>4.5</td></tr>
+          <tr><td>destructive on background</td><td>6.2:1</td><td>7.0:1</td><td>4.5</td></tr>
+          <tr><td>destructive-foreground on destructive</td><td>6.6:1</td><td>7.0:1</td><td>4.5</td></tr>
+          <tr><td>success on card</td><td>5.3:1</td><td>9+:1</td><td>4.5</td></tr>
+          <tr><td>accent-foreground on accent (badges)</td><td>7.9:1</td><td>9+:1</td><td>4.5</td></tr>
+          <tr><td>brand-foreground (ink) on brand red</td><td colspan="2">5.4:1 (fixed in both themes)</td><td>4.5</td></tr>
+          <tr><td>input border on card</td><td>3.8:1</td><td>3.4:1</td><td>3 (UI)</td></tr>
+          <tr><td>brand #FF4130 as text on paper</td><td colspan="2">3.3:1, so display sizes only (24px+), never body</td><td>3 (large)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- c. TYPE -->
+<section class="section" id="type" aria-labelledby="type-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">02, Type scale</p>
+      <h2 id="type-title">Heavy on top, calm underneath.</h2>
+      <p>Bricolage Grotesque for display and headings: its optical size axis (12 to 96) is set to auto, so big sizes get the tight, quirky cuts and small headings stay sturdy. DM Sans carries body text. DM Mono handles dates, prices and ticket codes.</p>
+    </div>
+    <div class="type-list">
+      <div class="type-row">
+        <p class="type-meta"><strong>Display</strong><br>Bricolage Grotesque 800<br>48px mobile, 96px desktop<br>line 0.92, tracking -0.04em</p>
+        <p class="t-display">Night out.</p>
+      </div>
+      <div class="type-row">
+        <p class="type-meta"><strong>H1</strong><br>Bricolage Grotesque 800<br>36px, 56px<br>line 1.0, tracking -0.03em</p>
+        <p class="t-h1">Freshers Night Vol. 3</p>
+      </div>
+      <div class="type-row">
+        <p class="type-meta"><strong>H2</strong><br>Bricolage Grotesque 750<br>28px, 40px<br>line 1.05</p>
+        <p class="t-h2">This week on campus</p>
+      </div>
+      <div class="type-row">
+        <p class="type-meta"><strong>H3</strong><br>Bricolage Grotesque 700<br>22px, 28px</p>
+        <p class="t-h3">Jazz in the Courtyard</p>
+      </div>
+      <div class="type-row">
+        <p class="type-meta"><strong>H4</strong><br>Bricolage Grotesque 650<br>18px, 20px</p>
+        <p class="t-h4">Ticket details</p>
+      </div>
+      <div class="type-row">
+        <p class="type-meta"><strong>Body</strong><br>DM Sans 400<br>16px, 17px<br>line 1.55, max 60ch</p>
+        <p class="t-body">Doors open at 21:00. Bring your student card, the bouncer will scan your ticket at the door. Your tickets also land in your inbox, so you can find them offline.</p>
+      </div>
+      <div class="type-row">
+        <p class="type-meta"><strong>Small</strong><br>DM Sans 400<br>14px, 14px</p>
+        <p class="t-small muted">Refunds up to 48 hours before the event.</p>
+      </div>
+      <div class="type-row">
+        <p class="type-meta"><strong>Mono label</strong><br>DM Mono 500, uppercase<br>12px, 13px<br>tracking 0.08em</p>
+        <p class="t-label">Thu 14 Nov, 21:00 &nbsp; 45 RON &nbsp; UC-7F3K-2291</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- d. COMPONENTS -->
+<section class="section" id="components" aria-labelledby="comp-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">03, Components</p>
+      <h2 id="comp-title">Pills, soft corners, clear states.</h2>
+      <p>Buttons are pills, cards and inputs use 8 to 14px corners. Hover and focus states are shown statically next to the live ones; tab through the page to see real focus rings.</p>
+    </div>
+    <div class="comp-grid">
+      <div class="comp">
+        <h3>Buttons</h3>
+        <div>
+          <p class="state-caption">Default</p>
+          <div class="row" style="margin-top:8px">
+            <button class="btn btn-primary" type="button"><i class="ph-bold ph-ticket" aria-hidden="true"></i>Get tickets</button>
+            <button class="btn btn-secondary" type="button">Save event</button>
+            <button class="btn btn-ghost" type="button">Cancel</button>
+            <button class="btn btn-destructive" type="button"><i class="ph-bold ph-trash" aria-hidden="true"></i>Cancel ticket</button>
+          </div>
+        </div>
+        <div>
+          <p class="state-caption">Hover</p>
+          <div class="row" style="margin-top:8px">
+            <span class="btn btn-primary is-hover">Get tickets</span>
+            <span class="btn btn-secondary is-hover">Save event</span>
+            <span class="btn btn-ghost is-hover">Cancel</span>
+            <span class="btn btn-destructive is-hover"><i class="ph-bold ph-trash" aria-hidden="true"></i>Cancel ticket</span>
+          </div>
+        </div>
+        <div>
+          <p class="state-caption">Focus-visible</p>
+          <div class="row" style="margin-top:8px">
+            <span class="btn btn-primary is-focus">Get tickets</span>
+            <span class="btn btn-secondary is-focus">Save event</span>
+            <span class="btn btn-ghost is-focus">Cancel</span>
+          </div>
+        </div>
+        <div>
+          <p class="state-caption">Disabled</p>
+          <div class="row" style="margin-top:8px">
+            <button class="btn btn-primary" type="button" disabled>Sold out</button>
+            <button class="btn btn-secondary" type="button" disabled>Save event</button>
+            <button class="btn btn-ghost" type="button" disabled>Cancel</button>
+            <button class="btn btn-destructive" type="button" disabled><i class="ph-bold ph-trash" aria-hidden="true"></i>Cancel ticket</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp">
+        <h3>Text input</h3>
+        <div class="field">
+          <label for="demo-default">Default</label>
+          <input class="input" id="demo-default" type="text" placeholder="Search events">
+        </div>
+        <div class="field">
+          <label for="demo-focus">Focus</label>
+          <input class="input is-focus" id="demo-focus" type="text" value="Hackathon">
+        </div>
+        <div class="field">
+          <label for="demo-error">Error</label>
+          <input class="input" id="demo-error" type="email" value="ana@student" aria-invalid="true" aria-describedby="demo-error-msg">
+          <p class="field-error" id="demo-error-msg"><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span>Enter a valid email, like ana@student.ro.</span></p>
+        </div>
+        <div class="field">
+          <label for="demo-disabled">Disabled</label>
+          <input class="input" id="demo-disabled" type="text" value="Locked after purchase" disabled>
+        </div>
+      </div>
+
+      <div class="comp">
+        <h3>Select, checkbox, badges</h3>
+        <div class="field">
+          <label for="demo-select">Faculty</label>
+          <select class="select" id="demo-select">
+            <option>Computer Science</option>
+            <option>Economics</option>
+            <option>Letters</option>
+            <option>Medicine</option>
+          </select>
+        </div>
+        <label class="check"><input type="checkbox" checked> Email me new events from my faculty</label>
+        <label class="check"><input type="checkbox"> Show past events</label>
+        <div class="row">
+          <span class="badge">Party</span>
+          <span class="badge badge-accent">Few left</span>
+          <span class="badge badge-solid">Free</span>
+          <span class="badge badge-outline">Sold out</span>
+        </div>
+      </div>
+
+      <div class="comp">
+        <h3>Icons, the right way</h3>
+        <p class="hint">Phosphor regular for meta rows, bold inside buttons and errors. Icons sit next to text, same color as the text or primary. Never in a tile, circle or bordered box.</p>
+        <div class="icon-demo">
+          <p><i class="ph ph-calendar-blank" aria-hidden="true"></i>Thu 14 Nov, 21:00</p>
+          <p><i class="ph ph-map-pin" aria-hidden="true"></i>Club Studentesc, Cluj</p>
+          <p><i class="ph ph-ticket" aria-hidden="true"></i>2 tickets in your account</p>
+          <p><i class="ph ph-envelope-simple" aria-hidden="true"></i>Ticket emailed by UniConnect</p>
+          <p style="color:var(--success)"><i class="ph-bold ph-check-circle" aria-hidden="true"></i>Payment confirmed</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- e. SCREENS -->
+<section class="section" id="screens" aria-labelledby="screens-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">04, Example screens</p>
+      <h2 id="screens-title">The app, mobile first.</h2>
+      <p>Each frame is a 375px phone. The desktop frame uses container queries, so it collapses to the mobile layout on a narrow screen. Forms validate for real: try submitting them empty.</p>
+    </div>
+
+    <div class="screens">
+
+      <!-- 1. Listing -->
+      <div class="screen-group">
+        <h3>1. Event listing</h3>
+        <div class="frames">
+          <div class="frame-wrap mobile">
+            <p class="label">Mobile, 375px</p>
+            <div class="frame">
+              <div class="frame-bar">
+                <span class="wordmark"><span class="uni">Uni</span><span class="connect">Connect</span></span>
+                <button class="icon-btn menu-btn" type="button" aria-label="Open menu"><i class="ph ph-list" aria-hidden="true"></i></button>
+              </div>
+              <div class="screen">
+                <div class="hero-block">
+                  <div>
+                    <p class="label">Week 46, Cluj</p>
+                    <h4 class="s-display" style="margin-top:8px">This week on campus.</h4>
+                  </div>
+                  <form class="search-row" role="search" onsubmit="return false">
+                    <label class="sr-only" for="m-search">Search events</label>
+                    <input class="input" id="m-search" type="search" placeholder="Search events">
+                    <button class="btn btn-primary" type="submit"><i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i><span class="sr-only">Search</span></button>
+                  </form>
+                </div>
+                <div class="chips" role="group" aria-label="Filter by category">
+                  <button class="chip" type="button" aria-pressed="true">All</button>
+                  <button class="chip" type="button" aria-pressed="false">Parties</button>
+                  <button class="chip" type="button" aria-pressed="false">Talks</button>
+                  <button class="chip" type="button" aria-pressed="false">Sport</button>
+                  <button class="chip" type="button" aria-pressed="false">Music</button>
+                </div>
+                <div class="event-grid">
+                  <a class="event-card" href="#screen-detail">
+                    <div class="photo photo--brand" role="img" aria-label="Event photo placeholder">
+                      <svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="128" cy="78" r="46" fill="currentColor" opacity=".12"/><rect x="0" y="86" width="160" height="14" fill="currentColor" opacity=".12"/></svg>
+                      <span class="photo-poster">Freshers<br>Vol. 3</span>
+                      <span class="photo-label">Event photo</span>
+                    </div>
+                    <div class="event-body">
+                      <p class="label">Thu 14 Nov, 21:00</p>
+                      <h3 class="s-h3">Freshers Night Vol. 3</h3>
+                      <p class="event-meta"><i class="ph ph-map-pin" aria-hidden="true"></i>Club Studentesc</p>
+                      <div class="event-foot"><span class="price">from 30 RON</span><span class="badge badge-accent">Few left</span></div>
+                    </div>
+                  </a>
+                  <a class="event-card" href="#screen-detail">
+                    <div class="photo photo--ink" role="img" aria-label="Event photo placeholder">
+                      <svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="16" y="20" width="10" height="60" fill="currentColor" opacity=".14"/><rect x="34" y="34" width="10" height="46" fill="currentColor" opacity=".14"/><rect x="52" y="10" width="10" height="70" fill="currentColor" opacity=".14"/><circle cx="122" cy="40" r="22" fill="#FF4130"/></svg>
+                      <span class="photo-label">Event photo</span>
+                    </div>
+                    <div class="event-body">
+                      <p class="label">Sat 16 Nov, 10:00</p>
+                      <h3 class="s-h3">Hackathon 48h</h3>
+                      <p class="event-meta"><i class="ph ph-map-pin" aria-hidden="true"></i>FSEGA, Hall B</p>
+                      <div class="event-foot"><span class="price">Free</span><span class="badge">Tech</span></div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="frame-wrap desktop">
+            <p class="label">Desktop, container queries</p>
+            <div class="frame">
+              <div class="frame-bar">
+                <span class="wordmark"><span class="uni">Uni</span><span class="connect">Connect</span></span>
+                <nav aria-label="Main (example)">
+                  <a href="#screens" aria-current="page">Events</a>
+                  <a href="#screen-tickets">My tickets</a>
+                  <a href="#screen-auth">Log in</a>
+                </nav>
+                <button class="icon-btn menu-btn" type="button" aria-label="Open menu"><i class="ph ph-list" aria-hidden="true"></i></button>
+              </div>
+              <div class="screen">
+                <div class="hero-block">
+                  <div>
+                    <p class="label">Week 46, Cluj</p>
+                    <h4 class="s-display" style="margin-top:10px">Your next <span style="color:var(--primary)">night out</span> starts here.</h4>
+                  </div>
+                  <div style="display:grid;gap:14px">
+                    <p class="muted">UniConnect puts parties, talks, sport and gigs from every faculty in one place. Buy in two taps, show the QR at the door.</p>
+                    <form class="search-row" role="search" onsubmit="return false">
+                      <label class="sr-only" for="d-search">Search events</label>
+                      <input class="input" id="d-search" type="search" placeholder="Search events, clubs, venues">
+                      <button class="btn btn-primary" type="submit"><i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i>Search</button>
+                    </form>
+                  </div>
+                </div>
+                <div class="chips" role="group" aria-label="Filter by category">
+                  <button class="chip" type="button" aria-pressed="true">All</button>
+                  <button class="chip" type="button" aria-pressed="false">Parties</button>
+                  <button class="chip" type="button" aria-pressed="false">Talks</button>
+                  <button class="chip" type="button" aria-pressed="false">Sport</button>
+                  <button class="chip" type="button" aria-pressed="false">Music</button>
+                  <button class="chip" type="button" aria-pressed="false">This weekend</button>
+                </div>
+                <div class="event-grid">
+                  <a class="event-card" href="#screen-detail">
+                    <div class="photo photo--brand" role="img" aria-label="Event photo placeholder">
+                      <svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="128" cy="78" r="46" fill="currentColor" opacity=".12"/></svg>
+                      <span class="photo-poster">Freshers<br>Vol. 3</span>
+                      <span class="photo-label">Event photo</span>
+                    </div>
+                    <div class="event-body">
+                      <p class="label">Thu 14 Nov, 21:00</p>
+                      <h3 class="s-h3">Freshers Night Vol. 3</h3>
+                      <p class="event-meta"><i class="ph ph-map-pin" aria-hidden="true"></i>Club Studentesc</p>
+                      <div class="event-foot"><span class="price">from 30 RON</span><span class="badge badge-accent">Few left</span></div>
+                    </div>
+                  </a>
+                  <a class="event-card" href="#screen-detail">
+                    <div class="photo photo--ink" role="img" aria-label="Event photo placeholder">
+                      <svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="16" y="20" width="10" height="60" fill="currentColor" opacity=".14"/><rect x="34" y="34" width="10" height="46" fill="currentColor" opacity=".14"/><rect x="52" y="10" width="10" height="70" fill="currentColor" opacity=".14"/><circle cx="122" cy="40" r="22" fill="#FF4130"/></svg>
+                      <span class="photo-label">Event photo</span>
+                    </div>
+                    <div class="event-body">
+                      <p class="label">Sat 16 Nov, 10:00</p>
+                      <h3 class="s-h3">Hackathon 48h</h3>
+                      <p class="event-meta"><i class="ph ph-map-pin" aria-hidden="true"></i>FSEGA, Hall B</p>
+                      <div class="event-foot"><span class="price">Free</span><span class="badge">Tech</span></div>
+                    </div>
+                  </a>
+                  <a class="event-card" href="#screen-detail">
+                    <div class="photo photo--paper" role="img" aria-label="Event photo placeholder">
+                      <svg viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M0 70 Q40 40 80 62 T160 50 V100 H0Z" fill="currentColor" opacity=".1"/><circle cx="40" cy="34" r="14" fill="#FF4130"/></svg>
+                      <span class="photo-label">Event photo</span>
+                    </div>
+                    <div class="event-body">
+                      <p class="label">Fri 22 Nov, 19:30</p>
+                      <h3 class="s-h3">Jazz in the Courtyard</h3>
+                      <p class="event-meta"><i class="ph ph-map-pin" aria-hidden="true"></i>Casa Universitarilor</p>
+                      <div class="event-foot"><span class="price">25 RON</span><span class="badge">Music</span></div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Auth -->
+      <div class="screen-group" id="screen-auth">
+        <h3>2. Log in and register</h3>
+        <div class="frames">
+          <div class="frame-wrap mobile">
+            <p class="label">Mobile, 375px, working validation</p>
+            <div class="frame">
+              <div class="frame-bar">
+                <span class="wordmark"><span class="uni">Uni</span><span class="connect">Connect</span></span>
+                <a class="btn-link" href="#screens" style="text-decoration:none">Browse events</a>
+              </div>
+              <div class="screen">
+                <div>
+                  <p class="label">Your account</p>
+                  <h4 class="s-h1" style="margin-top:8px">Sign in to UniConnect.</h4>
+                </div>
+                <div>
+                  <div class="tabs" role="tablist" aria-label="Account">
+                    <button class="tab" type="button" role="tab" id="tab-login" aria-selected="true" aria-controls="panel-login">Log in</button>
+                    <button class="tab" type="button" role="tab" id="tab-register" aria-selected="false" aria-controls="panel-register" tabindex="-1">Register</button>
+                  </div>
+
+                  <div class="tab-panel" id="panel-login" role="tabpanel" aria-labelledby="tab-login" style="padding-top:20px">
+                    <form class="form" novalidate data-form data-success="All good. In the app this signs you in to UniConnect.">
+                      <div class="field">
+                        <label for="login-email">Email</label>
+                        <input class="input" id="login-email" name="email" type="email" autocomplete="email" inputmode="email" data-validate="email">
+                        <p class="field-error" id="login-email-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                      </div>
+                      <div class="field">
+                        <label for="login-password">Password</label>
+                        <input class="input" id="login-password" name="password" type="password" autocomplete="current-password" data-validate="required" data-required-msg="Enter your password.">
+                        <p class="field-error" id="login-password-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                      </div>
+                      <div class="form-row-between">
+                        <label class="check"><input type="checkbox" name="remember"> Keep me logged in</label>
+                        <a href="#screen-auth" style="font-size:.9375rem;font-weight:600">Forgot?</a>
+                      </div>
+                      <button class="btn btn-primary btn-lg btn-block" type="submit"><i class="ph-bold ph-sign-in" aria-hidden="true"></i>Log in</button>
+                      <p class="form-status" role="status" hidden><i class="ph-bold ph-check-circle" aria-hidden="true"></i><span></span></p>
+                    </form>
+                  </div>
+
+                  <div class="tab-panel" id="panel-register" role="tabpanel" aria-labelledby="tab-register" style="padding-top:20px" hidden>
+                    <form class="form" novalidate data-form data-success="Account looks good. UniConnect would now send you a confirmation email.">
+                      <div class="field">
+                        <label for="reg-name">Full name</label>
+                        <input class="input" id="reg-name" name="name" type="text" autocomplete="name" data-validate="name">
+                        <p class="field-error" id="reg-name-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                      </div>
+                      <div class="field">
+                        <label for="reg-email">University email</label>
+                        <input class="input" id="reg-email" name="email" type="email" autocomplete="email" inputmode="email" data-validate="email">
+                        <p class="field-error" id="reg-email-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                      </div>
+                      <div class="field">
+                        <label for="reg-password">Password</label>
+                        <input class="input" id="reg-password" name="password" type="password" autocomplete="new-password" data-validate="password" aria-describedby="reg-password-hint">
+                        <p class="hint" id="reg-password-hint">At least 8 characters, including a number.</p>
+                        <p class="field-error" id="reg-password-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                      </div>
+                      <div class="field">
+                        <label for="reg-confirm">Confirm password</label>
+                        <input class="input" id="reg-confirm" name="confirm" type="password" autocomplete="new-password" data-validate="confirm" data-match="reg-password">
+                        <p class="field-error" id="reg-confirm-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                      </div>
+                      <div class="field">
+                        <label class="check"><input id="reg-terms" type="checkbox" name="terms" data-validate="checked" data-required-msg="Accept the terms to create an account."> I accept the terms and the privacy policy</label>
+                        <p class="field-error" id="reg-terms-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                      </div>
+                      <button class="btn btn-primary btn-lg btn-block" type="submit">Create account</button>
+                      <p class="form-status" role="status" hidden><i class="ph-bold ph-check-circle" aria-hidden="true"></i><span></span></p>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Event detail -->
+      <div class="screen-group" id="screen-detail">
+        <h3>3. Event detail and ticket purchase</h3>
+        <div class="frames">
+          <div class="frame-wrap mobile">
+            <p class="label">Mobile, 375px, working validation</p>
+            <div class="frame">
+              <div class="frame-bar">
+                <a class="btn-link inline-icon" href="#screens" style="text-decoration:none"><i class="ph-bold ph-arrow-left" aria-hidden="true"></i>Events</a>
+                <button class="icon-btn" type="button" aria-label="Save event"><i class="ph ph-bookmark-simple" aria-hidden="true"></i></button>
+              </div>
+              <div class="photo photo--brand" role="img" aria-label="Event photo placeholder" style="aspect-ratio:4/3">
+                <svg viewBox="0 0 160 120" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="124" cy="96" r="58" fill="currentColor" opacity=".12"/><rect x="0" y="104" width="160" height="16" fill="currentColor" opacity=".12"/></svg>
+                <span class="photo-poster" style="font-size:3.25rem">Freshers<br>Night<br>Vol. 3</span>
+                <span class="photo-label">Event photo</span>
+              </div>
+              <div class="screen">
+                <div>
+                  <div class="row"><span class="badge">Party</span><span class="badge badge-accent">Few left</span></div>
+                  <h4 class="s-h1" style="margin-top:12px">Freshers Night Vol. 3</h4>
+                </div>
+                <div class="detail-meta">
+                  <p><i class="ph ph-calendar-blank" aria-hidden="true"></i>Thursday 14 November</p>
+                  <p><i class="ph ph-clock" aria-hidden="true"></i><span class="mono">21:00 to 04:00</span></p>
+                  <p><i class="ph ph-map-pin" aria-hidden="true"></i>Club Studentesc, Piezisa 2, Cluj</p>
+                </div>
+                <p class="muted">The welcome party for first years, run by the student union. Two rooms, three DJs, and a cloakroom that actually works this time.</p>
+
+                <form class="buy-box" novalidate data-form data-success="Order ready. In the app this opens checkout.">
+                  <h5 class="t-h4">Tickets</h5>
+                  <div class="field">
+                    <label for="buy-type">Ticket type</label>
+                    <select class="select" id="buy-type" name="type" data-validate="select">
+                      <option value="">Choose a ticket</option>
+                      <option value="student" data-price="30">Student, 30 RON</option>
+                      <option value="general" data-price="45">General, 45 RON</option>
+                    </select>
+                    <p class="field-error" id="buy-type-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                  </div>
+                  <div class="field">
+                    <label for="buy-qty">Quantity</label>
+                    <div class="stepper">
+                      <button class="step-btn" type="button" data-step="-1" aria-label="One less ticket" aria-controls="buy-qty"><i class="ph-bold ph-minus" aria-hidden="true"></i></button>
+                      <input class="input" id="buy-qty" name="qty" type="number" inputmode="numeric" min="1" max="10" step="1" value="1" data-validate="qty" aria-describedby="buy-qty-hint">
+                      <button class="step-btn" type="button" data-step="1" aria-label="One more ticket" aria-controls="buy-qty"><i class="ph-bold ph-plus" aria-hidden="true"></i></button>
+                    </div>
+                    <p class="hint" id="buy-qty-hint">Up to 10 per order.</p>
+                    <p class="field-error" id="buy-qty-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                  </div>
+                  <div class="total-row">
+                    <span class="label">Total</span>
+                    <span class="price" id="buy-total" aria-live="polite">0 RON</span>
+                  </div>
+                  <button class="btn btn-primary btn-lg btn-block" type="submit"><i class="ph-bold ph-ticket" aria-hidden="true"></i>Buy tickets</button>
+                  <p class="form-status" role="status" hidden><i class="ph-bold ph-check-circle" aria-hidden="true"></i><span></span></p>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. My tickets -->
+      <div class="screen-group" id="screen-tickets">
+        <h3>4. My tickets</h3>
+        <div class="frames">
+          <div class="frame-wrap mobile">
+            <p class="label">Mobile, 375px, ticket reveal motion</p>
+            <div class="frame">
+              <div class="frame-bar">
+                <span class="wordmark"><span class="uni">Uni</span><span class="connect">Connect</span></span>
+                <button class="icon-btn" type="button" aria-label="Account"><i class="ph ph-user" aria-hidden="true"></i></button>
+              </div>
+              <div class="screen">
+                <div>
+                  <p class="label">My account</p>
+                  <h4 class="s-h1" style="margin-top:8px">My tickets</h4>
+                </div>
+                <article class="ticket reveal" id="demo-ticket" aria-label="Ticket for Freshers Night Vol. 3">
+                  <div class="ticket-top">
+                    <p class="label">Admit one, Student</p>
+                    <p class="ticket-title">Freshers Night Vol. 3</p>
+                  </div>
+                  <dl class="ticket-info">
+                    <div><dt>Date</dt><dd>Thu 14 Nov</dd></div>
+                    <div><dt>Doors</dt><dd class="mono">21:00</dd></div>
+                    <div><dt>Venue</dt><dd>Club Studentesc</dd></div>
+                    <div><dt>Holder</dt><dd>Ana Pop</dd></div>
+                  </dl>
+                  <div class="ticket-perf" aria-hidden="true"></div>
+                  <div class="ticket-qr">
+                    <div class="qr-box"><svg id="qr" viewBox="0 0 29 29" role="img" aria-label="QR code for ticket UC-7F3K-2291" shape-rendering="crispEdges"></svg></div>
+                    <p class="ticket-code">UC-7F3K-2291</p>
+                    <p class="hint inline-icon"><i class="ph ph-envelope-simple" aria-hidden="true"></i>Emailed by UniConnect to ana@student.ro</p>
+                  </div>
+                </article>
+                <div class="ticket-list-item">
+                  <div>
+                    <p class="label">Fri 22 Nov, 19:30</p>
+                    <p style="font-weight:600">Jazz in the Courtyard</p>
+                  </div>
+                  <a class="btn btn-secondary" href="#screen-tickets">Show QR</a>
+                </div>
+                <p class="hint">Turn up your screen brightness at the door. The QR works offline.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Favicon -->
+<section class="section" id="favicon" aria-labelledby="fav-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">05, App icon</p>
+      <h2 id="fav-title">The U with a signal dot.</h2>
+      <p>A heavy U for UniConnect, with a signal dot dropped into its open mouth: the university holding the point where people meet. Ink on signal red, 8px corner radius on a 32 grid. Fixed colors, so it reads the same on light and dark tabs.</p>
+    </div>
+    <div class="fav-grid">
+      <div class="fav-panel theme-light">
+        <div class="fav-item"><img src="favicon.svg" width="16" height="16" alt="UniConnect icon at 16px"><span>16</span></div>
+        <div class="fav-item"><img src="favicon.svg" width="32" height="32" alt="UniConnect icon at 32px"><span>32</span></div>
+        <div class="fav-item"><img src="favicon.svg" width="64" height="64" alt="UniConnect icon at 64px"><span>64</span></div>
+        <div class="fav-item"><img src="favicon.svg" width="180" height="180" alt="UniConnect icon at 180px"><span>180</span></div>
+      </div>
+      <div class="fav-panel theme-dark">
+        <div class="fav-item"><img src="favicon.svg" width="16" height="16" alt="UniConnect icon at 16px on dark"><span>16</span></div>
+        <div class="fav-item"><img src="favicon.svg" width="32" height="32" alt="UniConnect icon at 32px on dark"><span>32</span></div>
+        <div class="fav-item"><img src="favicon.svg" width="64" height="64" alt="UniConnect icon at 64px on dark"><span>64</span></div>
+        <div class="fav-item"><img src="favicon.svg" width="180" height="180" alt="UniConnect icon at 180px on dark"><span>180</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- f. MOTION -->
+<section class="section" id="motion" aria-labelledby="motion-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">06, Motion</p>
+      <h2 id="motion-title">Moves once, then sits still.</h2>
+      <p>Motion marks a moment, it never decorates. Every animation runs once, nothing loops, and all of it is wrapped in <span class="code">prefers-reduced-motion: no-preference</span>. With reduced motion on, content just appears.</p>
+    </div>
+    <div class="notes-grid">
+      <div class="comp">
+        <h3>Where things move</h3>
+        <ol class="motion-list">
+          <li><strong>Ticket reveal.</strong> When a ticket card enters the screen the first time: fade plus 24px rise, 480ms, <span class="code">cubic-bezier(0.2, 0.8, 0.2, 1)</span>. The QR area follows 200ms later with 320ms. Also used once after a successful purchase.</li>
+          <li><strong>Log in / register switch.</strong> The new panel fades in with an 8px rise, 220ms, same easing. No slide between tabs.</li>
+          <li><strong>Button press.</strong> Scale to 0.98 for 80ms on press. Hover is a 150ms ease-out color change only.</li>
+          <li><strong>Not animated:</strong> page loads, scrolling, cards on hover, theme switch, toasts, the logo, anything in a loop.</li>
+        </ol>
+      </div>
+      <div class="comp">
+        <h3>Try it</h3>
+        <p class="hint">Replays the ticket reveal on the "My tickets" screen. With reduced motion turned on in your OS, nothing moves.</p>
+        <div class="row">
+          <a class="btn btn-secondary" href="#screen-tickets" id="replay"><i class="ph-bold ph-arrow-counter-clockwise" aria-hidden="true"></i>Replay ticket reveal</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- g. DO / DON'T -->
+<section class="section" id="dodont" aria-labelledby="dd-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">07, Do and don't</p>
+      <h2 id="dd-title">Keep the signal clean.</h2>
+    </div>
+    <div class="dodont">
+      <div class="comp">
+        <h3 class="do-title"><i class="ph-bold ph-check-circle" aria-hidden="true"></i>Do</h3>
+        <ul>
+          <li>Use red for one thing per view: the main action, or one poster block.</li>
+          <li>Set headlines big and tight in Bricolage 750 to 800, then let the body breathe.</li>
+          <li>Put dates, prices and ticket codes in DM Mono.</li>
+          <li>Use the darker primary (#D0261A) for red text and buttons in light mode.</li>
+          <li>Pair every error with the warning icon and a written message.</li>
+          <li>Keep icons plain, beside their label, in the text color or primary.</li>
+        </ul>
+      </div>
+      <div class="comp">
+        <h3 class="dont-title"><i class="ph-bold ph-x-circle" aria-hidden="true"></i>Don't</h3>
+        <ul>
+          <li>Don't set body text in #FF4130 on paper, it only reaches 3.3:1.</li>
+          <li>Don't use the brand red for errors or delete actions.</li>
+          <li>Don't add gradients, glows, pulsing dots or anything that loops.</li>
+          <li>Don't put icons in circles, tiles or outlined boxes.</li>
+          <li>Don't animate scrolling, hover lifts or page loads.</li>
+          <li>Don't drop inputs below 16px, iOS will zoom the page.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Direction 03, Signal, for UniConnect. Fonts: Bricolage Grotesque, DM Sans, DM Mono. Icons: Phosphor.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+
+  /* ---------- theme toggle ---------- */
+  var toggle = document.getElementById('theme-toggle');
+  function effectiveTheme() {
+    var t = root.getAttribute('data-theme');
+    return t ? t : (mq.matches ? 'dark' : 'light');
+  }
+  function syncToggle() {
+    var dark = effectiveTheme() === 'dark';
+    toggle.querySelector('i').className = dark ? 'ph-bold ph-sun' : 'ph-bold ph-moon';
+    toggle.querySelector('span').textContent = dark ? 'Light mode' : 'Dark mode';
+  }
+  toggle.addEventListener('click', function () {
+    var next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('uniconnect-theme', next); } catch (e) {}
+    syncToggle();
+  });
+  if (mq.addEventListener) mq.addEventListener('change', syncToggle);
+  syncToggle();
+
+  /* ---------- swatches read from the CSS variables ---------- */
+  var tokens = ['background', 'foreground', 'card', 'card-foreground', 'muted', 'muted-foreground',
+    'primary', 'primary-foreground', 'secondary', 'secondary-foreground', 'accent', 'accent-foreground',
+    'border', 'input', 'ring', 'destructive', 'destructive-foreground', 'success', 'brand'];
+  document.querySelectorAll('[data-swatches]').forEach(function (panel) {
+    var cs = getComputedStyle(panel);
+    var grid = panel.querySelector('.swatches');
+    tokens.forEach(function (name) {
+      var hex = cs.getPropertyValue('--' + name).trim().toUpperCase();
+      var el = document.createElement('div');
+      el.className = 'swatch';
+      el.innerHTML = '<div class="swatch-chip" style="background:var(--' + name + ')"></div>' +
+        '<span class="swatch-name">' + name + '</span><span class="swatch-hex">' + hex + '</span>';
+      grid.appendChild(el);
+    });
+  });
+
+  /* ---------- chips ---------- */
+  document.querySelectorAll('.chips').forEach(function (group) {
+    group.addEventListener('click', function (e) {
+      var chip = e.target.closest('.chip');
+      if (!chip) return;
+      group.querySelectorAll('.chip').forEach(function (c) { c.setAttribute('aria-pressed', String(c === chip)); });
+    });
+  });
+
+  /* ---------- tabs ---------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  function selectTab(tab, focus) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      var panel = document.getElementById(t.getAttribute('aria-controls'));
+      panel.hidden = !on;
+      if (on) {
+        panel.classList.remove('is-entering');
+        void panel.offsetWidth;
+        panel.classList.add('is-entering');
+      }
+    });
+    if (focus) tab.focus();
+  }
+  tabs.forEach(function (tab, i) {
+    tab.addEventListener('click', function () { selectTab(tab, false); });
+    tab.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        var n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        selectTab(n, true);
+      }
+    });
+  });
+
+  /* ---------- form validation ---------- */
+  var rules = {
+    required: function (v, el) { return v.trim() ? '' : (el.dataset.requiredMsg || 'This field is required.'); },
+    name: function (v) {
+      if (!v.trim()) return 'Enter your name.';
+      return v.trim().length >= 2 ? '' : 'Name looks too short.';
+    },
+    email: function (v) {
+      v = v.trim();
+      if (!v) return 'Enter your email address.';
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? '' : 'Enter a valid email, like ana@student.ro.';
+    },
+    password: function (v) {
+      if (!v) return 'Enter a password.';
+      if (v.length < 8) return 'Use at least 8 characters.';
+      if (!/\d/.test(v)) return 'Add at least one number.';
+      return '';
+    },
+    confirm: function (v, el) {
+      if (!v) return 'Repeat your password.';
+      var other = document.getElementById(el.dataset.match);
+      return other && v === other.value ? '' : 'Passwords do not match.';
+    },
+    select: function (v) { return v ? '' : 'Choose a ticket type.'; },
+    qty: function (v) {
+      if (String(v).trim() === '') return 'Enter how many tickets you want.';
+      var n = Number(v);
+      if (!Number.isInteger(n) || n < 1 || n > 10) return 'Choose between 1 and 10 tickets.';
+      return '';
+    },
+    checked: function (v, el) { return el.checked ? '' : (el.dataset.requiredMsg || 'Required.'); }
+  };
+
+  function describedBy(el, errId, add) {
+    var ids = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+    ids = ids.filter(function (id) { return id !== errId; });
+    if (add) ids.push(errId);
+    if (ids.length) el.setAttribute('aria-describedby', ids.join(' '));
+    else el.removeAttribute('aria-describedby');
+  }
+
+  function validate(el) {
+    var rule = rules[el.dataset.validate];
+    if (!rule) return true;
+    var msg = rule(el.value, el);
+    var errId = el.id + '-err';
+    var err = document.getElementById(errId);
+    if (msg) {
+      el.setAttribute('aria-invalid', 'true');
+      if (err) { err.querySelector('span').textContent = msg; err.hidden = false; }
+      describedBy(el, errId, true);
+      return false;
+    }
+    el.removeAttribute('aria-invalid');
+    if (err) { err.hidden = true; err.querySelector('span').textContent = ''; }
+    describedBy(el, errId, false);
+    return true;
+  }
+
+  document.querySelectorAll('[data-form]').forEach(function (form) {
+    var fields = Array.prototype.slice.call(form.querySelectorAll('[data-validate]'));
+    var status = form.querySelector('.form-status');
+
+    fields.forEach(function (el) {
+      el.addEventListener('blur', function () { el.dataset.touched = '1'; validate(el); });
+      var live = function () {
+        if (status) status.hidden = true;
+        if (el.dataset.touched || el.getAttribute('aria-invalid') === 'true') validate(el);
+        /* keep the confirm field in sync when the password changes */
+        fields.forEach(function (f) {
+          if (f.dataset.match === el.id && f.dataset.touched) validate(f);
+        });
+      };
+      el.addEventListener('input', live);
+      el.addEventListener('change', function () { el.dataset.touched = '1'; live(); });
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var firstBad = null;
+      fields.forEach(function (el) {
+        el.dataset.touched = '1';
+        if (!validate(el) && !firstBad) firstBad = el;
+      });
+      if (firstBad) {
+        if (status) status.hidden = true;
+        firstBad.focus();
+        return;
+      }
+      if (status) {
+        status.querySelector('span').textContent = form.dataset.success || 'Done.';
+        status.hidden = false;
+      }
+    });
+  });
+
+  /* ---------- quantity stepper and total ---------- */
+  var qty = document.getElementById('buy-qty');
+  var type = document.getElementById('buy-type');
+  var total = document.getElementById('buy-total');
+  var stepBtns = document.querySelectorAll('[data-step]');
+  function updateTotal() {
+    var opt = type.options[type.selectedIndex];
+    var price = Number(opt && opt.dataset.price ? opt.dataset.price : 0);
+    var n = Number(qty.value);
+    var ok = Number.isInteger(n) && n >= 1 && n <= 10;
+    total.textContent = ok && price ? (price * n) + ' RON' : (price ? '-' : '0 RON');
+    stepBtns[0].disabled = ok && n <= 1;
+    stepBtns[1].disabled = ok && n >= 10;
+  }
+  stepBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var n = parseInt(qty.value, 10);
+      if (isNaN(n)) n = 0;
+      n = Math.min(10, Math.max(1, n + Number(btn.dataset.step)));
+      qty.value = n;
+      qty.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  });
+  qty.addEventListener('input', updateTotal);
+  type.addEventListener('change', updateTotal);
+  updateTotal();
+
+  /* ---------- placeholder QR (looks right, does not scan) ---------- */
+  (function drawQR() {
+    var N = 25, Q = 2, d = '';
+    var grid = [];
+    for (var y = 0; y < N; y++) { grid.push([]); for (var x = 0; x < N; x++) grid[y].push(null); }
+    function finder(ox, oy) {
+      for (var y = -1; y <= 7; y++) for (var x = -1; x <= 7; x++) {
+        var gx = ox + x, gy = oy + y;
+        if (gx < 0 || gy < 0 || gx >= N || gy >= N) continue;
+        var ring = Math.max(Math.abs(x - 3), Math.abs(y - 3));
+        grid[gy][gx] = (ring === 3 || ring <= 1);
+      }
+    }
+    finder(0, 0); finder(N - 7, 0); finder(0, N - 7);
+    for (var i = 8; i < N - 8; i++) { grid[6][i] = i % 2 === 0; grid[i][6] = i % 2 === 0; }
+    for (var ay = -2; ay <= 2; ay++) for (var ax = -2; ax <= 2; ax++) {
+      var r = Math.max(Math.abs(ax), Math.abs(ay));
+      grid[18 + ay][18 + ax] = (r === 2 || r === 0);
+    }
+    var seed = 72912291;
+    function rnd() { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
+    for (var y2 = 0; y2 < N; y2++) for (var x2 = 0; x2 < N; x2++) {
+      if (grid[y2][x2] === null) grid[y2][x2] = rnd() > 0.52;
+      if (grid[y2][x2]) d += 'M' + (x2 + Q) + ' ' + (y2 + Q) + 'h1v1h-1z';
+    }
+    var svg = document.getElementById('qr');
+    svg.innerHTML = '<rect width="29" height="29" fill="#FFFFFF"/><path d="' + d + '" fill="#14110F"/>';
+  })();
+
+  /* ---------- ticket reveal, once ---------- */
+  var ticket = document.getElementById('demo-ticket');
+  function reveal() { ticket.classList.add('is-revealed'); }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { reveal(); io.disconnect(); } });
+    }, { threshold: 0.25 });
+    io.observe(ticket);
+  } else { reveal(); }
+  document.getElementById('replay').addEventListener('click', function () {
+    ticket.classList.remove('is-revealed');
+    void ticket.offsetWidth;
+    reveal();
+  });
+})();
+</script>
+</body>
+</html>

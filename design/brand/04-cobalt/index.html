@@ -1,0 +1,1195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UniConnect Cobalt Brand</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800;900&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+/* Tokens: light (default) */
+:root, .t-light {
+  --background: #FFFFFF;
+  --foreground: #0B0C0E;
+  --card: #F4F5F7;
+  --card-foreground: #0B0C0E;
+  --muted: #ECEEF1;
+  --muted-foreground: #5A5F69;
+  --primary: #2F5BFF;
+  --primary-foreground: #FFFFFF;
+  --secondary: #E6E8EC;
+  --secondary-foreground: #0B0C0E;
+  --accent: #2448E5;
+  --accent-foreground: #FFFFFF;
+  --border: #DCDFE4;
+  --input: #8A909A;
+  --ring: #2448E5;
+  --destructive: #C8281E;
+  --destructive-foreground: #FFFFFF;
+  --success: #157A3B;
+  --placeholder: #D5DBF0;
+  color-scheme: light;
+}
+/* Tokens: dark */
+.t-dark, :root[data-theme="dark"] {
+  --background: #0B0C0E;
+  --foreground: #F2F3F5;
+  --card: #15171A;
+  --card-foreground: #F2F3F5;
+  --muted: #1E2024;
+  --muted-foreground: #9BA0A9;
+  --primary: #2F5BFF;
+  --primary-foreground: #FFFFFF;
+  --secondary: #23262B;
+  --secondary-foreground: #F2F3F5;
+  --accent: #8FA5FF;
+  --accent-foreground: #0B0C0E;
+  --border: #2A2D33;
+  --input: #5C616B;
+  --ring: #8FA5FF;
+  --destructive: #FF6B6B;
+  --destructive-foreground: #160707;
+  --success: #4ADE80;
+  --placeholder: #1C2233;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: #0B0C0E;
+    --foreground: #F2F3F5;
+    --card: #15171A;
+    --card-foreground: #F2F3F5;
+    --muted: #1E2024;
+    --muted-foreground: #9BA0A9;
+    --primary: #2F5BFF;
+    --primary-foreground: #FFFFFF;
+    --secondary: #23262B;
+    --secondary-foreground: #F2F3F5;
+    --accent: #8FA5FF;
+    --accent-foreground: #0B0C0E;
+    --border: #2A2D33;
+    --input: #5C616B;
+    --ring: #8FA5FF;
+    --destructive: #FF6B6B;
+    --destructive-foreground: #160707;
+    --success: #4ADE80;
+    --placeholder: #1C2233;
+    color-scheme: dark;
+  }
+}
+:root {
+  --font-display: "Unbounded", "Archivo", system-ui, sans-serif;
+  --font-body: "Geist", "Instrument Sans", system-ui, sans-serif;
+  --font-mono: "Geist Mono", "IBM Plex Mono", ui-monospace, monospace;
+  --radius-card: 20px;
+  --radius-sm: 12px;
+  --radius-pill: 999px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+.t-light, .t-dark { background: var(--background); color: var(--foreground); }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--ring); outline-offset: 2px;
+}
+img, svg { display: block; }
+.ph, .ph-bold, .ph-fill { line-height: 1; }
+
+.wrap { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+@media (min-width: 768px) { .wrap { padding: 0 32px; } }
+section.block { padding: 56px 0; border-top: 1px solid var(--border); }
+@media (min-width: 768px) { section.block { padding: 96px 0; } }
+
+/* Type */
+.label {
+  font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted-foreground);
+}
+.display {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(44px, 9vw, 104px); line-height: 0.95; letter-spacing: -0.03em; margin: 0;
+}
+h1, .h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(32px, 5.5vw, 64px); line-height: 1; letter-spacing: -0.025em; margin: 0; }
+h2, .h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(26px, 4vw, 44px); line-height: 1.05; letter-spacing: -0.02em; margin: 0; }
+h3, .h3 { font-family: var(--font-display); font-weight: 700; font-size: clamp(20px, 2.4vw, 28px); line-height: 1.15; letter-spacing: -0.01em; margin: 0; }
+h4, .h4 { font-family: var(--font-body); font-weight: 600; font-size: clamp(18px, 1.6vw, 20px); line-height: 1.3; margin: 0; }
+.body-l { font-size: clamp(16px, 1.4vw, 18px); }
+.small { font-size: 14px; line-height: 1.5; }
+.muted { color: var(--muted-foreground); }
+.mono { font-family: var(--font-mono); }
+p { margin: 0; }
+.section-head { display: grid; gap: 12px; margin-bottom: 36px; max-width: 720px; }
+
+/* Theme toggle bar */
+.topbar {
+  position: sticky; top: 0; z-index: 20; background: var(--background);
+  border-bottom: 1px solid var(--border);
+}
+.topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 12px; }
+.wordmark { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--foreground); }
+.wordmark span { font-family: var(--font-display); font-weight: 800; font-size: 18px; letter-spacing: -0.03em; color: var(--accent); }
+.wordmark span b { font-weight: 800; color: var(--foreground); }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 0 22px; border-radius: var(--radius-pill);
+  font-family: var(--font-body); font-size: 16px; font-weight: 600; line-height: 1;
+  border: 1.5px solid transparent; cursor: pointer; text-decoration: none;
+  transition: background-color 160ms var(--ease-out), color 160ms var(--ease-out), border-color 160ms var(--ease-out);
+}
+.btn .ph, .btn .ph-bold { font-size: 18px; }
+.btn-primary { background: var(--primary); color: var(--primary-foreground); }
+.btn-primary:hover { background: #2448E5; }
+.btn-secondary { background: var(--secondary); color: var(--secondary-foreground); }
+.btn-secondary:hover { background: var(--border); }
+.btn-ghost { background: transparent; color: var(--foreground); border-color: var(--border); }
+.btn-ghost:hover { border-color: var(--foreground); }
+.btn-destructive { background: var(--destructive); color: var(--destructive-foreground); }
+.btn-destructive:hover { filter: brightness(0.92); }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; filter: none; }
+.btn-primary:disabled:hover { background: var(--primary); }
+.btn.is-focus { outline: 2px solid var(--ring); outline-offset: 2px; }
+.btn-block { width: 100%; }
+.btn-sm { min-height: 40px; padding: 0 16px; font-size: 14px; }
+.icon-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-width: 44px; min-height: 44px; padding: 0 8px; background: none; border: 0; border-radius: var(--radius-pill);
+  color: var(--foreground); cursor: pointer; font: 600 14px var(--font-body);
+}
+.icon-btn .ph-bold { font-size: 20px; }
+.icon-btn:hover { color: var(--accent); }
+
+/* Forms */
+.field { display: grid; gap: 6px; }
+.field label { font-size: 14px; font-weight: 600; }
+.input, .select {
+  width: 100%; min-height: 50px; padding: 12px 16px;
+  font-family: var(--font-body); font-size: 16px; color: var(--foreground);
+  background: var(--background); border: 1.5px solid var(--input); border-radius: var(--radius-sm);
+  transition: border-color 160ms var(--ease-out);
+}
+.input::placeholder { color: var(--muted-foreground); }
+.input:hover:not(:disabled) { border-color: var(--foreground); }
+.input:focus-visible, .input.is-focus, .select:focus-visible { border-color: var(--ring); outline: 2px solid var(--ring); outline-offset: 0; }
+.input[aria-invalid="true"], .input.is-error { border-color: var(--destructive); }
+.input[aria-invalid="true"]:focus-visible { outline-color: var(--destructive); }
+.input:disabled { background: var(--muted); color: var(--muted-foreground); border-color: var(--border); cursor: not-allowed; }
+.select-wrap { position: relative; }
+.select { appearance: none; -webkit-appearance: none; padding-right: 44px; cursor: pointer; }
+.select-wrap .ph-bold { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--muted-foreground); }
+.field-error { display: flex; align-items: center; gap: 6px; color: var(--destructive); font-size: 14px; font-weight: 500; }
+.field-error[hidden] { display: none; }
+.hint { font-size: 14px; color: var(--muted-foreground); }
+.check { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; cursor: pointer; }
+.check input { width: 22px; height: 22px; margin: 0; accent-color: var(--primary); flex: none; margin-top: 1px; }
+.form-ok { display: flex; align-items: center; gap: 8px; color: var(--success); font-weight: 600; font-size: 15px; }
+.form-ok[hidden] { display: none; }
+
+/* Badges */
+.badge {
+  display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px;
+  border-radius: var(--radius-pill); font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.06em; border: 1px solid var(--border); color: var(--foreground);
+}
+.badge-primary { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+.badge-solid { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+.badge-success { color: var(--success); border-color: currentColor; }
+
+/* Cards */
+.card { background: var(--card); color: var(--card-foreground); border-radius: var(--radius-card); }
+
+/* Identity */
+.hero-id { padding: 48px 0 56px; display: grid; gap: 28px; }
+@media (min-width: 768px) { .hero-id { padding: 96px 0; } }
+.hero-id .big-word { font-family: var(--font-display); font-weight: 900; font-size: clamp(56px, 15vw, 200px); line-height: 0.86; letter-spacing: -0.05em; margin: 0; }
+.hero-id .big-word span, .hero-id .big-word em { display: block; }
+.hero-id .big-word em { font-style: normal; color: var(--accent); }
+.id-meta { display: grid; gap: 20px; }
+@media (min-width: 900px) { .id-meta { grid-template-columns: 1.4fr 1fr; align-items: end; } }
+.id-meta .lead { font-size: clamp(18px, 2vw, 22px); line-height: 1.45; max-width: 36ch; }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
+.facts div { display: grid; gap: 2px; }
+.facts strong { font-weight: 600; }
+
+/* Swatches */
+.themes { display: grid; gap: 20px; }
+@media (min-width: 900px) { .themes { grid-template-columns: 1fr 1fr; } }
+.theme-panel { border: 1px solid var(--border); border-radius: var(--radius-card); padding: 20px; display: grid; gap: 16px; }
+.swatches { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+@media (min-width: 520px) { .swatches { grid-template-columns: repeat(3, 1fr); } }
+.sw { display: grid; gap: 8px; }
+.sw-chip { height: 64px; border-radius: 14px; border: 1px solid var(--border); }
+.sw-name { font-family: var(--font-mono); font-size: 12px; line-height: 1.3; }
+.sw-hex { font-family: var(--font-mono); font-size: 12px; color: var(--muted-foreground); }
+.contrast { margin-top: 24px; display: grid; gap: 8px; }
+.contrast table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.contrast th, .contrast td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); }
+.contrast th { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted-foreground); font-weight: 500; }
+.table-scroll { overflow-x: auto; }
+
+/* Type scale */
+.type-row { display: grid; gap: 8px; padding: 24px 0; border-bottom: 1px solid var(--border); }
+@media (min-width: 900px) { .type-row { grid-template-columns: 240px 1fr; gap: 32px; align-items: baseline; } }
+.type-spec { font-family: var(--font-mono); font-size: 12px; color: var(--muted-foreground); line-height: 1.6; }
+.type-spec b { color: var(--foreground); font-weight: 600; display: block; }
+
+/* Components grid */
+.comp-grid { display: grid; gap: 20px; }
+@media (min-width: 900px) { .comp-grid { grid-template-columns: 1fr 1fr; } }
+.comp { border: 1px solid var(--border); border-radius: var(--radius-card); padding: 20px; display: grid; gap: 16px; align-content: start; }
+.row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.state-label { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted-foreground); }
+.inline-icons { display: grid; gap: 10px; }
+.inline-icons p { display: flex; align-items: center; gap: 8px; }
+.inline-icons .ph { font-size: 20px; color: var(--accent); }
+
+/* Screens */
+.screens { display: grid; gap: 48px; }
+.screen-set { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; min-width: 0; }
+.screen-set .frames { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+.screen-set .frames > div { min-width: 0; max-width: 100%; }
+.frame {
+  width: 375px; max-width: 100%; border: 1px solid var(--border); border-radius: 32px; overflow: hidden;
+  background: var(--background); flex: none;
+}
+.frame-desktop { width: 100%; max-width: 1100px; border-radius: 20px; flex: 1 1 100%; }
+.frame-caption { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted-foreground); margin-bottom: 8px; }
+.app-bar { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+.app-bar .wordmark span { font-size: 17px; }
+.app-pad { padding: 20px 18px 28px; display: grid; gap: 20px; }
+
+.ph-photo {
+  position: relative; background: var(--placeholder); border-radius: 16px; overflow: hidden;
+  display: flex; align-items: flex-end; padding: 12px;
+}
+.ph-photo svg.shapes { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ph-photo .label { position: relative; color: var(--foreground); }
+.ph-photo.blue { background: var(--primary); }
+.ph-photo.blue .label { color: #FFFFFF; }
+.ph-photo.ink { background: #0B0C0E; }
+.ph-photo.ink .label { color: #F2F3F5; }
+
+.ev-card { display: grid; gap: 12px; text-decoration: none; color: inherit; }
+.ev-card .ph-photo { aspect-ratio: 4 / 3; }
+.ev-meta { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.ev-meta span { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted-foreground); }
+.ev-title { font-family: var(--font-display); font-weight: 700; font-size: 20px; line-height: 1.1; letter-spacing: -0.01em; }
+.ev-price { font-family: var(--font-mono); font-size: 14px; font-weight: 600; }
+.ev-foot { display: flex; justify-content: space-between; align-items: center; }
+
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+.chip {
+  flex: none; height: 38px; padding: 0 16px; border-radius: var(--radius-pill); border: 1px solid var(--border);
+  background: transparent; color: var(--foreground); font: 500 14px var(--font-body); cursor: pointer;
+}
+.chip[aria-pressed="true"] { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+
+.list-hero { display: grid; gap: 14px; }
+.list-hero .display { font-size: 44px; }
+
+/* Desktop listing */
+.dk { display: grid; gap: 32px; padding: 28px; }
+.dk-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 28px; border-bottom: 1px solid var(--border); }
+.dk-nav nav { display: none; gap: 24px; font-size: 15px; }
+.dk-nav nav a { color: var(--foreground); text-decoration: none; }
+@media (min-width: 900px) { .dk-nav nav { display: flex; } }
+.dk-hero { display: grid; gap: 24px; }
+@media (min-width: 900px) { .dk-hero { grid-template-columns: 1.2fr 1fr; align-items: end; } }
+.dk-hero .display { font-size: clamp(44px, 6vw, 84px); }
+.dk-hero .ph-photo { aspect-ratio: 4 / 3; }
+.dk-grid { display: grid; gap: 24px; }
+@media (min-width: 640px) { .dk-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) { .dk-grid { grid-template-columns: repeat(3, 1fr); } }
+
+/* Auth */
+.seg { display: grid; grid-template-columns: 1fr 1fr; padding: 4px; border-radius: var(--radius-pill); background: var(--muted); }
+.seg button {
+  min-height: 42px; border: 0; border-radius: var(--radius-pill); background: transparent; color: var(--muted-foreground);
+  font: 600 15px var(--font-body); cursor: pointer; transition: background-color 200ms var(--ease-out), color 200ms var(--ease-out);
+}
+.seg button[aria-selected="true"] { background: var(--background); color: var(--foreground); }
+.auth-panel { display: grid; gap: 16px; }
+.auth-panel[hidden] { display: none; }
+.form { display: grid; gap: 16px; }
+
+/* Detail */
+.detail-title { font-family: var(--font-display); font-weight: 800; font-size: 34px; line-height: 1; letter-spacing: -0.025em; }
+.info-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.info-list li { display: flex; align-items: center; gap: 10px; font-size: 15px; }
+.info-list .ph { font-size: 20px; color: var(--accent); }
+.buy { display: grid; gap: 16px; padding: 20px; }
+.qty-row { display: flex; align-items: center; gap: 4px; }
+.qty-row .input { width: 96px; text-align: center; font-family: var(--font-mono); font-weight: 600; }
+.total-row { display: flex; justify-content: space-between; align-items: baseline; padding-top: 14px; border-top: 1px solid var(--border); }
+.total-row .amount { font-family: var(--font-mono); font-size: 22px; font-weight: 600; }
+.price-line { display: flex; justify-content: space-between; font-size: 14px; color: var(--muted-foreground); }
+.price-line span:last-child { font-family: var(--font-mono); }
+
+/* Ticket */
+.ticket { background: var(--card); border-radius: var(--radius-card); overflow: hidden; }
+.ticket-top { background: var(--primary); color: #FFFFFF; padding: 20px; display: grid; gap: 10px; }
+.ticket-top .label { color: #FFFFFF; }
+.ticket-top .t-title { font-family: var(--font-display); font-weight: 800; font-size: 24px; line-height: 1.02; letter-spacing: -0.02em; }
+.ticket-perf { position: relative; height: 0; border-top: 2px dashed var(--border); margin: 0 20px; }
+.ticket-body { padding: 20px; display: grid; gap: 16px; justify-items: center; }
+.qr-box { background: #FFFFFF; padding: 14px; border-radius: 16px; }
+.qr-box svg { width: 196px; height: 196px; }
+.t-grid { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.t-grid div { display: grid; gap: 2px; }
+.t-grid strong { font-family: var(--font-mono); font-size: 14px; font-weight: 600; }
+.t-code { font-family: var(--font-mono); font-size: 15px; font-weight: 600; letter-spacing: 0.12em; }
+.mini-ticket { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px; }
+.mini-ticket .ev-title { font-size: 16px; }
+
+/* Motion example (only with no-preference) */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal { opacity: 0; transform: translateY(16px); }
+  .reveal.is-in { opacity: 1; transform: none; transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out); }
+  .auth-panel.is-entering { animation: panelIn 220ms var(--ease-out) 1 both; }
+  @keyframes panelIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+.motion-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.motion-list li { display: grid; gap: 4px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+@media (min-width: 768px) { .motion-list li { grid-template-columns: 1fr 160px 1.2fr; gap: 24px; align-items: baseline; } }
+.motion-demo { display: grid; gap: 20px; margin-top: 32px; }
+@media (min-width: 900px) { .motion-demo { grid-template-columns: 1fr 375px; align-items: start; } }
+
+/* Favicon */
+.fav-grid { display: grid; gap: 20px; }
+@media (min-width: 900px) { .fav-grid { grid-template-columns: 1fr 1fr; } }
+.fav-panel { border: 1px solid var(--border); border-radius: var(--radius-card); padding: 24px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 24px; }
+.fav-item { display: grid; gap: 8px; justify-items: center; }
+.fav-item img { width: auto; }
+.tab-mock { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: 10px 10px 0 0; background: var(--muted); font-size: 13px; }
+
+/* Do / Don't */
+.dodont { display: grid; gap: 20px; }
+@media (min-width: 900px) { .dodont { grid-template-columns: 1fr 1fr; } }
+.dodont .card { padding: 24px; }
+.dodont h3 { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.dodont ul { margin: 0; padding-left: 20px; display: grid; gap: 10px; }
+.do-ic { color: var(--success); }
+.dont-ic { color: var(--destructive); }
+
+footer { padding: 40px 0 64px; border-top: 1px solid var(--border); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="#top" aria-label="UniConnect, home">
+      <img src="favicon.svg" width="28" height="28" alt="">
+      <span><b>Uni</b>Connect</span>
+    </a>
+    <div class="row" style="gap:8px">
+      <span class="label" style="display:none" id="themeName"></span>
+      <button class="btn btn-ghost btn-sm" id="themeToggle" type="button" aria-label="Switch color theme">
+        <i class="ph-bold ph-moon" id="themeIcon" aria-hidden="true"></i>
+        <span id="themeText">Dark</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- a. Identity -->
+<section class="wrap hero-id" aria-labelledby="id-title">
+  <p class="label">Brand direction 04 / Cobalt</p>
+  <h1 class="big-word" id="id-title"><span>Uni</span><em>Connect</em></h1>
+  <div class="id-meta">
+    <p class="lead">Loud like a gig poster, cool like a clear winter night. One electric blue, wide heavy type, and a lot of room to breathe.</p>
+    <div class="facts">
+      <div><span class="label">Accent</span><strong class="mono">#2F5BFF</strong></div>
+      <div><span class="label">Display</span><strong>Unbounded 800</strong></div>
+      <div><span class="label">Body</span><strong>Geist</strong></div>
+      <div><span class="label">Data</span><strong>Geist Mono</strong></div>
+    </div>
+  </div>
+  <p class="small muted">Wordmark: one word, set in Unbounded 800 with tight tracking. "Uni" sits in the foreground color, "Connect" in the accent text token, so the name splits into campus plus people without a space. On the cobalt mark or a cobalt fill, both halves go white.</p>
+</section>
+
+<!-- b. Color -->
+<section class="block" aria-labelledby="color-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">01 / Color tokens</p>
+      <h2 id="color-title">One blue, everything else neutral.</h2>
+      <p class="muted">Token names follow shadcn/ui. Swatches below read their values live from the CSS variables, so this page is built on the same tokens. Neutrals are cool greys with no navy tint.</p>
+    </div>
+    <div class="themes">
+      <div class="theme-panel t-light" data-swatches>
+        <div class="row" style="justify-content:space-between"><h3 class="h4">Light</h3><span class="badge">Crisp white</span></div>
+        <div class="swatches"></div>
+      </div>
+      <div class="theme-panel t-dark" data-swatches>
+        <div class="row" style="justify-content:space-between"><h3 class="h4">Dark</h3><span class="badge">Cool near-black</span></div>
+        <div class="swatches"></div>
+      </div>
+    </div>
+
+    <div class="contrast">
+      <h3 class="h4" style="margin-top:16px">Contrast checks (WCAG 2.x)</h3>
+      <div class="table-scroll">
+      <table>
+        <thead><tr><th>Pair</th><th>Theme</th><th>Ratio</th><th>Use</th></tr></thead>
+        <tbody>
+          <tr><td>#FFFFFF on #2F5BFF</td><td>Both</td><td class="mono">5.17:1</td><td>Primary button text, AA</td></tr>
+          <tr><td>#0B0C0E on #FFFFFF</td><td>Light</td><td class="mono">19.57:1</td><td>Body text</td></tr>
+          <tr><td>#5A5F69 on #FFFFFF</td><td>Light</td><td class="mono">6.41:1</td><td>Muted text</td></tr>
+          <tr><td>#5A5F69 on #F4F5F7</td><td>Light</td><td class="mono">5.88:1</td><td>Muted text on card</td></tr>
+          <tr><td>#2448E5 on #FFFFFF</td><td>Light</td><td class="mono">6.70:1</td><td>Accent text, links</td></tr>
+          <tr><td>#C8281E on #FFFFFF</td><td>Light</td><td class="mono">5.56:1</td><td>Error text, destructive fill</td></tr>
+          <tr><td>#157A3B on #FFFFFF</td><td>Light</td><td class="mono">5.41:1</td><td>Success text</td></tr>
+          <tr><td>#8A909A on #FFFFFF</td><td>Light</td><td class="mono">3.21:1</td><td>Input border, non-text 3:1</td></tr>
+          <tr><td>#F2F3F5 on #0B0C0E</td><td>Dark</td><td class="mono">17.62:1</td><td>Body text</td></tr>
+          <tr><td>#9BA0A9 on #0B0C0E</td><td>Dark</td><td class="mono">7.45:1</td><td>Muted text</td></tr>
+          <tr><td>#9BA0A9 on #15171A</td><td>Dark</td><td class="mono">6.84:1</td><td>Muted text on card</td></tr>
+          <tr><td>#8FA5FF on #0B0C0E</td><td>Dark</td><td class="mono">8.38:1</td><td>Accent text, links</td></tr>
+          <tr><td>#FF6B6B on #0B0C0E</td><td>Dark</td><td class="mono">7.05:1</td><td>Error text</td></tr>
+          <tr><td>#160707 on #FF6B6B</td><td>Dark</td><td class="mono">7.09:1</td><td>Destructive button text</td></tr>
+          <tr><td>#4ADE80 on #0B0C0E</td><td>Dark</td><td class="mono">11.23:1</td><td>Success text</td></tr>
+          <tr><td>#5C616B on #0B0C0E</td><td>Dark</td><td class="mono">3.15:1</td><td>Input border, non-text 3:1</td></tr>
+          <tr><td>#2F5BFF on #0B0C0E</td><td>Dark</td><td class="mono">3.78:1</td><td>Fills only, never body text</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- c. Type -->
+<section class="block" aria-labelledby="type-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">02 / Type scale</p>
+      <h2 id="type-title">Wide, heavy, set tight.</h2>
+      <p class="muted">Unbounded is the extended grotesk for display and headings. Geist carries body and UI. Geist Mono handles dates, prices and ticket codes. Sizes are mobile / desktop, fluid in between with clamp().</p>
+    </div>
+    <div class="type-row"><div class="type-spec"><b>Display</b>Unbounded 800<br>44 / 104px, lh 0.95, -0.03em</div><p class="display">Tonight on campus</p></div>
+    <div class="type-row"><div class="type-spec"><b>H1</b>Unbounded 800<br>32 / 64px, lh 1.0, -0.025em</div><p class="h1">Spring Jazz Night</p></div>
+    <div class="type-row"><div class="type-spec"><b>H2</b>Unbounded 700<br>26 / 44px, lh 1.05, -0.02em</div><p class="h2">Upcoming this week</p></div>
+    <div class="type-row"><div class="type-spec"><b>H3</b>Unbounded 700<br>20 / 28px, lh 1.15</div><p class="h3">Your tickets</p></div>
+    <div class="type-row"><div class="type-spec"><b>H4</b>Geist 600<br>18 / 20px, lh 1.3</div><p class="h4">Doors open at 20:00</p></div>
+    <div class="type-row"><div class="type-spec"><b>Body</b>Geist 400<br>16 / 18px, lh 1.55</div><p class="body-l">The student union opens the courtyard for a night of live jazz from the faculty band. Bring a friend, your ticket is on your phone.</p></div>
+    <div class="type-row"><div class="type-spec"><b>Small</b>Geist 400<br>14 / 14px, lh 1.5</div><p class="small muted">Tickets are non-refundable after 48 hours. A copy is sent to your email.</p></div>
+    <div class="type-row"><div class="type-spec"><b>Mono label</b>Geist Mono 500<br>12 / 12px, uppercase, +0.08em</div><p class="label">Fri, Nov 14 / 21:00 / 35.00 RON / UC-7Q4K-29</p></div>
+  </div>
+</section>
+
+<!-- d. Components -->
+<section class="block" aria-labelledby="comp-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">03 / Components</p>
+      <h2 id="comp-title">Pills, big radius, plain icons.</h2>
+      <p class="muted">Maps directly to shadcn/ui variants. Buttons are 48px tall pills, cards use a 20px radius, inputs 12px.</p>
+    </div>
+    <div class="comp-grid">
+      <div class="comp">
+        <h3 class="h4">Buttons</h3>
+        <div class="row">
+          <button class="btn btn-primary" type="button">Get tickets <i class="ph-bold ph-arrow-right" aria-hidden="true"></i></button>
+          <button class="btn btn-secondary" type="button">Save</button>
+          <button class="btn btn-ghost" type="button">Details</button>
+          <button class="btn btn-destructive" type="button">Cancel ticket</button>
+        </div>
+        <p class="state-label">Focus-visible (forced)</p>
+        <div class="row">
+          <button class="btn btn-primary is-focus" type="button">Primary</button>
+          <button class="btn btn-ghost is-focus" type="button">Ghost</button>
+        </div>
+        <p class="state-label">Disabled</p>
+        <div class="row">
+          <button class="btn btn-primary" type="button" disabled>Sold out</button>
+          <button class="btn btn-secondary" type="button" disabled>Save</button>
+          <button class="btn btn-ghost" type="button" disabled>Details</button>
+        </div>
+        <p class="small muted">Hover: primary darkens to #2448E5, secondary darkens to the border tone, ghost border turns foreground. Tab through to see the real focus ring.</p>
+      </div>
+
+      <div class="comp">
+        <h3 class="h4">Text input</h3>
+        <div class="field">
+          <label for="c-def">Default</label>
+          <input class="input" id="c-def" type="text" placeholder="Search events">
+        </div>
+        <div class="field">
+          <label for="c-foc">Focus</label>
+          <input class="input is-focus" id="c-foc" type="text" value="Jazz">
+        </div>
+        <div class="field">
+          <label for="c-err">Error</label>
+          <input class="input" id="c-err" type="email" value="ana@student" aria-invalid="true" aria-describedby="c-err-msg">
+          <p class="field-error" id="c-err-msg"><i class="ph-bold ph-warning-circle" aria-hidden="true"></i>Enter a valid email, like name@uni.ro</p>
+        </div>
+        <div class="field">
+          <label for="c-dis">Disabled</label>
+          <input class="input" id="c-dis" type="text" value="Locked" disabled>
+        </div>
+      </div>
+
+      <div class="comp">
+        <h3 class="h4">Select, checkbox, badges</h3>
+        <div class="field">
+          <label for="c-sel">Faculty</label>
+          <div class="select-wrap">
+            <select class="select" id="c-sel">
+              <option>All faculties</option>
+              <option>Computer Science</option>
+              <option>Economics</option>
+              <option>Letters</option>
+            </select>
+            <i class="ph-bold ph-caret-down" aria-hidden="true"></i>
+          </div>
+        </div>
+        <label class="check"><input type="checkbox" checked> Email me my tickets</label>
+        <label class="check"><input type="checkbox"> Remind me the day before</label>
+        <div class="row">
+          <span class="badge badge-primary">Music</span>
+          <span class="badge">Tech</span>
+          <span class="badge badge-solid">Free</span>
+          <span class="badge badge-success"><i class="ph-bold ph-check" aria-hidden="true"></i>Valid</span>
+          <span class="badge">Sold out</span>
+        </div>
+      </div>
+
+      <div class="comp">
+        <h3 class="h4">Icons, the right way</h3>
+        <p class="small muted">Phosphor, regular weight in text, bold in buttons. Always next to text or alone. Never in a box, circle or tinted tile.</p>
+        <div class="inline-icons">
+          <p><i class="ph ph-calendar-blank" aria-hidden="true"></i><span>Friday, November 14</span></p>
+          <p><i class="ph ph-map-pin" aria-hidden="true"></i><span>Main Courtyard, Building A</span></p>
+          <p><i class="ph ph-ticket" aria-hidden="true"></i><span>2 tickets in your account</span></p>
+          <p><i class="ph ph-envelope-simple" aria-hidden="true"></i><span>Sent to ana@uni.ro</span></p>
+        </div>
+        <div class="row">
+          <button class="icon-btn" type="button" aria-label="Save event"><i class="ph-bold ph-heart" aria-hidden="true"></i></button>
+          <button class="icon-btn" type="button" aria-label="Share event"><i class="ph-bold ph-share-network" aria-hidden="true"></i></button>
+          <a href="#screens">See all events <i class="ph-bold ph-arrow-right" aria-hidden="true" style="vertical-align:-2px"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- e. Screens -->
+<section class="block" id="screens" aria-labelledby="screens-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">04 / Example screens</p>
+      <h2 id="screens-title">Mobile first, poster loud.</h2>
+      <p class="muted">Frames are 375px wide. The forms really validate: try submitting them empty.</p>
+    </div>
+
+    <div class="screens">
+
+      <!-- 1. Listing -->
+      <div class="screen-set">
+        <h3 class="h3">1. Event listing</h3>
+        <div class="frames">
+          <div>
+            <p class="frame-caption">Mobile, 375</p>
+            <div class="frame">
+              <div class="app-bar">
+                <span class="wordmark"><img src="favicon.svg" width="24" height="24" alt=""><span><b>Uni</b>Connect</span></span>
+                <button class="icon-btn" type="button" aria-label="Open menu"><i class="ph-bold ph-list" aria-hidden="true"></i></button>
+              </div>
+              <div class="app-pad">
+                <div class="list-hero">
+                  <p class="label">Week 45 / 12 events</p>
+                  <p class="display">Out tonight.</p>
+                  <p class="muted">Concerts, talks and parties from every faculty, in one place.</p>
+                </div>
+                <div class="chips" role="group" aria-label="Filter events">
+                  <button class="chip" type="button" aria-pressed="true">All</button>
+                  <button class="chip" type="button" aria-pressed="false">Music</button>
+                  <button class="chip" type="button" aria-pressed="false">Tech</button>
+                  <button class="chip" type="button" aria-pressed="false">Sports</button>
+                  <button class="chip" type="button" aria-pressed="false">Free</button>
+                </div>
+                <a class="ev-card" href="#detail">
+                  <div class="ph-photo blue">
+                    <svg class="shapes" viewBox="0 0 300 225" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="230" cy="70" r="60" fill="#FFFFFF" opacity="0.18"/><rect x="0" y="150" width="300" height="75" fill="#0B0C0E" opacity="0.25"/></svg>
+                    <span class="label">Event photo</span>
+                  </div>
+                  <div class="ev-meta"><span><i class="ph ph-calendar-blank" aria-hidden="true"></i>Fri, Nov 14</span><span><i class="ph ph-clock" aria-hidden="true"></i>21:00</span></div>
+                  <p class="ev-title">Spring Jazz Night in the Courtyard</p>
+                  <div class="ev-foot"><span class="ev-price">35.00 RON</span><span class="badge">Music</span></div>
+                </a>
+                <a class="ev-card" href="#detail">
+                  <div class="ph-photo ink">
+                    <svg class="shapes" viewBox="0 0 300 225" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="40" y="40" width="90" height="140" fill="#2F5BFF"/><rect x="150" y="80" width="110" height="100" fill="#F2F3F5" opacity="0.12"/></svg>
+                    <span class="label">Event photo</span>
+                  </div>
+                  <div class="ev-meta"><span><i class="ph ph-calendar-blank" aria-hidden="true"></i>Sat, Nov 22</span><span><i class="ph ph-clock" aria-hidden="true"></i>10:00</span></div>
+                  <p class="ev-title">Hack the Campus: 48h Hackathon</p>
+                  <div class="ev-foot"><span class="ev-price">Free</span><span class="badge">Tech</span></div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="frame-caption">Desktop</p>
+          <div class="frame frame-desktop">
+            <div class="dk-nav">
+              <span class="wordmark"><img src="favicon.svg" width="28" height="28" alt=""><span><b>Uni</b>Connect</span></span>
+              <nav aria-label="Main"><a href="#screens">Events</a><a href="#screens">Faculties</a><a href="#tickets">My tickets</a></nav>
+              <a class="btn btn-primary btn-sm" href="#auth">Log in</a>
+            </div>
+            <div class="dk">
+              <div class="dk-hero">
+                <div style="display:grid;gap:16px">
+                  <p class="label">Week 45 / 12 events</p>
+                  <p class="display">Out tonight.</p>
+                  <p class="muted body-l" style="max-width:44ch">Concerts, talks and parties from every faculty. Buy in two taps, your ticket lives in your account.</p>
+                  <div class="row"><a class="btn btn-primary" href="#detail">Browse events <i class="ph-bold ph-arrow-right" aria-hidden="true"></i></a><a class="btn btn-ghost" href="#tickets">My tickets</a></div>
+                </div>
+                <div class="ph-photo blue">
+                  <svg class="shapes" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="300" cy="90" r="80" fill="#FFFFFF" opacity="0.18"/><rect x="0" y="200" width="400" height="100" fill="#0B0C0E" opacity="0.25"/></svg>
+                  <span class="label">Featured event photo</span>
+                </div>
+              </div>
+              <div class="dk-grid">
+                <a class="ev-card" href="#detail">
+                  <div class="ph-photo ink"><span class="label">Event photo</span></div>
+                  <div class="ev-meta"><span>Fri, Nov 14</span><span>21:00</span></div>
+                  <p class="ev-title">Spring Jazz Night</p>
+                  <div class="ev-foot"><span class="ev-price">35.00 RON</span><span class="badge">Music</span></div>
+                </a>
+                <a class="ev-card" href="#detail">
+                  <div class="ph-photo"><span class="label">Event photo</span></div>
+                  <div class="ev-meta"><span>Sat, Nov 22</span><span>10:00</span></div>
+                  <p class="ev-title">Hack the Campus</p>
+                  <div class="ev-foot"><span class="ev-price">Free</span><span class="badge">Tech</span></div>
+                </a>
+                <a class="ev-card" href="#detail">
+                  <div class="ph-photo blue"><span class="label">Event photo</span></div>
+                  <div class="ev-meta"><span>Thu, Nov 27</span><span>18:30</span></div>
+                  <p class="ev-title">Career Fair 2026</p>
+                  <div class="ev-foot"><span class="ev-price">Free</span><span class="badge">Career</span></div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Auth -->
+      <div class="screen-set" id="auth">
+        <h3 class="h3">2. Log in and register</h3>
+        <div class="frames">
+          <div>
+            <p class="frame-caption">Mobile, 375, working validation</p>
+            <div class="frame">
+              <div class="app-bar">
+                <span class="wordmark"><img src="favicon.svg" width="24" height="24" alt=""><span><b>Uni</b>Connect</span></span>
+                <button class="icon-btn" type="button" aria-label="Close"><i class="ph-bold ph-x" aria-hidden="true"></i></button>
+              </div>
+              <div class="app-pad">
+                <div style="display:grid;gap:10px">
+                  <p class="label">Your account</p>
+                  <p class="h2">Sign in to UniConnect.</p>
+                </div>
+                <div class="seg" role="tablist" aria-label="Account">
+                  <button type="button" role="tab" id="tab-login" aria-selected="true" aria-controls="panel-login">Log in</button>
+                  <button type="button" role="tab" id="tab-register" aria-selected="false" aria-controls="panel-register" tabindex="-1">Register</button>
+                </div>
+
+                <div class="auth-panel" id="panel-login" role="tabpanel" aria-labelledby="tab-login">
+                  <form class="form" novalidate data-form>
+                    <div class="field">
+                      <label for="l-email">Email</label>
+                      <input class="input" id="l-email" name="email" type="email" autocomplete="email" placeholder="name@uni.ro" data-rules="required email" aria-describedby="l-email-err">
+                      <p class="field-error" id="l-email-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                    </div>
+                    <div class="field">
+                      <label for="l-pass">Password</label>
+                      <input class="input" id="l-pass" name="password" type="password" autocomplete="current-password" data-rules="required password" aria-describedby="l-pass-err">
+                      <p class="field-error" id="l-pass-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                    </div>
+                    <button class="btn btn-primary btn-block" type="submit">Log in</button>
+                    <p class="form-ok" role="status" hidden><i class="ph-bold ph-check-circle" aria-hidden="true"></i>All good. You would be signed in to UniConnect now.</p>
+                    <a class="small" href="#auth">Forgot password?</a>
+                  </form>
+                </div>
+
+                <div class="auth-panel" id="panel-register" role="tabpanel" aria-labelledby="tab-register" hidden>
+                  <form class="form" novalidate data-form>
+                    <div class="field">
+                      <label for="r-name">Full name</label>
+                      <input class="input" id="r-name" name="name" type="text" autocomplete="name" data-rules="required" aria-describedby="r-name-err">
+                      <p class="field-error" id="r-name-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                    </div>
+                    <div class="field">
+                      <label for="r-email">University email</label>
+                      <input class="input" id="r-email" name="email" type="email" autocomplete="email" placeholder="name@uni.ro" data-rules="required email" aria-describedby="r-email-err">
+                      <p class="field-error" id="r-email-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                    </div>
+                    <div class="field">
+                      <label for="r-pass">Password</label>
+                      <input class="input" id="r-pass" name="password" type="password" autocomplete="new-password" data-rules="required password" aria-describedby="r-pass-hint r-pass-err">
+                      <p class="hint" id="r-pass-hint">At least 8 characters, including a number.</p>
+                      <p class="field-error" id="r-pass-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                    </div>
+                    <div class="field">
+                      <label for="r-confirm">Confirm password</label>
+                      <input class="input" id="r-confirm" name="confirm" type="password" autocomplete="new-password" data-rules="required match:r-pass" aria-describedby="r-confirm-err">
+                      <p class="field-error" id="r-confirm-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                    </div>
+                    <div class="field">
+                      <label class="check"><input type="checkbox" id="r-terms" data-rules="checked" aria-describedby="r-terms-err"> I agree to the terms of use</label>
+                      <p class="field-error" id="r-terms-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                    </div>
+                    <button class="btn btn-primary btn-block" type="submit">Create account</button>
+                    <p class="form-ok" role="status" hidden><i class="ph-bold ph-check-circle" aria-hidden="true"></i>Welcome to UniConnect. Check your inbox to confirm.</p>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Detail -->
+      <div class="screen-set" id="detail">
+        <h3 class="h3">3. Event detail and purchase</h3>
+        <div class="frames">
+          <div>
+            <p class="frame-caption">Mobile, 375</p>
+            <div class="frame">
+              <div class="app-bar">
+                <a class="icon-btn" href="#screens" aria-label="Back to events"><i class="ph-bold ph-arrow-left" aria-hidden="true"></i></a>
+                <button class="icon-btn" type="button" aria-label="Share event"><i class="ph-bold ph-share-network" aria-hidden="true"></i></button>
+              </div>
+              <div class="app-pad">
+                <div class="ph-photo blue" style="aspect-ratio:1/1">
+                  <svg class="shapes" viewBox="0 0 300 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="210" cy="100" r="80" fill="#FFFFFF" opacity="0.18"/><rect x="0" y="210" width="300" height="90" fill="#0B0C0E" opacity="0.25"/></svg>
+                  <span class="label">Event photo</span>
+                </div>
+                <div style="display:grid;gap:12px">
+                  <div class="row"><span class="badge">Music</span><span class="badge">18+</span></div>
+                  <p class="detail-title">Spring Jazz Night</p>
+                  <ul class="info-list">
+                    <li><i class="ph ph-calendar-blank" aria-hidden="true"></i>Friday, November 14, 2026</li>
+                    <li><i class="ph ph-clock" aria-hidden="true"></i>Doors 20:00, show 21:00</li>
+                    <li><i class="ph ph-map-pin" aria-hidden="true"></i>Main Courtyard, Building A</li>
+                  </ul>
+                  <p class="muted">The faculty big band plays standards and new arrangements under the courtyard lights. Hot drinks at the bar, coats recommended.</p>
+                </div>
+                <form class="card buy" novalidate data-form id="buy-form">
+                  <div class="row" style="justify-content:space-between">
+                    <p class="h4">General admission</p>
+                    <span class="ev-price">35.00 RON</span>
+                  </div>
+                  <div class="field">
+                    <label for="b-qty">Quantity</label>
+                    <div class="qty-row">
+                      <button class="icon-btn" type="button" data-step="-1" aria-label="Decrease quantity"><i class="ph-bold ph-minus" aria-hidden="true"></i></button>
+                      <input class="input" id="b-qty" name="qty" type="number" inputmode="numeric" min="1" max="10" value="2" data-rules="required qty" aria-describedby="b-qty-hint b-qty-err">
+                      <button class="icon-btn" type="button" data-step="1" aria-label="Increase quantity"><i class="ph-bold ph-plus" aria-hidden="true"></i></button>
+                    </div>
+                    <p class="hint" id="b-qty-hint">Up to 10 per order.</p>
+                    <p class="field-error" id="b-qty-err" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                  </div>
+                  <div style="display:grid;gap:6px">
+                    <div class="price-line"><span>Tickets</span><span id="b-sub">70.00 RON</span></div>
+                    <div class="price-line"><span>Service fee</span><span>0.00 RON</span></div>
+                  </div>
+                  <div class="total-row"><span class="label">Total</span><span class="amount" id="b-total" aria-live="polite">70.00 RON</span></div>
+                  <button class="btn btn-primary btn-block" type="submit"><i class="ph-bold ph-ticket" aria-hidden="true"></i>Buy tickets</button>
+                  <p class="form-ok" role="status" hidden><i class="ph-bold ph-check-circle" aria-hidden="true"></i>Order valid. Tickets would be issued now.</p>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Tickets -->
+      <div class="screen-set" id="tickets">
+        <h3 class="h3">4. My tickets</h3>
+        <div class="frames">
+          <div>
+            <p class="frame-caption">Mobile, 375</p>
+            <div class="frame">
+              <div class="app-bar">
+                <span class="wordmark"><img src="favicon.svg" width="24" height="24" alt=""><span><b>Uni</b>Connect</span></span>
+                <button class="icon-btn" type="button" aria-label="Account"><i class="ph-bold ph-user" aria-hidden="true"></i></button>
+              </div>
+              <div class="app-pad">
+                <div style="display:grid;gap:10px">
+                  <p class="label">My account</p>
+                  <p class="h2">Your tickets</p>
+                </div>
+                <article class="ticket reveal" aria-label="Ticket for Spring Jazz Night">
+                  <div class="ticket-top">
+                    <div class="row" style="justify-content:space-between"><span class="label">Admit one</span><span class="label">1 of 2</span></div>
+                    <p class="t-title">Spring Jazz Night</p>
+                    <p class="label">Fri, Nov 14 / 21:00 / Courtyard A</p>
+                  </div>
+                  <div class="ticket-perf" aria-hidden="true"></div>
+                  <div class="ticket-body">
+                    <div class="qr-box"><svg id="qr" viewBox="0 0 29 29" role="img" aria-label="QR code for ticket UC-7Q4K-29" shape-rendering="crispEdges"></svg></div>
+                    <p class="t-code">UC-7Q4K-29</p>
+                    <div class="t-grid">
+                      <div><span class="label">Holder</span><strong>Ana Pop</strong></div>
+                      <div><span class="label">Type</span><strong>General</strong></div>
+                      <div><span class="label">Gate</span><strong>A2</strong></div>
+                      <div><span class="label">Paid</span><strong>35.00 RON</strong></div>
+                    </div>
+                    <p class="small muted" style="display:flex;gap:8px;align-items:center"><i class="ph ph-envelope-simple" aria-hidden="true"></i>Also emailed by UniConnect to ana@uni.ro</p>
+                  </div>
+                </article>
+                <div class="card mini-ticket">
+                  <div style="display:grid;gap:4px">
+                    <span class="label">Sat, Nov 22</span>
+                    <p class="ev-title">Hack the Campus</p>
+                  </div>
+                  <a class="icon-btn" href="#tickets" aria-label="Show ticket for Hack the Campus"><i class="ph-bold ph-qr-code" aria-hidden="true"></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- f. Motion -->
+<section class="block" aria-labelledby="motion-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">05 / Motion</p>
+      <h2 id="motion-title">Moves once, then sits still.</h2>
+      <p class="muted">Motion only confirms something happened. Nothing loops, pulses or breathes. Everything below is wrapped in prefers-reduced-motion: no-preference, and reduced motion gets the final state instantly.</p>
+    </div>
+    <ul class="motion-list">
+      <li><strong>Ticket reveal</strong><span class="mono small">420ms</span><span class="small muted">Fade plus 16px rise, once, when the ticket enters view or right after purchase. Easing cubic-bezier(0.22, 1, 0.36, 1).</span></li>
+      <li><strong>Log in / register switch</strong><span class="mono small">220ms</span><span class="small muted">Incoming panel fades in with a 6px rise. Same ease-out. No exit animation.</span></li>
+      <li><strong>Button and input states</strong><span class="mono small">160ms</span><span class="small muted">Color and border transitions only, no scale or bounce.</span></li>
+      <li><strong>Theme switch</strong><span class="mono small">0ms</span><span class="small muted">Instant. Fading a whole page is slow and makes contrast flicker.</span></li>
+    </ul>
+    <div class="motion-demo">
+      <div style="display:grid;gap:12px;align-content:start">
+        <h3 class="h4">Live example: ticket reveal</h3>
+        <p class="muted">The ticket in screen 4 used this when it scrolled into view. Replay it here.</p>
+        <div><button class="btn btn-secondary" type="button" id="replay"><i class="ph-bold ph-arrow-counter-clockwise" aria-hidden="true"></i>Replay reveal</button></div>
+        <p class="small muted" id="rm-note"></p>
+      </div>
+      <div class="ticket reveal" id="demo-ticket">
+        <div class="ticket-top">
+          <span class="label">Admit one</span>
+          <p class="t-title">Career Fair 2026</p>
+          <p class="label">Thu, Nov 27 / 18:30 / Aula Magna</p>
+        </div>
+        <div class="ticket-perf" aria-hidden="true"></div>
+        <div class="ticket-body" style="justify-items:start">
+          <p class="t-code">UC-C4R3-11</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Favicon -->
+<section class="block" aria-labelledby="fav-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">06 / App icon</p>
+      <h2 id="fav-title">The connected U.</h2>
+      <p class="muted">A heavy white U, for Uni, holding a single node, for Connect: the campus gathering its people. White on a cobalt rounded square, two shapes only, so it holds up at 16px.</p>
+    </div>
+    <div class="fav-grid">
+      <div class="fav-panel t-light">
+        <div class="fav-item"><img src="favicon.svg" width="16" height="16" alt="Icon at 16px"><span class="label">16</span></div>
+        <div class="fav-item"><img src="favicon.svg" width="32" height="32" alt="Icon at 32px"><span class="label">32</span></div>
+        <div class="fav-item"><img src="favicon.svg" width="64" height="64" alt="Icon at 64px"><span class="label">64</span></div>
+        <div class="fav-item"><img src="favicon.svg" width="180" height="180" alt="Icon at 180px"><span class="label">180</span></div>
+        <span class="tab-mock"><img src="favicon.svg" width="16" height="16" alt="">UniConnect</span>
+      </div>
+      <div class="fav-panel t-dark">
+        <div class="fav-item"><img src="favicon.svg" width="16" height="16" alt="Icon at 16px on dark"><span class="label">16</span></div>
+        <div class="fav-item"><img src="favicon.svg" width="32" height="32" alt="Icon at 32px on dark"><span class="label">32</span></div>
+        <div class="fav-item"><img src="favicon.svg" width="64" height="64" alt="Icon at 64px on dark"><span class="label">64</span></div>
+        <div class="fav-item"><img src="favicon.svg" width="180" height="180" alt="Icon at 180px on dark"><span class="label">180</span></div>
+        <span class="tab-mock"><img src="favicon.svg" width="16" height="16" alt="">UniConnect</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- g. Do / Don't -->
+<section class="block" aria-labelledby="dd-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="label">07 / Do and don't</p>
+      <h2 id="dd-title">Keep it cold and clean.</h2>
+    </div>
+    <div class="dodont">
+      <div class="card">
+        <h3 class="h4"><i class="ph-bold ph-check do-ic" aria-hidden="true"></i>Do</h3>
+        <ul>
+          <li>Use cobalt for one thing per screen: the main action or the ticket.</li>
+          <li>Set headlines in Unbounded, big and tight, and give them space around.</li>
+          <li>Put every date, time, price and code in Geist Mono.</li>
+          <li>Use #2448E5 for links on light and #8FA5FF on dark.</li>
+          <li>Keep cards at 20px radius and buttons as full pills.</li>
+          <li>Show the QR on a white plate in both themes so scanners read it.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="h4"><i class="ph-bold ph-x dont-ic" aria-hidden="true"></i>Don't</h3>
+        <ul>
+          <li>Don't set body text in cobalt #2F5BFF on the dark background, it fails at 3.78:1.</li>
+          <li>Don't add a second accent color or tint the neutrals navy.</li>
+          <li>Don't use gradients, glows or glass effects.</li>
+          <li>Don't put icons inside circles, boxes or colored tiles.</li>
+          <li>Don't animate anything in a loop, and never add live pulses.</li>
+          <li>Don't set Unbounded below 18px or for paragraphs, it gets too wide.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap row" style="justify-content:space-between">
+    <span class="wordmark"><img src="favicon.svg" width="24" height="24" alt=""><span><b>Uni</b>Connect</span></span>
+    <span class="label">Direction 04, Cobalt.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+
+  /* Theme toggle */
+  function effective() {
+    var t = root.getAttribute('data-theme');
+    return t ? t : (mq.matches ? 'dark' : 'light');
+  }
+  function syncToggle() {
+    var dark = effective() === 'dark';
+    document.getElementById('themeIcon').className = 'ph-bold ' + (dark ? 'ph-sun' : 'ph-moon');
+    document.getElementById('themeText').textContent = dark ? 'Light' : 'Dark';
+    document.getElementById('themeToggle').setAttribute('aria-label', 'Switch to ' + (dark ? 'light' : 'dark') + ' theme');
+  }
+  document.getElementById('themeToggle').addEventListener('click', function () {
+    root.setAttribute('data-theme', effective() === 'dark' ? 'light' : 'dark');
+    syncToggle();
+  });
+  if (mq.addEventListener) mq.addEventListener('change', syncToggle);
+  syncToggle();
+
+  /* Swatches read from CSS variables */
+  var tokens = ['background','foreground','card','card-foreground','muted','muted-foreground','primary','primary-foreground','secondary','secondary-foreground','accent','accent-foreground','border','input','ring','destructive','destructive-foreground','success'];
+  document.querySelectorAll('[data-swatches]').forEach(function (panel) {
+    var cs = getComputedStyle(panel);
+    var box = panel.querySelector('.swatches');
+    tokens.forEach(function (name) {
+      var val = cs.getPropertyValue('--' + name).trim().toUpperCase();
+      var el = document.createElement('div');
+      el.className = 'sw';
+      el.innerHTML = '<div class="sw-chip" style="background:var(--' + name + ')"></div><div><div class="sw-name">--' + name + '</div><div class="sw-hex">' + val + '</div></div>';
+      box.appendChild(el);
+    });
+  });
+
+  /* Placeholder QR: finder patterns plus seeded modules */
+  (function drawQR() {
+    var svg = document.getElementById('qr');
+    var n = 29, seed = 7421, out = '';
+    function rnd() { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
+    function inFinder(x, y) {
+      return (x < 8 && y < 8) || (x > n - 9 && y < 8) || (x < 8 && y > n - 9);
+    }
+    function finder(x, y) {
+      return '<rect x="' + x + '" y="' + y + '" width="7" height="7" fill="#0B0C0E"/>' +
+             '<rect x="' + (x + 1) + '" y="' + (y + 1) + '" width="5" height="5" fill="#FFFFFF"/>' +
+             '<rect x="' + (x + 2) + '" y="' + (y + 2) + '" width="3" height="3" fill="#0B0C0E"/>';
+    }
+    out += '<rect width="29" height="29" fill="#FFFFFF"/>';
+    for (var y = 0; y < n; y++) {
+      for (var x = 0; x < n; x++) {
+        if (inFinder(x, y)) continue;
+        var on = (y === 6 || x === 6) ? ((x + y) % 2 === 0) : rnd() > 0.52;
+        if (x >= 20 && x <= 24 && y >= 20 && y <= 24) {
+          on = (x === 20 || x === 24 || y === 20 || y === 24 || (x === 22 && y === 22));
+        }
+        if (on) out += '<rect x="' + x + '" y="' + y + '" width="1" height="1" fill="#0B0C0E"/>';
+      }
+    }
+    out += finder(0, 0) + finder(n - 7, 0) + finder(0, n - 7);
+    svg.innerHTML = out;
+  })();
+
+  /* Ticket reveal, once */
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.getElementById('rm-note').textContent = reduce
+    ? 'Your system asks for reduced motion, so the ticket appears without movement.'
+    : 'Runs once per view. Turn on reduced motion in your OS to see the static version.';
+  var reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.25 });
+    reveals.forEach(function (el) { io.observe(el); });
+  } else {
+    reveals.forEach(function (el) { el.classList.add('is-in'); });
+  }
+  document.getElementById('replay').addEventListener('click', function () {
+    var t = document.getElementById('demo-ticket');
+    t.classList.remove('is-in');
+    void t.offsetWidth;
+    requestAnimationFrame(function () { t.classList.add('is-in'); });
+  });
+
+  /* Auth tabs */
+  var tabs = [document.getElementById('tab-login'), document.getElementById('tab-register')];
+  function selectTab(tab) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      var panel = document.getElementById(t.getAttribute('aria-controls'));
+      panel.hidden = !on;
+      panel.classList.remove('is-entering');
+      if (on) { void panel.offsetWidth; panel.classList.add('is-entering'); }
+    });
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { selectTab(t); });
+    t.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        var next = tabs[(i + 1) % 2]; selectTab(next); next.focus(); e.preventDefault();
+      }
+    });
+  });
+
+  /* Filter chips (visual only) */
+  document.querySelectorAll('.chips').forEach(function (group) {
+    group.addEventListener('click', function (e) {
+      var b = e.target.closest('.chip'); if (!b) return;
+      group.querySelectorAll('.chip').forEach(function (c) { c.setAttribute('aria-pressed', c === b ? 'true' : 'false'); });
+    });
+  });
+
+  /* Validation */
+  function check(input) {
+    var rules = (input.getAttribute('data-rules') || '').split(' ');
+    var v = input.type === 'checkbox' ? '' : input.value.trim();
+    for (var i = 0; i < rules.length; i++) {
+      var r = rules[i];
+      if (r === 'required' && !v) {
+        if (input.type === 'number') return 'Enter a quantity between 1 and 10.';
+        var lbl = document.querySelector('label[for="' + input.id + '"]');
+        return (lbl ? lbl.textContent.trim() : 'This field') + ' is required.';
+      }
+      if (r === 'email' && v && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return 'Enter a valid email, like name@uni.ro.';
+      if (r === 'password' && v) {
+        if (v.length < 8) return 'Use at least 8 characters.';
+        if (!/\d/.test(v)) return 'Add at least one number.';
+      }
+      if (r.indexOf('match:') === 0 && v) {
+        var other = document.getElementById(r.slice(6));
+        if (other && other.value !== input.value) return 'Passwords do not match.';
+      }
+      if (r === 'qty' && v) {
+        var q = Number(v);
+        if (!Number.isInteger(q) || q < 1 || q > 10) return 'Choose between 1 and 10 tickets.';
+      }
+      if (r === 'checked' && !input.checked) return 'Please accept the terms to continue.';
+    }
+    return '';
+  }
+  function show(input, msg) {
+    var err = document.getElementById(input.id + '-err');
+    if (msg) {
+      input.setAttribute('aria-invalid', 'true');
+      err.querySelector('span').textContent = msg;
+      err.hidden = false;
+    } else {
+      input.removeAttribute('aria-invalid');
+      err.hidden = true;
+      err.querySelector('span').textContent = '';
+    }
+    return !msg;
+  }
+  function validate(input) { return show(input, check(input)); }
+
+  document.querySelectorAll('[data-form]').forEach(function (form) {
+    var fields = form.querySelectorAll('[data-rules]');
+    var ok = form.querySelector('.form-ok');
+    fields.forEach(function (f) {
+      f.addEventListener('blur', function () { validate(f); });
+      f.addEventListener(f.type === 'checkbox' ? 'change' : 'input', function () {
+        if (ok) ok.hidden = true;
+        if (f.getAttribute('aria-invalid') === 'true' || f.type === 'checkbox') validate(f);
+        if (f.id === 'r-pass') {
+          var c = document.getElementById('r-confirm');
+          if (c.value) validate(c);
+        }
+      });
+    });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var first = null;
+      fields.forEach(function (f) { if (!validate(f) && !first) first = f; });
+      if (first) { first.focus(); if (ok) ok.hidden = true; }
+      else if (ok) { ok.hidden = false; }
+    });
+  });
+
+  /* Quantity and total */
+  var qty = document.getElementById('b-qty');
+  var PRICE = 35;
+  function fmt(n) { return n.toFixed(2) + ' RON'; }
+  function updateTotal() {
+    var q = Number(qty.value);
+    var valid = Number.isInteger(q) && q >= 1 && q <= 10;
+    var sum = valid ? q * PRICE : 0;
+    document.getElementById('b-sub').textContent = fmt(sum);
+    document.getElementById('b-total').textContent = fmt(sum);
+  }
+  qty.addEventListener('input', updateTotal);
+  document.querySelectorAll('[data-step]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var q = parseInt(qty.value, 10); if (isNaN(q)) q = 0;
+      q = Math.min(10, Math.max(1, q + Number(b.getAttribute('data-step'))));
+      qty.value = q; updateTotal(); validate(qty);
+    });
+  });
+  updateTotal();
+})();
+</script>
+</body>
+</html>

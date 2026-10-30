@@ -52,6 +52,7 @@ frontend/src/
 3. **Strict TypeScript**:
    - Avoid `any`. Use strict interfaces, type unions, and type guards.
    - Keep types shared in `frontend/src/types/`.
+4. **Brand & UI**: All visual design (colors, type, components, forms, motion, icons) follows [`brand_guidelines.md`](./brand_guidelines.md). Read its "Hard rules" section before building any UI.
 
 ---
 
