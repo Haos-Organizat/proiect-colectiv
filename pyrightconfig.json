@@ -4,5 +4,8 @@
   "venv": ".venv",
   "typeCheckingMode": "strict",
   "reportMissingImports": true,
-  "reportMissingTypeStubs": false
+"reportMissingTypeStubs": false,
+"extraPaths": [
+    "./backend"
+]
 }
