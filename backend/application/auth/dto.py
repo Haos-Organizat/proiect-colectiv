@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class RegisterDTO:
     email: str
@@ -12,7 +13,7 @@ class RegisterDTO:
     phone: Optional[str] = None
 
     def __post_init__(self):
-        """Rulează automat după inițializare. 
+        """Rulează automat după inițializare.
         Asigură criteriul Jira: email salvat cu litere mici și fără spații."""
         if self.email:
             self.email = self.email.strip().lower()

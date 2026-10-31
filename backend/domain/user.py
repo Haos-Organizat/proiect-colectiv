@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from typing import Optional
 
+
 @dataclass
 class User:
     id: Optional[int]
@@ -12,11 +13,11 @@ class User:
     birth_date: Optional[date] = None
     phone: Optional[str] = None
     role: str = "participant"  # Criteriu: rol implicit 'participant'
-    status: str = "activ"      # Criteriu: status implicit 'activ'
+    status: str = "activ"  # Criteriu: status implicit 'activ'
     created_at: Optional[datetime] = None
 
     def to_dict(self):
-        """Returnează datele fără parolă sau hash-ul ei (Criteriu Jira)"""
+        
         return {
             "id": self.id,
             "email": self.email,
@@ -25,5 +26,5 @@ class User:
             "birth_date": str(self.birth_date) if self.birth_date else None,
             "phone": self.phone,
             "role": self.role,
-            "status": self.status
+            "status": self.status,
         }

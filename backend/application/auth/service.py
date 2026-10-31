@@ -2,11 +2,12 @@ from typing import Any, Dict
 from werkzeug.security import generate_password_hash
 from backend.domain.user import User
 from backend.application.auth.dto import RegisterDTO
-import backend.application.auth.validator # type: ignore
+import backend.application.auth.validator  # type: ignore
+
 
 class AuthService:
     def __init__(self, user_repository: Any) -> None:
-        """Adnotăm repository-ul cu Any pentru ca Pylance să nu se mai plângă că e necunoscut"""
+        
         self.user_repository: Any = user_repository
 
     def register_user(self, dto: RegisterDTO) -> Dict[str, Any]:
@@ -34,11 +35,11 @@ class AuthService:
             birth_date=dto.birth_date,
             phone=dto.phone,
             role="participant",  # Criteriu Jira: rol implicit participant
-            status="activ"       # Criteriu Jira: status implicit activ
+            status="activ",  # Criteriu Jira: status implicit activ
         )
 
         # 5. Salvăm prin repository în baza de date
         saved_user: User = self.user_repository.save(new_user)
-        
+
         # 6. Returnăm datele utilizatorului (saved_user.to_dict() ascunde complet parola/hash-ul)
         return {"user": saved_user.to_dict(), "code": 201}

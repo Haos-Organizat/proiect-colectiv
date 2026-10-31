@@ -23,11 +23,14 @@ if not supabase_key:
 supabase: Client = create_client(supabase_url, supabase_key)
 
 from server.routes.auth import auth_bp
+
 app.register_blueprint(auth_bp)
+
 
 @app.route("/api/health", methods=["GET"])
 def health_check():
     return jsonify({"status": "ok", "message": "Backend is running"})
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
