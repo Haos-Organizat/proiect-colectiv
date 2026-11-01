@@ -1,11 +1,11 @@
 import re
-from typing import Dict
+
 from backend.application.auth.dto import RegisterDTO
 
 
 class AuthValidator:
     @staticmethod
-    def validate_register(dto: RegisterDTO) -> Dict[str, str]:
+    def validate_register(dto: RegisterDTO) -> dict[str, str]:
         errors = {}
 
         # Validare Prenume
@@ -37,7 +37,7 @@ class AuthValidator:
                 password_errors.append("Parola trebuie să conțină cel puțin o literă mare.")
             if not any(c.islower() for c in dto.password):
                 password_errors.append("Parola trebuie să conțină cel puțin o literă mică.")
-        
+
         if password_errors:
             errors["password"] = " ".join(password_errors)
 

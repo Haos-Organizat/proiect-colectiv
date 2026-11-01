@@ -1,11 +1,14 @@
-from typing import Any, Optional
+from typing import Any
+
 import pytest
-from werkzeug.security import check_password_hash
-from flask import Flask
 from backend.application.auth.dto import RegisterDTO
 from backend.application.auth.service import AuthService
 from backend.domain.user import User
-from backend.server.routes.auth import auth_bp 
+from backend.server.routes.auth import auth_bp
+from flask import Flask, jsonify
+from flask_login import LoginManager
+from werkzeug.security import check_password_hash, generate_password_hash
+
 
 # MOCK REPOSITORY (Simulează baza de date în memorie pentru teste)
 class MockUserRepository:
@@ -13,17 +16,24 @@ class MockUserRepository:
         self.users: dict[str, User] = {}
         self.save_called: bool = False
 
-    def get_by_email(self, email: str) -> Optional[User]:
+    def get_by_email(self, email: str) -> User | None:
+        if not email:
+            return None
         return self.users.get(email.strip().lower())
 
+    def get_by_id(self, user_id: Any) -> User | None:
+        for user in self.users.values():
+            if str(user.id) == str(user_id):
+                return user
+        return None
+
     def save(self, user: User) -> User:
-        user.id = 1 
-        self.users[user.email] = user
+        user.id = len(self.users) + 1
+        self.users[user.email.strip().lower()] = user
         self.save_called = True
         return user
 
 
-# TESTE PENTRU SERVICIU 
 def test_service_register_success_and_hashing() -> None:
     repo: MockUserRepository = MockUserRepository()
     service: AuthService = AuthService(repo)
@@ -42,10 +52,10 @@ def test_service_register_success_and_hashing() -> None:
     assert "password" not in result["user"]
     assert "password_hash" not in result["user"]
 
-    saved_user: Optional[User] = repo.get_by_email("test@example.com")
+    saved_user: User | None = repo.get_by_email("test@example.com")
     assert saved_user is not None
     assert saved_user.password_hash != "Password123"
-    assert check_password_hash(saved_user.password_hash, "Password123") 
+    assert check_password_hash(saved_user.password_hash, "Password123")
 
 
 def test_service_register_duplicate_email() -> None:
@@ -73,13 +83,11 @@ def test_service_register_invalid_password_rules() -> None:
     repo: MockUserRepository = MockUserRepository()
     service: AuthService = AuthService(repo)
 
-    # Caz 1: Parolă prea scurtă
     dto_short: RegisterDTO = RegisterDTO("t@e.com", "Ps1", "Ps1", "A", "B")
     res_short = service.register_user(dto_short)
     assert res_short["code"] == 400
     assert "password" in res_short["errors"]
 
-    # Caz 2: Lipsește litera mare
     dto_no_upper: RegisterDTO = RegisterDTO("t@e.com", "password123", "password123", "A", "B")
     res_no_upper = service.register_user(dto_no_upper)
     assert res_no_upper["code"] == 400
@@ -90,7 +98,6 @@ def test_service_register_multiple_errors_simultaneously() -> None:
     repo: MockUserRepository = MockUserRepository()
     service: AuthService = AuthService(repo)
 
-    # Lăsăm numele gol și punem o parolă scurtă 
     dto: RegisterDTO = RegisterDTO(
         email="valid@email.com",
         password="abc",
@@ -100,19 +107,126 @@ def test_service_register_multiple_errors_simultaneously() -> None:
     )
 
     result: dict[str, Any] = service.register_user(dto)
-    
+
     assert result["code"] == 400
     assert "errors" in result
     assert "first_name" in result["errors"]
     assert "password" in result["errors"]
 
 
-# TESTE PENTRU API (Endpoint HTTP Flask)
+def test_service_login_success() -> None:
+    repo = MockUserRepository()
+    service = AuthService(repo)
+    repo.save(
+        User(
+            id=1,
+            email="ion@test.ro",
+            password_hash=generate_password_hash("Parola123"),
+            first_name="Ion",
+            last_name="Pop",
+            status="activ",
+        )
+    )
+
+    res = service.authenticate_user("ion@test.ro", "Parola123")
+    assert res["code"] == 200
+    assert res["user"].email == "ion@test.ro"
+
+
+def test_service_login_wrong_password_and_nonexistent() -> None:
+    repo = MockUserRepository()
+    service = AuthService(repo)
+    repo.save(
+        User(
+            id=1,
+            email="ion@test.ro",
+            password_hash=generate_password_hash("Parola123"),
+            first_name="Ion",
+            last_name="Pop",
+            status="activ",
+        )
+    )
+
+    # Parolă greșită -> 401 cu mesajul general
+    res_wrong = service.authenticate_user("ion@test.ro", "Gresita123")
+    assert res_wrong["code"] == 401
+    assert res_wrong["error"] == "Email sau parolă greșite"
+
+    # Cont inexistent -> 401 cu același mesaj general
+    res_none = service.authenticate_user("inexistent@test.ro", "Parola123")
+    assert res_none["code"] == 401
+    assert res_none["error"] == "Email sau parolă greșite"
+
+
+def test_service_login_deactivated_account() -> None:
+    repo = MockUserRepository()
+    service = AuthService(repo)
+    repo.save(
+        User(
+            id=2,
+            email=" blocat@test.ro",
+            password_hash=generate_password_hash("Parola123"),
+            first_name="Ana",
+            last_name="Pop",
+            status="dezactivat",
+        )
+    )
+
+    res = service.authenticate_user("blocat@test.ro", "Parola123")
+    assert res["code"] == 403
+
+
 @pytest.fixture
-def client() -> Any:
+def mock_repo() -> MockUserRepository:
+    repo = MockUserRepository()
+    repo.save(
+        User(
+            id=1,
+            email="activ@test.ro",
+            password_hash=generate_password_hash("Parola123"),
+            first_name="User",
+            last_name="Activ",
+            status="activ",
+        )
+    )
+    repo.save(
+        User(
+            id=2,
+            email="dezactivat@test.ro",
+            password_hash=generate_password_hash("Parola123"),
+            first_name="User",
+            last_name="Dezactivat",
+            status="dezactivat",
+        )
+    )
+    return repo
+
+
+@pytest.fixture
+def client(mock_repo: MockUserRepository, monkeypatch: Any) -> Any:
     app: Flask = Flask(__name__)
-    app.register_blueprint(auth_bp)
+    app.secret_key = "test-secret"
     app.config["TESTING"] = True
+    app.config["SESSION_COOKIE_HTTPONLY"] = True
+    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+
+    @login_manager.unauthorized_handler
+    def unauthorized():
+        return jsonify({"error": "Neautentificat"}), 401
+
+    @login_manager.user_loader
+    def load_user(user_id: str):
+        return mock_repo.get_by_id(user_id)
+
+    # Înlocuim UserRepository din ruta auth cu mock_repo pentru teste
+    monkeypatch.setattr(
+        "backend.server.routes.auth.UserRepository", lambda *args, **kwargs: mock_repo
+    )
+
+    app.register_blueprint(auth_bp)
     return app.test_client()
 
 
@@ -126,9 +240,46 @@ def test_api_register_400_invalid_data(client: Any) -> None:
     }
     response: Any = client.post("/api/auth/register", json=payload)
     assert response.status_code == 400
-    
+
     json_data = response.get_json()
     assert "errors" in json_data
     assert "email" in json_data["errors"]
     assert "first_name" in json_data["errors"]
     assert "password" in json_data["errors"]
+
+
+def test_api_login_and_me_and_logout_flow(client: Any) -> None:
+    # 1. /me neautentificat -> 401 JSON (fără redirect HTML)
+    res_unauth = client.get("/api/auth/me")
+    assert res_unauth.status_code == 401
+    assert res_unauth.is_json
+
+    # 2. Login cu parolă greșită -> 401
+    res_bad = client.post("/api/auth/login", json={"email": "activ@test.ro", "password": "Gresit"})
+    assert res_bad.status_code == 401
+    assert res_bad.get_json()["error"] == "Email sau parolă greșite"
+
+    # 3. Login cu cont dezactivat -> 403
+    res_deact = client.post(
+        "/api/auth/login", json={"email": "dezactivat@test.ro", "password": "Parola123"}
+    )
+    assert res_deact.status_code == 403
+
+    # 4. Login corect -> 200
+    res_ok = client.post(
+        "/api/auth/login",
+        json={"email": "activ@test.ro", "password": "Parola123", "remember": True},
+    )
+    assert res_ok.status_code == 200
+
+    # 5. /me după login -> 200 cu datele utilizatorului
+    res_me = client.get("/api/auth/me")
+    assert res_me.status_code == 200
+    assert res_me.get_json()["email"] == "activ@test.ro"
+
+    # 6. Logout -> 200 și apoi /me -> 401
+    res_logout = client.post("/api/auth/logout")
+    assert res_logout.status_code == 200
+
+    res_me_after = client.get("/api/auth/me")
+    assert res_me_after.status_code == 401

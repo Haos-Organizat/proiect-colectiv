@@ -1,8 +1,10 @@
 import os
 import sys
-from flask import Flask, jsonify
-from supabase import create_client, Client
+
 from dotenv import load_dotenv  # Importăm utilitarul de încărcare env
+from flask import Flask, jsonify
+from flask_login import LoginManager
+from supabase import Client, create_client
 
 # Forțăm Python să recunoască folderul rădăcină al backend-ului
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -10,19 +12,47 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Încărcăm variabilele de mediu din fișierul .env aflat în rădăcina proiectului
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"))
 
+# 1. ÎNTÂI creăm instanța aplicației Flask
 app = Flask(__name__)
 
+# Configurări pentru sesiune și securitate cookie (cerință KAN-31)
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.secret_key = os.environ.get("SECRET_KEY", "cheie-secreta-de-dezvoltare")
 
+# Inițializare Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    return {"error": "Neautentificat"}, 401
+
+
+from backend.infrastructure.user_repository import UserRepository
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    supabase_obj = getattr(app, "supabase_client", supabase)
+    repo = UserRepository(supabase_obj)
+    return repo.get_by_id(user_id)
+
+
+# Conexiunea Supabase
 supabase_url: str = os.environ.get("SUPABASE_URL", "http://localhost:54321")
 supabase_key: str = os.environ.get("SUPABASE_KEY", "")
-
 
 if not supabase_key:
     supabase_key = "dummy-local-development-key-placeholder"
 
 supabase: Client = create_client(supabase_url, supabase_key)
+app.supabase_client = supabase
 
-from server.routes.auth import auth_bp
+
+# 2. APOI importăm și înregistrăm blueprint-urile
+from backend.server.routes.auth import auth_bp
 
 app.register_blueprint(auth_bp)
 
