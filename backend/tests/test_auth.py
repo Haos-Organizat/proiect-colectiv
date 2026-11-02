@@ -133,12 +133,8 @@ def test_api_register_400_invalid_data(client: Any) -> None:
     assert "first_name" in json_data["errors"]
     assert "password" in json_data["errors"]
 def test_validator_strip_spaces_and_max_length() -> None:
-    """Verifică dacă validatorul elimină spațiile albe și prinde lungimile invalide."""
     repo: MockUserRepository = MockUserRepository()
     service: AuthService = AuthService(repo)
-
-    # Caz 1: Prenume plin de spații care depășește limita reală după strip
-    # Trimitem un prenume format din 31 de caractere "A" înconjurate de spații
     dto_too_long: RegisterDTO = RegisterDTO(
         email="test_strip@example.com",
         password="Password123",
@@ -151,7 +147,6 @@ def test_validator_strip_spaces_and_max_length() -> None:
     assert "first_name" in result_long["errors"]
     assert "maximum 30 de caractere" in result_long["errors"]["first_name"]
 
-    # Caz 2: Email cu spații accidentale la început/sfârșit (ar trebui să fie acceptat)
     dto_email_spaces: RegisterDTO = RegisterDTO(
         email="   spaced.email@example.com   ",
         password="Password123",
@@ -160,16 +155,12 @@ def test_validator_strip_spaces_and_max_length() -> None:
         last_name="Popescu",
     )
     result_email = service.register_user(dto_email_spaces)
-    # Dacă serviciul tău folosește validatorul modificat, ar trebui să treacă cu succes (201)
     assert result_email["code"] == 201
 
 
 def test_validator_password_confirm_when_password_is_empty() -> None:
-    """Verifică dacă eroarea de confirmare a parolei nu apare redundant când parola lipsește."""
     repo: MockUserRepository = MockUserRepository()
     service: AuthService = AuthService(repo)
-
-    # Trimiți o parolă goală, dar scrii ceva în confirm_password
     dto: RegisterDTO = RegisterDTO(
         email="test_pass@example.com",
         password="",  # Goală
@@ -182,5 +173,4 @@ def test_validator_password_confirm_when_password_is_empty() -> None:
     assert result["code"] == 400
     assert "password" in result["errors"]
     assert "Parola este obligatorie." in result["errors"]["password"]
-    # Grație optimizării, eroarea de nepotrivire nu mai este adăugată redundant
     assert "confirm_password" not in result["errors"]
