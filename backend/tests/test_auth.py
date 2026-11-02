@@ -132,6 +132,7 @@ def test_api_register_400_invalid_data(client: Any) -> None:
     assert "email" in json_data["errors"]
     assert "first_name" in json_data["errors"]
     assert "password" in json_data["errors"]
+    
 def test_validator_strip_spaces_and_max_length() -> None:
     repo: MockUserRepository = MockUserRepository()
     service: AuthService = AuthService(repo)
@@ -163,7 +164,7 @@ def test_validator_password_confirm_when_password_is_empty() -> None:
     service: AuthService = AuthService(repo)
     dto: RegisterDTO = RegisterDTO(
         email="test_pass@example.com",
-        password="",  # Goală
+        password="",  
         confirm_password="Password123",
         first_name="Ion",
         last_name="Popescu",
