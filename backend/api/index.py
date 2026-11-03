@@ -53,8 +53,10 @@ app.supabase_client = supabase
 
 # 2. APOI importăm și înregistrăm blueprint-urile
 from backend.server.routes.auth import auth_bp
+from backend.server.routes.evenimente import evenimente_bp
 
 app.register_blueprint(auth_bp)
+app.register_blueprint(evenimente_bp)
 
 
 @app.route("/api/health", methods=["GET"])
