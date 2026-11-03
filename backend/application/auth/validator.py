@@ -11,19 +11,19 @@ class AuthValidator:
         # Validare Prenume
         if not dto.first_name or len(dto.first_name.strip()) == 0:
             errors["first_name"] = "Prenumele este obligatoriu."
-        elif len(dto.first_name) > 30:
+        elif len(dto.first_name.strip()) > 30:
             errors["first_name"] = "Prenumele trebuie să aibă maximum 30 de caractere."
 
         # Validare Nume
         if not dto.last_name or len(dto.last_name.strip()) == 0:
             errors["last_name"] = "Numele este obligatoriu."
-        elif len(dto.last_name) > 30:
+        elif len(dto.last_name.strip()) > 30:
             errors["last_name"] = "Numele trebuie să aibă maximum 30 de caractere."
 
         # Validare Email (Corectată pentru a prinde și spațiile goale)
         if not dto.email or len(dto.email.strip()) == 0:
             errors["email"] = "Adresa de email este obligatorie."
-        elif not re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", dto.email):
+        elif not re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", dto.email.strip()):
             errors["email"] = "Formatul adresei de email este invalid."
 
         # Validare Parolă
@@ -42,7 +42,7 @@ class AuthValidator:
             errors["password"] = " ".join(password_errors)
 
         # Validare Confirmare Parolă
-        if dto.password != dto.confirm_password:
+        if dto.password and dto.password != dto.confirm_password:
             errors["confirm_password"] = "Parola și confirmarea parolei nu coincid."
 
         return errors
