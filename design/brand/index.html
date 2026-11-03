@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UniConnect brand options</title>
+<style>
+  :root { --bg: #f6f6f4; --fg: #111; --muted: #555; --card: #fff; --border: #ddd; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #111; --fg: #f2f2f2; --muted: #aaa; --card: #1b1b1b; --border: #333; } }
+  body { margin: 0; padding: 24px 16px; font: 16px/1.5 system-ui, sans-serif; background: var(--bg); color: var(--fg); }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  p { color: var(--muted); margin: 0 0 24px; }
+  .grid { display: grid; gap: 16px; grid-template-columns: 1fr; max-width: 1100px; }
+  @media (min-width: 720px) { .grid { grid-template-columns: 1fr 1fr; } }
+  a.card { display: flex; gap: 16px; align-items: center; padding: 20px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; color: inherit; text-decoration: none; }
+  a.card:hover { border-color: var(--fg); }
+  .icons { display: flex; gap: 10px; align-items: end; }
+  strong { display: block; font-size: 18px; }
+  span { color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+<h1>UniConnect brand options</h1>
+<p>Four directions. Open each one, try the light/dark switch and the forms, then pick one.</p>
+<div class="grid">
+  <a class="card" href="01-ember/"><div class="icons"><img src="01-ember/favicon.svg" width="16" height="16" alt=""><img src="01-ember/favicon.svg" width="32" height="32" alt=""><img src="01-ember/favicon.svg" width="64" height="64" alt=""></div><div><strong>01 Ember</strong><span>Hot orange, Archivo, closest to Mainstage</span></div></a>
+  <a class="card" href="02-volt/"><div class="icons"><img src="02-volt/favicon.svg" width="16" height="16" alt=""><img src="02-volt/favicon.svg" width="32" height="32" alt=""><img src="02-volt/favicon.svg" width="64" height="64" alt=""></div><div><strong>02 Volt</strong><span>Acid lime, condensed type, ticket stubs</span></div></a>
+  <a class="card" href="03-signal/"><div class="icons"><img src="03-signal/favicon.svg" width="16" height="16" alt=""><img src="03-signal/favicon.svg" width="32" height="32" alt=""><img src="03-signal/favicon.svg" width="64" height="64" alt=""></div><div><strong>03 Signal</strong><span>Signal red, Bricolage Grotesque, warmer</span></div></a>
+  <a class="card" href="04-cobalt/"><div class="icons"><img src="04-cobalt/favicon.svg" width="16" height="16" alt=""><img src="04-cobalt/favicon.svg" width="32" height="32" alt=""><img src="04-cobalt/favicon.svg" width="64" height="64" alt=""></div><div><strong>04 Cobalt</strong><span>Electric blue, wide Unbounded type</span></div></a>
+</div>
+</body>
+</html>

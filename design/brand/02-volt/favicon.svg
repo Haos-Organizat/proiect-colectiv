@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <title>UniConnect</title>
+  <!-- Ink ticket stub with side notches, carrying a blocky U in volt lime: two arms joined at the base, uni plus connect. -->
+  <defs>
+    <mask id="notch">
+      <rect width="32" height="32" rx="5" fill="#fff"/>
+      <circle cx="0" cy="16" r="4.5" fill="#000"/>
+      <circle cx="32" cy="16" r="4.5" fill="#000"/>
+    </mask>
+  </defs>
+  <rect width="32" height="32" rx="5" fill="#0A0B0D" mask="url(#notch)"/>
+  <g fill="#CCFF2E">
+    <rect x="8" y="5" width="6" height="22"/>
+    <rect x="18" y="5" width="6" height="22"/>
+    <rect x="8" y="21" width="16" height="6"/>
+  </g>
+</svg>

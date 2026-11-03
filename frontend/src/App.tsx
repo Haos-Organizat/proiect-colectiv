@@ -1,102 +1,160 @@
-import { useState } from 'react';
-import heroImg from './assets/hero.png';
-import reactLogo from './assets/react.svg';
-import viteLogo from './assets/vite.svg';
-import './App.css';
+import { ArrowRight } from '@phosphor-icons/react';
+import { lazy, Suspense, type ReactNode } from 'react';
+import {
+  createBrowserRouter,
+  Link,
+  Navigate,
+  Outlet,
+  RouterProvider,
+  ScrollRestoration,
+  useLocation,
+} from 'react-router';
+import { USE_MOCKS } from '@/api/client';
+import { Seo } from '@/components/Seo';
+import { PageSkeleton } from '@/components/Skeletons';
+import { SiteFooter } from '@/components/SiteFooter';
+import { SiteHeader } from '@/components/SiteHeader';
+import { Button } from '@/components/ui/button';
+import { AuthProvider } from '@/components/AuthProvider';
+import { useAuth } from '@/hooks/useAuth';
+import { EventsPage } from '@/pages/EventsPage';
+import { HomePage } from '@/pages/HomePage';
+import type { UserRole } from '@/types/api';
 
-function App() {
-  const [count, setCount] = useState(0);
+// Home and the event list load up front; pages with forms, QR codes or organizer
+// tools load on demand so the first visit stays light.
+const EventDetailPage = lazy(() =>
+  import('@/pages/EventDetailPage').then((m) => ({ default: m.EventDetailPage })),
+);
+const LoginPage = lazy(() => import('@/pages/AuthPages').then((m) => ({ default: m.LoginPage })));
+const RegisterPage = lazy(() =>
+  import('@/pages/AuthPages').then((m) => ({ default: m.RegisterPage })),
+);
+const TicketsPage = lazy(() =>
+  import('@/pages/TicketsPage').then((m) => ({ default: m.TicketsPage })),
+);
+const OrganizerDashboardPage = lazy(() =>
+  import('@/pages/organizer/OrganizerDashboardPage').then((m) => ({
+    default: m.OrganizerDashboardPage,
+  })),
+);
+const CreateEventPage = lazy(() =>
+  import('@/pages/organizer/EventFormPage').then((m) => ({ default: m.CreateEventPage })),
+);
+const EditEventPage = lazy(() =>
+  import('@/pages/organizer/EventFormPage').then((m) => ({ default: m.EditEventPage })),
+);
 
+function Layout() {
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button type="button" className="counter" onClick={() => setCount((count) => count + 1)}>
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg className="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg className="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg className="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg className="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    <div className="flex min-h-dvh flex-col">
+      {USE_MOCKS && (
+        <p className="bg-secondary px-4 py-1.5 text-center font-mono text-xs tracking-[0.06em] text-secondary-foreground uppercase">
+          Mock data / VITE_USE_MOCKS=true
+        </p>
+      )}
+      <SiteHeader />
+      <main className="flex-1">
+        <Suspense fallback={<PageSkeleton />}>
+          <Outlet />
+        </Suspense>
+      </main>
+      <SiteFooter />
+      <ScrollRestoration />
+    </div>
   );
 }
 
-export default App;
+/** Sends logged-out users to /login (and back afterwards); optionally checks the role. */
+function RequireAuth({ role, children }: { role?: UserRole; children: ReactNode }) {
+  const { user } = useAuth();
+  const location = useLocation();
+  if (user === undefined) return <PageSkeleton />;
+  if (!user) return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  if (role && user.role !== role) {
+    return (
+      <div className="mx-auto grid max-w-[1200px] justify-items-start gap-4 px-4 py-16 md:px-8">
+        <h1 className="type-h2">Organizer accounts only.</h1>
+        <p className="max-w-[50ch] text-muted-foreground">
+          This area is for student organizations that run events. Create an organizer account to
+          publish events.
+        </p>
+        <Button asChild>
+          <Link to="/events">
+            Back to events <ArrowRight />
+          </Link>
+        </Button>
+      </div>
+    );
+  }
+  return children;
+}
+
+function NotFoundPage() {
+  return (
+    <div className="mx-auto grid max-w-[1200px] justify-items-start gap-6 px-4 py-20 md:px-8">
+      <Seo title="Page not found" noindex />
+      <p className="type-label text-primary-text">404</p>
+      <h1 className="type-h1">Nothing on this stage.</h1>
+      <Button asChild>
+        <Link to="/">
+          Go home <ArrowRight />
+        </Link>
+      </Button>
+    </div>
+  );
+}
+
+const router = createBrowserRouter([
+  {
+    element: <Layout />,
+    children: [
+      { path: '/', element: <HomePage /> },
+      { path: '/events', element: <EventsPage /> },
+      { path: '/events/:slug', element: <EventDetailPage /> },
+      { path: '/login', element: <LoginPage /> },
+      { path: '/register', element: <RegisterPage /> },
+      {
+        path: '/account/tickets',
+        element: (
+          <RequireAuth>
+            <TicketsPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/organizer',
+        element: (
+          <RequireAuth role="organizer">
+            <OrganizerDashboardPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/organizer/events/new',
+        element: (
+          <RequireAuth role="organizer">
+            <CreateEventPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/organizer/events/:id/edit',
+        element: (
+          <RequireAuth role="organizer">
+            <EditEventPage />
+          </RequireAuth>
+        ),
+      },
+      { path: '*', element: <NotFoundPage /> },
+    ],
+  },
+]);
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  );
+}

@@ -1,0 +1,1279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UniConnect Volt Identity</title>
+<meta name="description" content="Brand direction 02 Volt: ticket-stub poster identity for a student events app.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<script>
+  /* Apply a saved theme before first paint. Without a saved value the page follows prefers-color-scheme. */
+  (function () {
+    try {
+      var t = localStorage.getItem('uniconnect-theme');
+      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+<style>
+/* ===== Tokens: light (default) ===== */
+:root, .theme-light {
+  --background: #F5F6F7;
+  --foreground: #0C0D10;
+  --card: #FFFFFF;
+  --card-foreground: #0C0D10;
+  --muted: #E9EBEE;
+  --muted-foreground: #545B65;
+  --primary: #CCFF2E;
+  --primary-foreground: #0C0D10;
+  --primary-hover: #B8EB1A;
+  --primary-text: #4A6300;
+  --secondary: #E1E4E8;
+  --secondary-foreground: #0C0D10;
+  --accent: #E9EBEE;
+  --accent-foreground: #0C0D10;
+  --border: #D5D9DE;
+  --input: #8A919B;
+  --ring: #4A6300;
+  --destructive: #C0261C;
+  --destructive-foreground: #FFFFFF;
+  --success: #17783A;
+  --qr-ink: #0A0B0D;
+  --qr-paper: #FFFFFF;
+  color-scheme: light;
+}
+/* ===== Tokens: dark ===== */
+.theme-dark, :root[data-theme="dark"] {
+  --background: #0A0B0D;
+  --foreground: #F2F4F5;
+  --card: #14161A;
+  --card-foreground: #F2F4F5;
+  --muted: #1D2025;
+  --muted-foreground: #9AA1AB;
+  --primary: #CCFF2E;
+  --primary-foreground: #0A0B0D;
+  --primary-hover: #DAFF6B;
+  --primary-text: #CCFF2E;
+  --secondary: #23262C;
+  --secondary-foreground: #F2F4F5;
+  --accent: #1D2025;
+  --accent-foreground: #F2F4F5;
+  --border: #2A2E35;
+  --input: #626A75;
+  --ring: #CCFF2E;
+  --destructive: #FF6B5E;
+  --destructive-foreground: #0A0B0D;
+  --success: #3DDC84;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: #0A0B0D;
+    --foreground: #F2F4F5;
+    --card: #14161A;
+    --card-foreground: #F2F4F5;
+    --muted: #1D2025;
+    --muted-foreground: #9AA1AB;
+    --primary: #CCFF2E;
+    --primary-foreground: #0A0B0D;
+    --primary-hover: #DAFF6B;
+    --primary-text: #CCFF2E;
+    --secondary: #23262C;
+    --secondary-foreground: #F2F4F5;
+    --accent: #1D2025;
+    --accent-foreground: #F2F4F5;
+    --border: #2A2E35;
+    --input: #626A75;
+    --ring: #CCFF2E;
+    --destructive: #FF6B5E;
+    --destructive-foreground: #0A0B0D;
+    --success: #3DDC84;
+    color-scheme: dark;
+  }
+}
+:root {
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 8px;
+  --font-display: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --font-body: "Inter Tight", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --ease-out: cubic-bezier(.2, .8, .2, 1);
+}
+
+/* ===== Base ===== */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  overflow-x: hidden;
+}
+.theme-light, .theme-dark { background: var(--background); color: var(--foreground); }
+a { color: var(--primary-text); text-underline-offset: 3px; text-decoration-thickness: 2px; }
+a:hover { text-decoration-thickness: 3px; }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+img, svg { display: block; max-width: 100%; }
+p { margin: 0 0 12px; }
+h1, h2, h3, h4 { margin: 0; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+@media (min-width: 768px) { .wrap { padding: 0 32px; } }
+
+/* Type scale */
+.t-display { font-family: var(--font-display); font-weight: 900; font-size: 64px; line-height: .88; text-transform: uppercase; letter-spacing: 0; }
+.t-h1 { font-family: var(--font-display); font-weight: 900; font-size: 44px; line-height: .92; text-transform: uppercase; }
+.t-h2 { font-family: var(--font-display); font-weight: 800; font-size: 34px; line-height: .95; text-transform: uppercase; }
+.t-h3 { font-family: var(--font-display); font-weight: 800; font-size: 26px; line-height: 1; text-transform: uppercase; }
+.t-h4 { font-family: var(--font-body); font-weight: 700; font-size: 18px; line-height: 1.3; }
+.t-body { font-size: 16px; line-height: 1.55; }
+.t-small { font-size: 14px; line-height: 1.5; }
+.t-label { font-family: var(--font-mono); font-weight: 500; font-size: 12px; line-height: 1.4; text-transform: uppercase; letter-spacing: .08em; }
+.t-muted { color: var(--muted-foreground); }
+@media (min-width: 768px) {
+  .t-display { font-size: 128px; }
+  .t-h1 { font-size: 72px; }
+  .t-h2 { font-size: 52px; }
+  .t-h3 { font-size: 34px; }
+  .t-h4 { font-size: 20px; }
+  .t-body { font-size: 17px; }
+}
+
+/* ===== Page chrome ===== */
+.topbar {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
+}
+.topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 12px; }
+.wordmark { display: inline-flex; align-items: center; gap: 8px; color: var(--foreground); text-decoration: none; }
+.wordmark-text { font-family: var(--font-display); font-weight: 900; font-size: 28px; line-height: 1; text-transform: uppercase; letter-spacing: .01em; }
+.wordmark svg { width: 28px; height: 28px; }
+.wm-uni { background: var(--primary); color: var(--primary-foreground); padding: .06em .1em .02em; border-radius: var(--radius-sm); margin-right: .06em; }
+.wm-connect { font-weight: 800; }
+.page-nav { display: none; gap: 20px; }
+.page-nav a { color: var(--muted-foreground); text-decoration: none; font-size: 14px; font-weight: 500; }
+.page-nav a:hover { color: var(--foreground); }
+@media (min-width: 1000px) { .page-nav { display: flex; } }
+
+section.block { padding: 56px 0; border-bottom: 2px solid var(--foreground); }
+@media (min-width: 768px) { section.block { padding: 88px 0; } }
+.sec-head { display: grid; gap: 10px; margin-bottom: 32px; }
+.sec-head .t-label { color: var(--muted-foreground); }
+.sec-head p { max-width: 62ch; color: var(--muted-foreground); }
+
+/* ===== Buttons ===== */
+.btn {
+  -webkit-appearance: none; appearance: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 0 20px;
+  border: 2px solid transparent; border-radius: var(--radius);
+  font-family: var(--font-display); font-weight: 800; font-size: 20px; line-height: 1;
+  text-transform: uppercase; letter-spacing: .03em;
+  text-decoration: none; cursor: pointer;
+  background: transparent; color: var(--foreground);
+}
+.btn i { font-size: 20px; }
+.btn-sm { min-height: 40px; padding: 0 14px; font-size: 17px; }
+.btn-block { width: 100%; }
+.btn-primary { background: var(--primary); color: var(--primary-foreground); }
+.btn-primary:hover, .btn-primary.is-hover { background: var(--primary-hover); }
+.btn-secondary { background: var(--secondary); color: var(--secondary-foreground); border-color: var(--secondary); }
+.btn-secondary:hover, .btn-secondary.is-hover { border-color: var(--foreground); }
+.btn-ghost { color: var(--foreground); }
+.btn-ghost:hover, .btn-ghost.is-hover { background: var(--accent); color: var(--accent-foreground); }
+.btn-destructive { background: var(--destructive); color: var(--destructive-foreground); }
+.btn-destructive:hover, .btn-destructive.is-hover { filter: brightness(.92); }
+.btn:focus-visible, .btn.is-focus { outline: 2px solid var(--ring); outline-offset: 3px; }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; filter: none; }
+.btn-primary:disabled:hover { background: var(--primary); }
+.btn-ghost:disabled:hover { background: transparent; }
+.btn-secondary:disabled:hover { border-color: var(--secondary); }
+@media (prefers-reduced-motion: no-preference) {
+  .btn { transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out; }
+}
+.icon-btn {
+  -webkit-appearance: none; appearance: none; background: none; border: 0; padding: 0;
+  min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
+  color: var(--foreground); cursor: pointer; font-size: 24px; border-radius: var(--radius-sm);
+}
+.icon-btn:hover { color: var(--primary-text); }
+.icon-btn:disabled { opacity: .4; cursor: not-allowed; color: var(--foreground); }
+
+/* ===== Forms ===== */
+.field { display: grid; gap: 6px; margin-bottom: 16px; }
+.field label, .field .label { font-size: 14px; font-weight: 600; }
+.hint { font-size: 14px; color: var(--muted-foreground); margin: 0; }
+.input, .select {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; min-height: 48px; padding: 10px 14px;
+  font-family: var(--font-body); font-size: 16px; line-height: 1.4;
+  color: var(--foreground); background: var(--card);
+  border: 1.5px solid var(--input); border-radius: var(--radius);
+}
+.input::placeholder { color: var(--muted-foreground); opacity: 1; }
+.input:focus, .select:focus, .input.is-focus { outline: none; border-color: var(--ring); box-shadow: 0 0 0 2px var(--ring); }
+.input:disabled, .select:disabled { opacity: .5; cursor: not-allowed; background: var(--muted); }
+.field.has-error .input, .input[aria-invalid="true"] { border-color: var(--destructive); }
+.field.has-error .input:focus, .input[aria-invalid="true"]:focus { box-shadow: 0 0 0 2px var(--destructive); border-color: var(--destructive); }
+.field-error { display: flex; align-items: flex-start; gap: 6px; margin: 0; font-size: 14px; font-weight: 500; color: var(--destructive); }
+.field-error i { font-size: 18px; flex: none; margin-top: 1px; }
+.field-error[hidden] { display: none; }
+.select-wrap { position: relative; }
+.select { padding-right: 44px; cursor: pointer; }
+.select-wrap i { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; font-size: 18px; color: var(--muted-foreground); }
+.check { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; cursor: pointer; }
+.check input {
+  -webkit-appearance: none; appearance: none; flex: none;
+  width: 22px; height: 22px; margin: 1px 0 0; border: 1.5px solid var(--input); border-radius: var(--radius-sm);
+  background: var(--card); display: grid; place-content: center; cursor: pointer;
+}
+.check input::after { content: ""; width: 6px; height: 11px; border: solid var(--primary-foreground); border-width: 0 2.5px 2.5px 0; transform: rotate(45deg) translate(-1px, -1px); opacity: 0; }
+.check input:checked { background: var(--primary); border-color: var(--primary); }
+.light-fix .check input:checked { border-color: var(--foreground); }
+.check input:checked::after { opacity: 1; }
+.check input:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.check input:disabled { opacity: .45; cursor: not-allowed; }
+.field.has-error .check input { border-color: var(--destructive); }
+.form-status { display: flex; gap: 8px; align-items: center; font-weight: 600; color: var(--success); margin: 12px 0 0; }
+.form-status[hidden] { display: none; }
+
+/* ===== Badges ===== */
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; line-height: 1.3; border: 1px solid var(--border); color: var(--foreground); background: transparent; }
+.badge-primary { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+.badge-solid { background: var(--foreground); color: var(--background); border-color: var(--foreground); }
+.badge-muted { background: var(--muted); color: var(--foreground); border-color: var(--muted); }
+.badge-success { color: var(--success); border-color: currentColor; }
+.badge-destructive { color: var(--destructive); border-color: currentColor; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+button.badge { cursor: pointer; font: inherit; font-family: var(--font-mono); font-size: 12px; min-height: 32px; }
+
+/* ===== Showcase layout pieces ===== */
+.grid-2 { display: grid; gap: 16px; }
+@media (min-width: 768px) { .grid-2 { grid-template-columns: 1fr 1fr; gap: 24px; } }
+.panel { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; background: var(--card); color: var(--card-foreground); }
+.demo-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 16px; }
+.demo-cap { display: block; margin-bottom: 8px; color: var(--muted-foreground); }
+
+/* Identity */
+.poster {
+  background: var(--primary); color: var(--primary-foreground);
+  border-radius: var(--radius-lg); padding: 24px 20px 20px; margin-top: 28px;
+  position: relative; overflow: hidden;
+}
+.poster .t-display { font-size: 84px; line-height: .84; }
+.poster-meta { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 16px; padding-top: 14px; border-top: 2px dashed var(--primary-foreground); }
+@media (min-width: 768px) { .poster { padding: 40px; } .poster .t-display { font-size: 220px; } }
+.ident-grid { display: grid; gap: 24px; }
+@media (min-width: 900px) { .ident-grid { grid-template-columns: 1.4fr 1fr; align-items: end; } }
+
+/* Swatches */
+.theme-panel { border-radius: var(--radius-lg); padding: 16px; border: 1px solid var(--border); }
+.theme-panel h3 { margin-bottom: 14px; }
+.swatches { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (min-width: 560px) { .swatches { grid-template-columns: repeat(3, 1fr); } }
+.swatch { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--card); }
+.swatch .chip { height: 56px; border-bottom: 1px solid var(--border); }
+.swatch .meta { padding: 8px 10px; display: grid; gap: 2px; }
+.swatch .name { font-family: var(--font-mono); font-size: 12px; font-weight: 700; word-break: break-word; color: var(--card-foreground); }
+.swatch .hex { font-family: var(--font-mono); font-size: 12px; color: var(--muted-foreground); }
+.contrast-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 24px; }
+.contrast-table th, .contrast-table td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.contrast-table th { font-family: var(--font-mono); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--muted-foreground); }
+.contrast-table td.num { font-family: var(--font-mono); white-space: nowrap; }
+.table-scroll { overflow-x: auto; }
+
+/* Type specimens */
+.type-row { display: grid; gap: 8px; padding: 20px 0; border-top: 1px solid var(--border); }
+.type-row:first-child { border-top: 0; }
+.type-spec { font-family: var(--font-mono); font-size: 12px; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: .05em; }
+@media (min-width: 900px) { .type-row { grid-template-columns: 240px 1fr; align-items: baseline; gap: 24px; } }
+
+/* ===== Device frames ===== */
+.screens { display: grid; gap: 24px; justify-content: center; }
+@media (min-width: 820px) { .screens { grid-template-columns: repeat(2, minmax(0, 375px)); } }
+.screen-cap { margin: 0 0 8px; color: var(--muted-foreground); }
+.phone {
+  width: 100%; max-width: 375px; margin: 0 auto;
+  background: var(--background); color: var(--foreground);
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.phone-bar { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px 6px 16px; border-bottom: 1px solid var(--border); }
+.phone-bar .wordmark-text { font-size: 24px; }
+.phone-bar .wordmark svg { width: 24px; height: 24px; }
+.phone-body { padding: 20px 16px 24px; }
+.desk-only { display: none; }
+@media (min-width: 960px) { .desk-only { display: block; } }
+.mobile-note { color: var(--muted-foreground); font-size: 14px; }
+@media (min-width: 960px) { .mobile-note { display: none; } }
+.desk {
+  border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden;
+  background: var(--background); margin-top: 32px;
+}
+.desk-nav { display: flex; align-items: center; justify-content: space-between; padding: 12px 28px; border-bottom: 1px solid var(--border); }
+.desk-nav nav { display: flex; gap: 24px; font-size: 15px; font-weight: 500; }
+.desk-nav nav a { color: var(--foreground); text-decoration: none; }
+.desk-hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; padding: 48px 28px 32px; align-items: end; }
+.desk-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 0 28px 40px; }
+
+/* Photo placeholder */
+.photo {
+  position: relative; background: var(--muted); color: var(--muted-foreground);
+  aspect-ratio: 16 / 10; overflow: hidden;
+}
+.photo svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.photo .t-label { position: absolute; left: 10px; bottom: 8px; color: var(--foreground); background: var(--background); padding: 2px 6px; border-radius: var(--radius-sm); }
+.photo.volt { background: var(--primary); color: var(--primary-foreground); }
+.photo.ink { background: var(--foreground); color: var(--background); }
+
+/* Event card with perforation */
+.event-card { position: relative; background: var(--card); color: var(--card-foreground); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.event-card + .event-card { margin-top: 16px; }
+.event-card .body { padding: 14px 16px 12px; }
+.event-card .date { color: var(--primary-text); }
+.event-card h3 { margin: 6px 0 6px; }
+.event-card .where { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--muted-foreground); margin: 0; }
+.tear { position: relative; height: 0; border-top: 2px dashed var(--border); margin: 0; }
+.tear::before, .tear::after {
+  content: ""; position: absolute; top: -11px; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--notch-bg, var(--background)); border: 1px solid var(--border);
+}
+.tear::before { left: -11px; }
+.tear::after { right: -11px; }
+.event-card .foot { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px 12px; gap: 12px; }
+.price { font-family: var(--font-mono); font-weight: 700; font-size: 16px; }
+.price small { font-weight: 400; color: var(--muted-foreground); font-size: 12px; }
+
+/* Event detail */
+.meta-list { list-style: none; margin: 16px 0; padding: 0; display: grid; gap: 10px; }
+.meta-list li { display: flex; align-items: center; gap: 10px; font-size: 15px; }
+.meta-list i { font-size: 20px; color: var(--muted-foreground); }
+.buy-box { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card); overflow: hidden; margin-top: 20px; }
+.buy-box .top { padding: 16px; }
+.buy-box .bottom { padding: 14px 16px 16px; }
+.stepper { display: flex; align-items: center; gap: 4px; }
+.stepper .input { width: 80px; text-align: center; font-family: var(--font-mono); font-weight: 700; }
+.total-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+.total-row .amount { font-family: var(--font-mono); font-size: 22px; font-weight: 700; }
+
+/* Ticket */
+.ticket { background: var(--card); color: var(--card-foreground); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.ticket .head { padding: 16px; }
+.ticket .head-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.ticket .stub { padding: 20px 16px 16px; display: grid; justify-items: center; gap: 10px; }
+.qr-plate { background: var(--qr-paper, #FFFFFF); padding: 12px; border-radius: var(--radius); border: 1px solid var(--border); }
+.qr-plate svg { width: 200px; height: 200px; }
+.ticket-code { font-family: var(--font-mono); font-weight: 700; font-size: 16px; letter-spacing: .12em; }
+.ticket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; margin-top: 12px; }
+.ticket-grid dt { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted-foreground); }
+.ticket-grid dd { margin: 0; font-weight: 600; font-size: 15px; }
+.ticket-mini { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card); margin-top: 12px; }
+.tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--border); margin: 16px 0 20px; }
+.tabs button { -webkit-appearance: none; appearance: none; background: none; border: 0; padding: 10px 0; font: inherit; font-weight: 600; font-size: 15px; color: var(--muted-foreground); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.tabs button[aria-selected="true"] { color: var(--foreground); border-bottom-color: var(--foreground); }
+
+/* Motion: ticket reveal, runs once, only when motion is allowed */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal { transition: opacity 320ms var(--ease-out), transform 320ms var(--ease-out); }
+  .reveal .qr-plate { transition: opacity 200ms var(--ease-out) 120ms; }
+  .reveal.is-pre { opacity: 0; transform: translateY(16px); }
+  .reveal.is-pre .qr-plate { opacity: 0; }
+}
+.motion-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.motion-table th, .motion-table td { text-align: left; padding: 10px 6px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.motion-table th { font-family: var(--font-mono); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--muted-foreground); }
+.motion-table td.mono { font-family: var(--font-mono); font-size: 13px; }
+
+/* Favicon showcase */
+.fav-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px; padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border); }
+.fav-row figure { margin: 0; display: grid; justify-items: center; gap: 6px; }
+.fav-row figcaption { font-family: var(--font-mono); font-size: 12px; color: var(--muted-foreground); }
+.fav-180 { width: 120px; height: 120px; }
+@media (min-width: 560px) { .fav-180 { width: 180px; height: 180px; } }
+
+/* Do / Don't */
+.dodont ul { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+.dodont h3 { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.dodont .do h3 i { color: var(--success); }
+.dodont .dont h3 i { color: var(--destructive); }
+
+footer { padding: 32px 0 48px; color: var(--muted-foreground); font-size: 14px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+</style>
+</head>
+<body>
+
+<!-- Reusable mark -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <mask id="uc-notch">
+      <rect width="32" height="32" rx="5" fill="#fff"/>
+      <circle cx="0" cy="16" r="4.5" fill="#000"/>
+      <circle cx="32" cy="16" r="4.5" fill="#000"/>
+    </mask>
+    <symbol id="uc-mark" viewBox="0 0 32 32">
+      <rect width="32" height="32" rx="5" fill="#0A0B0D" mask="url(#uc-notch)"/>
+      <g fill="#CCFF2E">
+        <rect x="8" y="5" width="6" height="22"/><rect x="18" y="5" width="6" height="22"/><rect x="8" y="21" width="16" height="6"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="#identity" aria-label="UniConnect, brand showcase home">
+      <span class="wordmark-text"><span class="wm-uni">Uni</span><span class="wm-connect">Connect</span></span>
+    </a>
+    <nav class="page-nav" aria-label="Sections">
+      <a href="#colors">Color</a><a href="#type">Type</a><a href="#components">Components</a><a href="#screens">Screens</a><a href="#motion">Motion</a><a href="#favicon">Favicon</a><a href="#rules">Do / Don't</a>
+    </nav>
+    <button class="btn btn-secondary btn-sm" id="theme-toggle" type="button" aria-label="Switch color theme">
+      <i class="ph-bold ph-moon" aria-hidden="true"></i><span>Dark</span>
+    </button>
+  </div>
+</header>
+
+<main>
+<!-- ===== a. Identity ===== -->
+<section class="block" id="identity">
+  <div class="wrap">
+    <div class="ident-grid">
+      <div class="sec-head" style="margin:0">
+        <span class="t-label">Direction 02 / Volt</span>
+        <h1 class="t-h1">UniConnect. Tear here, get in.</h1>
+        <p class="t-body"><strong>UniConnect</strong> in direction 02. Loud, direct ticket-stub poster energy for campus nights: acid volt lime on cool black, condensed headlines, mono for the fine print, and nothing that moves without a reason.</p>
+      </div>
+      <div class="chips" aria-label="Identity keywords">
+        <span class="badge badge-solid">Poster</span>
+        <span class="badge">Condensed</span>
+        <span class="badge">Mono details</span>
+        <span class="badge badge-primary">Volt lime</span>
+        <span class="badge">Tight corners</span>
+      </div>
+    </div>
+    <div class="poster" role="img" aria-label="UniConnect wordmark set huge on a volt lime poster block">
+      <div class="t-label">Wordmark</div>
+      <div class="t-display" aria-hidden="true">Uni<br>Connect</div>
+      <div class="poster-meta t-label" aria-hidden="true">
+        <span>Admit one</span><span>No. 000214</span><span>Campus events</span>
+      </div>
+    </div>
+    <div class="demo-row" style="margin-top:20px">
+      <span class="wordmark"><svg aria-hidden="true" style="width:40px;height:40px"><use href="#uc-mark"/></svg><span class="wordmark-text" style="font-size:40px"><span class="wm-uni">Uni</span><span class="wm-connect">Connect</span></span></span>
+      <span class="t-small t-muted">Lockup: the U stub mark plus the wordmark. UNI is cut out of a volt block like a ticket stub, CONNECT runs on in plain ink. Big Shoulders Display 900 and 800, uppercase.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== b. Colors ===== -->
+<section class="block" id="colors">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="t-label">01 / Color tokens</span>
+      <h2 class="t-h2">One volt, two themes</h2>
+      <p>shadcn/ui token names. Values below are read live from the CSS variables, so the page proves the tokens. Volt lime <code>#CCFF2E</code> is a fill color only: it always carries dark text. In light mode, text and links that need the accent use <code>primary-text</code>, a deep olive.</p>
+    </div>
+    <div class="grid-2">
+      <div class="theme-panel theme-light" data-swatches>
+        <h3 class="t-h3">Light</h3>
+        <div class="swatches"></div>
+      </div>
+      <div class="theme-panel theme-dark" data-swatches>
+        <h3 class="t-h3">Dark</h3>
+        <div class="swatches"></div>
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table class="contrast-table">
+        <caption class="sr-only">Checked contrast ratios</caption>
+        <thead><tr><th scope="col">Pair</th><th scope="col">Light</th><th scope="col">Dark</th><th scope="col">Target</th></tr></thead>
+        <tbody>
+          <tr><td>foreground on background</td><td class="num">17.96:1</td><td class="num">17.85:1</td><td>4.5:1 text</td></tr>
+          <tr><td>foreground on card</td><td class="num">19.43:1</td><td class="num">16.42:1</td><td>4.5:1 text</td></tr>
+          <tr><td>muted-foreground on background</td><td class="num">6.34:1</td><td class="num">7.56:1</td><td>4.5:1 text</td></tr>
+          <tr><td>muted-foreground on muted</td><td class="num">5.74:1</td><td class="num">6.27:1</td><td>4.5:1 text</td></tr>
+          <tr><td>primary-foreground on primary (buttons, badges)</td><td class="num">16.57:1</td><td class="num">16.79:1</td><td>4.5:1 text</td></tr>
+          <tr><td>primary-text on background (links, dates)</td><td class="num">6.31:1 (#4A6300)</td><td class="num">16.79:1 (#CCFF2E)</td><td>4.5:1 text</td></tr>
+          <tr><td>primary-text on card</td><td class="num">6.83:1</td><td class="num">15.45:1</td><td>4.5:1 text</td></tr>
+          <tr><td>destructive on background</td><td class="num">5.49:1</td><td class="num">7.05:1</td><td>4.5:1 text</td></tr>
+          <tr><td>destructive-foreground on destructive</td><td class="num">5.94:1</td><td class="num">7.05:1</td><td>4.5:1 text</td></tr>
+          <tr><td>success on background</td><td class="num">5.13:1</td><td class="num">11.03:1</td><td>4.5:1 text</td></tr>
+          <tr><td>input border on card</td><td class="num">3.18:1</td><td class="num">3.2:1</td><td>3:1 UI</td></tr>
+          <tr><td>volt lime as text on light background</td><td class="num">1.08:1, never do this</td><td class="num">n/a</td><td>fails</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== c. Type ===== -->
+<section class="block" id="type">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="t-label">02 / Type scale</span>
+      <h2 class="t-h2">Shout, then explain</h2>
+      <p>Big Shoulders Display (heavy condensed grotesk) for headlines, Inter Tight for reading, JetBrains Mono for dates, prices, labels and ticket codes. Sizes are mobile / desktop (768px and up).</p>
+    </div>
+    <div>
+      <div class="type-row"><div class="type-spec">Display<br>Big Shoulders Display 900<br>64 / 128px, lh .88, upper</div><div class="t-display">Friday night</div></div>
+      <div class="type-row"><div class="type-spec">H1<br>Big Shoulders Display 900<br>44 / 72px, lh .92, upper</div><div class="t-h1">Spring Fest 2027</div></div>
+      <div class="type-row"><div class="type-spec">H2<br>Big Shoulders Display 800<br>34 / 52px, lh .95, upper</div><div class="t-h2">This week on campus</div></div>
+      <div class="type-row"><div class="type-spec">H3<br>Big Shoulders Display 800<br>26 / 34px, lh 1, upper</div><div class="t-h3">Basement jazz session</div></div>
+      <div class="type-row"><div class="type-spec">H4<br>Inter Tight 700<br>18 / 20px, lh 1.3</div><div class="t-h4">Doors open at 20:00, bring your student ID</div></div>
+      <div class="type-row"><div class="type-spec">Body<br>Inter Tight 400<br>16 / 17px, lh 1.55</div><div class="t-body">Three bands, one cheap bar and the best sound system in the student quarter. Tickets are emailed and also live in your account as a QR code.</div></div>
+      <div class="type-row"><div class="type-spec">Small<br>Inter Tight 400<br>14 / 14px, lh 1.5</div><div class="t-small t-muted">Refunds up to 48 hours before the event. Service fee included.</div></div>
+      <div class="type-row"><div class="type-spec">Mono label<br>JetBrains Mono 500<br>12 / 12px, +0.08em, upper</div><div class="t-label">Fri 14 Nov / 20:00 / 45.00 RON / UC-7F3K-2Q9M</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== d. Components ===== -->
+<section class="block" id="components">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="t-label">03 / Components</span>
+      <h2 class="t-h2">Parts list</h2>
+      <p>Buttons are condensed uppercase, 48px tall for thumbs. Corners 4 to 8px. Focus is a 2px ring in <code>ring</code>, olive in light mode and volt in dark mode.</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <h3 class="t-h3" style="margin-bottom:16px">Buttons</h3>
+        <span class="t-label demo-cap">Default</span>
+        <div class="demo-row">
+          <button class="btn btn-primary" type="button">Get tickets</button>
+          <button class="btn btn-secondary" type="button">Save</button>
+          <button class="btn btn-ghost" type="button">Details</button>
+          <button class="btn btn-destructive" type="button">Cancel ticket</button>
+        </div>
+        <span class="t-label demo-cap">Hover (forced)</span>
+        <div class="demo-row">
+          <button class="btn btn-primary is-hover" type="button" tabindex="-1">Get tickets</button>
+          <button class="btn btn-secondary is-hover" type="button" tabindex="-1">Save</button>
+          <button class="btn btn-ghost is-hover" type="button" tabindex="-1">Details</button>
+          <button class="btn btn-destructive is-hover" type="button" tabindex="-1">Cancel ticket</button>
+        </div>
+        <span class="t-label demo-cap">Focus-visible (forced)</span>
+        <div class="demo-row">
+          <button class="btn btn-primary is-focus" type="button" tabindex="-1">Get tickets</button>
+          <button class="btn btn-secondary is-focus" type="button" tabindex="-1">Save</button>
+          <button class="btn btn-ghost is-focus" type="button" tabindex="-1">Details</button>
+          <button class="btn btn-destructive is-focus" type="button" tabindex="-1">Cancel ticket</button>
+        </div>
+        <span class="t-label demo-cap">Disabled</span>
+        <div class="demo-row">
+          <button class="btn btn-primary" type="button" disabled>Sold out</button>
+          <button class="btn btn-secondary" type="button" disabled>Save</button>
+          <button class="btn btn-ghost" type="button" disabled>Details</button>
+          <button class="btn btn-destructive" type="button" disabled>Cancel ticket</button>
+        </div>
+        <span class="t-label demo-cap">With icon</span>
+        <div class="demo-row">
+          <button class="btn btn-primary" type="button"><i class="ph-bold ph-ticket" aria-hidden="true"></i>Buy ticket</button>
+          <button class="btn btn-ghost" type="button"><i class="ph-bold ph-share-network" aria-hidden="true"></i>Share</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 class="t-h3" style="margin-bottom:16px">Inputs</h3>
+        <div class="field">
+          <label for="d-default">Default</label>
+          <input class="input" id="d-default" type="text" placeholder="Search events">
+        </div>
+        <div class="field">
+          <label for="d-focus">Focus (forced)</label>
+          <input class="input is-focus" id="d-focus" type="text" value="Jazz">
+        </div>
+        <div class="field has-error">
+          <label for="d-error">Error</label>
+          <input class="input" id="d-error" type="email" value="denisa@uni" aria-invalid="true" aria-describedby="d-error-msg">
+          <p class="field-error" id="d-error-msg"><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span>Enter a valid email, like name@university.ro.</span></p>
+        </div>
+        <div class="field">
+          <label for="d-disabled">Disabled</label>
+          <input class="input" id="d-disabled" type="text" value="Not editable" disabled>
+        </div>
+        <div class="field">
+          <label for="d-select">Select</label>
+          <div class="select-wrap">
+            <select class="select" id="d-select">
+              <option>All categories</option><option>Music</option><option>Talks</option><option>Sports</option><option>Parties</option>
+            </select>
+            <i class="ph-bold ph-caret-down" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="field">
+          <label class="check"><input type="checkbox" checked> Email me my tickets</label>
+          <label class="check"><input type="checkbox"> Remind me the day before</label>
+          <label class="check"><input type="checkbox" disabled> Disabled option</label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 class="t-h3" style="margin-bottom:16px">Badges / tags</h3>
+        <div class="chips" style="margin-bottom:16px">
+          <span class="badge badge-primary">New</span>
+          <span class="badge badge-solid">Fri 14 Nov</span>
+          <span class="badge">Music</span>
+          <span class="badge badge-muted">Free entry</span>
+          <span class="badge badge-success"><i class="ph-bold ph-check" aria-hidden="true"></i>Valid</span>
+          <span class="badge badge-destructive">Sold out</span>
+        </div>
+        <p class="t-small t-muted">Mono, uppercase, 4px corners. Status is never color alone: always a word, optionally an icon next to it.</p>
+      </div>
+
+      <div class="panel">
+        <h3 class="t-h3" style="margin-bottom:16px">Icons, inline</h3>
+        <ul class="meta-list" style="margin-top:0">
+          <li><i class="ph ph-calendar-blank" aria-hidden="true"></i>Fri 14 Nov, 20:00</li>
+          <li><i class="ph ph-map-pin" aria-hidden="true"></i>Club Cultural, Str. Universitatii 7</li>
+          <li><i class="ph ph-ticket" aria-hidden="true"></i>2 tickets in your account</li>
+          <li><i class="ph ph-envelope-simple" aria-hidden="true"></i>Sent to your email</li>
+        </ul>
+        <p class="t-small t-muted">Phosphor regular at 20px for metadata, bold inside buttons, fill only for the selected tab. Icons sit next to text with no box, circle or tile behind them.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== e. Screens ===== -->
+<section class="block" id="screens">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="t-label">04 / Example screens</span>
+      <h2 class="t-h2">On a phone first</h2>
+      <p>Each frame is 375px wide. Forms really validate: try submitting empty, or leave a field.</p>
+    </div>
+
+    <!-- (1) Listing -->
+    <h3 class="t-h3" style="margin-bottom:16px">1. Event listing</h3>
+    <div class="screens">
+      <div>
+        <p class="t-label screen-cap">Mobile, 375</p>
+        <div class="phone">
+          <div class="phone-bar">
+            <span class="wordmark"><span class="wordmark-text"><span class="wm-uni">Uni</span><span class="wm-connect">Connect</span></span></span>
+            <span>
+              <button class="icon-btn" type="button" aria-label="Search"><i class="ph ph-magnifying-glass" aria-hidden="true"></i></button>
+              <button class="icon-btn" type="button" aria-label="My account"><i class="ph ph-user" aria-hidden="true"></i></button>
+            </span>
+          </div>
+          <div class="phone-body">
+            <span class="t-label t-muted">This week on campus</span>
+            <h2 class="t-display" style="font-size:72px;margin:10px 0 12px">Nights worth the ticket</h2>
+            <p class="t-muted">Gigs, talks and parties run by students. Book in two taps, your QR lands in your inbox.</p>
+            <div class="demo-row" style="margin:16px 0 20px">
+              <a class="btn btn-primary" href="#screens">Browse events</a>
+              <a class="btn btn-ghost" href="#screens">How it works</a>
+            </div>
+            <div class="chips" style="margin-bottom:20px" role="group" aria-label="Filter by category">
+              <button class="badge badge-solid" type="button" aria-pressed="true">All</button>
+              <button class="badge" type="button" aria-pressed="false">Music</button>
+              <button class="badge" type="button" aria-pressed="false">Talks</button>
+              <button class="badge" type="button" aria-pressed="false">Sports</button>
+              <button class="badge" type="button" aria-pressed="false">Parties</button>
+            </div>
+            <article class="event-card" style="--notch-bg: var(--background)">
+              <div class="photo volt">
+                <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="250" cy="70" r="90" fill="currentColor" opacity=".12"/><rect x="20" y="120" width="140" height="18" fill="currentColor" opacity=".15"/></svg>
+                <span class="t-label">Event photo</span>
+              </div>
+              <div class="body">
+                <span class="t-label date">Fri 14 Nov / 20:00</span>
+                <h3 class="t-h3">Basement jazz session</h3>
+                <p class="where"><i class="ph ph-map-pin" aria-hidden="true"></i>Club Cultural</p>
+              </div>
+              <div class="tear" aria-hidden="true"></div>
+              <div class="foot">
+                <span class="price">45.00 <small>RON</small></span>
+                <a class="btn btn-secondary btn-sm" href="#detail">Get tickets</a>
+              </div>
+            </article>
+            <article class="event-card">
+              <div class="photo">
+                <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="180" y="30" width="110" height="140" fill="currentColor" opacity=".18"/><circle cx="90" cy="130" r="50" fill="currentColor" opacity=".12"/></svg>
+                <span class="t-label">Event photo</span>
+              </div>
+              <div class="body">
+                <span class="t-label date">Tue 18 Nov / 18:30</span>
+                <h3 class="t-h3">Startup night: pitch or listen</h3>
+                <p class="where"><i class="ph ph-map-pin" aria-hidden="true"></i>Aula Magna</p>
+              </div>
+              <div class="tear" aria-hidden="true"></div>
+              <div class="foot">
+                <span class="badge badge-muted">Free entry</span>
+                <a class="btn btn-secondary btn-sm" href="#detail">Reserve</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="t-label screen-cap">Card states</p>
+        <div class="phone">
+          <div class="phone-body">
+            <article class="event-card">
+              <div class="photo ink">
+                <svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="160" cy="100" r="70" fill="var(--primary)" opacity=".9"/></svg>
+                <span class="t-label">Event photo</span>
+              </div>
+              <div class="body">
+                <div class="chips" style="margin-bottom:8px"><span class="badge badge-destructive">Sold out</span></div>
+                <span class="t-label date">Sat 22 Nov / 22:00</span>
+                <h3 class="t-h3">Halloween rave, take two</h3>
+                <p class="where"><i class="ph ph-map-pin" aria-hidden="true"></i>Campus Hall B</p>
+              </div>
+              <div class="tear" aria-hidden="true"></div>
+              <div class="foot">
+                <span class="price">30.00 <small>RON</small></span>
+                <button class="btn btn-secondary btn-sm" type="button" disabled>Sold out</button>
+              </div>
+            </article>
+            <article class="event-card">
+              <div class="body">
+                <div class="chips" style="margin-bottom:8px"><span class="badge badge-primary">New</span><span class="badge">Sports</span></div>
+                <span class="t-label date">Sun 23 Nov / 10:00</span>
+                <h3 class="t-h3">5K campus run</h3>
+                <p class="where"><i class="ph ph-map-pin" aria-hidden="true"></i>Central Park gate</p>
+              </div>
+              <div class="tear" aria-hidden="true"></div>
+              <div class="foot">
+                <span class="price">15.00 <small>RON</small></span>
+                <a class="btn btn-secondary btn-sm" href="#detail">Get tickets</a>
+              </div>
+            </article>
+            <p class="t-small t-muted" style="margin-top:16px">Cards without a photo still work: the tear line and mono date carry the identity.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="mobile-note" style="margin-top:16px">A desktop version of the listing is shown on screens 960px and wider.</p>
+    <div class="desk desk-only" aria-label="Desktop listing example">
+      <div class="desk-nav">
+        <span class="wordmark"><span class="wordmark-text"><span class="wm-uni">Uni</span><span class="wm-connect">Connect</span></span></span>
+        <nav aria-label="Example app navigation"><a href="#screens">Events</a><a href="#screens">Clubs</a><a href="#tickets">My tickets</a></nav>
+        <span><a class="btn btn-ghost btn-sm" href="#auth">Log in</a> <a class="btn btn-primary btn-sm" href="#auth">Sign up</a></span>
+      </div>
+      <div class="desk-hero">
+        <div>
+          <span class="t-label t-muted">This week on campus / 24 events</span>
+          <h2 class="t-display" style="margin:14px 0 18px">Nights worth the ticket</h2>
+          <div class="demo-row"><a class="btn btn-primary" href="#screens">Browse events</a><a class="btn btn-ghost" href="#screens">How it works</a></div>
+        </div>
+        <div class="photo volt" style="border-radius:var(--radius-lg);aspect-ratio:4/3">
+          <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="300" cy="90" r="120" fill="currentColor" opacity=".12"/><rect x="30" y="200" width="200" height="22" fill="currentColor" opacity=".15"/></svg>
+          <span class="t-label">Event photo</span>
+        </div>
+      </div>
+      <div class="desk-cards">
+        <article class="event-card" style="margin:0">
+          <div class="photo"><span class="t-label">Event photo</span></div>
+          <div class="body"><span class="t-label date">Fri 14 Nov / 20:00</span><h3 class="t-h3">Basement jazz session</h3><p class="where"><i class="ph ph-map-pin" aria-hidden="true"></i>Club Cultural</p></div>
+          <div class="tear" aria-hidden="true"></div>
+          <div class="foot"><span class="price">45.00 <small>RON</small></span><a class="btn btn-secondary btn-sm" href="#detail">Get tickets</a></div>
+        </article>
+        <article class="event-card" style="margin:0">
+          <div class="photo ink"><span class="t-label">Event photo</span></div>
+          <div class="body"><span class="t-label date">Tue 18 Nov / 18:30</span><h3 class="t-h3">Startup night</h3><p class="where"><i class="ph ph-map-pin" aria-hidden="true"></i>Aula Magna</p></div>
+          <div class="tear" aria-hidden="true"></div>
+          <div class="foot"><span class="badge badge-muted">Free entry</span><a class="btn btn-secondary btn-sm" href="#detail">Reserve</a></div>
+        </article>
+        <article class="event-card" style="margin:0">
+          <div class="photo"><span class="t-label">Event photo</span></div>
+          <div class="body"><span class="t-label date">Sun 23 Nov / 10:00</span><h3 class="t-h3">5K campus run</h3><p class="where"><i class="ph ph-map-pin" aria-hidden="true"></i>Central Park gate</p></div>
+          <div class="tear" aria-hidden="true"></div>
+          <div class="foot"><span class="price">15.00 <small>RON</small></span><a class="btn btn-secondary btn-sm" href="#detail">Get tickets</a></div>
+        </article>
+      </div>
+    </div>
+
+    <!-- (2) Auth -->
+    <h3 class="t-h3" id="auth" style="margin:56px 0 16px">2. Log in and register</h3>
+    <div class="screens">
+      <div>
+        <p class="t-label screen-cap">Log in</p>
+        <div class="phone">
+          <div class="phone-bar">
+            <span class="wordmark"><span class="wordmark-text"><span class="wm-uni">Uni</span><span class="wm-connect">Connect</span></span></span>
+            <button class="icon-btn" type="button" aria-label="Close"><i class="ph ph-x" aria-hidden="true"></i></button>
+          </div>
+          <div class="phone-body">
+            <h2 class="t-h1" style="margin-bottom:8px">Sign in to UniConnect</h2>
+            <p class="t-muted" style="margin-bottom:20px">Log in to see your tickets.</p>
+            <form novalidate data-validate>
+              <div class="field">
+                <label for="login-email">University email</label>
+                <input class="input" id="login-email" name="email" type="email" autocomplete="email" inputmode="email" data-rules="required email" data-label="Email" aria-describedby="login-email-error">
+                <p class="field-error" id="login-email-error" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+              </div>
+              <div class="field">
+                <label for="login-pass">Password</label>
+                <input class="input" id="login-pass" name="password" type="password" autocomplete="current-password" data-rules="required password" data-label="Password" aria-describedby="login-pass-error">
+                <p class="field-error" id="login-pass-error" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+              </div>
+              <p class="t-small" style="margin:-4px 0 18px"><a href="#auth">Forgot password?</a></p>
+              <button class="btn btn-primary btn-block" type="submit">Log in</button>
+              <p class="form-status" role="status" hidden><i class="ph-bold ph-check-circle" aria-hidden="true"></i><span>Looks good. You would be logged in now.</span></p>
+            </form>
+            <p class="t-small t-muted" style="margin:20px 0 0">New here? <a href="#auth">Create an account</a></p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="t-label screen-cap">Register</p>
+        <div class="phone">
+          <div class="phone-bar">
+            <span class="wordmark"><span class="wordmark-text"><span class="wm-uni">Uni</span><span class="wm-connect">Connect</span></span></span>
+            <button class="icon-btn" type="button" aria-label="Close"><i class="ph ph-x" aria-hidden="true"></i></button>
+          </div>
+          <div class="phone-body">
+            <h2 class="t-h1" style="margin-bottom:8px">Join UniConnect</h2>
+            <p class="t-muted" style="margin-bottom:20px">One UniConnect account for every campus event.</p>
+            <form novalidate data-validate>
+              <div class="field">
+                <label for="reg-name">Full name</label>
+                <input class="input" id="reg-name" name="name" type="text" autocomplete="name" data-rules="required" data-label="Name" aria-describedby="reg-name-error">
+                <p class="field-error" id="reg-name-error" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+              </div>
+              <div class="field">
+                <label for="reg-email">University email</label>
+                <input class="input" id="reg-email" name="email" type="email" autocomplete="email" inputmode="email" data-rules="required email" data-label="Email" aria-describedby="reg-email-error">
+                <p class="field-error" id="reg-email-error" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+              </div>
+              <div class="field">
+                <label for="reg-pass">Password</label>
+                <input class="input" id="reg-pass" name="password" type="password" autocomplete="new-password" data-rules="required password" data-label="Password" aria-describedby="reg-pass-hint reg-pass-error">
+                <p class="hint" id="reg-pass-hint">At least 8 characters, including a number.</p>
+                <p class="field-error" id="reg-pass-error" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+              </div>
+              <div class="field">
+                <label for="reg-confirm">Confirm password</label>
+                <input class="input" id="reg-confirm" name="confirm" type="password" autocomplete="new-password" data-rules="required match:reg-pass" data-label="Password confirmation" aria-describedby="reg-confirm-error">
+                <p class="field-error" id="reg-confirm-error" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+              </div>
+              <div class="field">
+                <label class="check"><input id="reg-terms" type="checkbox" data-rules="required" aria-describedby="reg-terms-error"> I agree to the event and refund terms</label>
+                <p class="field-error" id="reg-terms-error" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+              </div>
+              <button class="btn btn-primary btn-block" type="submit">Create account</button>
+              <p class="form-status" role="status" hidden><i class="ph-bold ph-check-circle" aria-hidden="true"></i><span>Account details are valid.</span></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- (3) Detail -->
+    <h3 class="t-h3" id="detail" style="margin:56px 0 16px">3. Event detail and purchase</h3>
+    <div class="screens">
+      <div>
+        <p class="t-label screen-cap">Mobile, 375</p>
+        <div class="phone">
+          <div class="phone-bar">
+            <button class="icon-btn" type="button" aria-label="Back"><i class="ph ph-arrow-left" aria-hidden="true"></i></button>
+            <button class="icon-btn" type="button" aria-label="Share"><i class="ph ph-share-network" aria-hidden="true"></i></button>
+          </div>
+          <div class="photo volt" style="aspect-ratio:4/3">
+            <svg viewBox="0 0 320 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="230" cy="90" r="100" fill="currentColor" opacity=".12"/><rect x="24" y="160" width="160" height="20" fill="currentColor" opacity=".15"/></svg>
+            <span class="t-label">Event photo</span>
+          </div>
+          <div class="phone-body">
+            <div class="chips" style="margin-bottom:10px"><span class="badge">Music</span><span class="badge badge-muted">18+</span></div>
+            <h2 class="t-h1">Basement jazz session</h2>
+            <ul class="meta-list">
+              <li><i class="ph ph-calendar-blank" aria-hidden="true"></i>Friday 14 November</li>
+              <li><i class="ph ph-clock" aria-hidden="true"></i>Doors 20:00, music 21:00</li>
+              <li><i class="ph ph-map-pin" aria-hidden="true"></i>Club Cultural, Str. Universitatii 7</li>
+            </ul>
+            <p class="t-muted">Three student trios, one long night. Organised by the Music Society. Bring your student ID at the door.</p>
+            <form class="buy-box" novalidate data-validate id="buy-form">
+              <div class="top">
+                <div class="total-row" style="margin:0 0 12px">
+                  <span class="t-label t-muted">Standard ticket</span>
+                  <span class="price" id="unit-price" data-price="45">45.00 <small>RON</small></span>
+                </div>
+                <div class="field" style="margin:0">
+                  <label for="qty">Quantity</label>
+                  <div class="stepper">
+                    <button class="icon-btn" type="button" data-step="-1" aria-label="Fewer tickets" aria-controls="qty"><i class="ph-bold ph-minus" aria-hidden="true"></i></button>
+                    <input class="input" id="qty" name="qty" type="text" inputmode="numeric" value="2" data-rules="required qty" data-label="Quantity" aria-describedby="qty-hint qty-error">
+                    <button class="icon-btn" type="button" data-step="1" aria-label="More tickets" aria-controls="qty"><i class="ph-bold ph-plus" aria-hidden="true"></i></button>
+                  </div>
+                  <p class="hint" id="qty-hint">Max 10 per order.</p>
+                  <p class="field-error" id="qty-error" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                </div>
+              </div>
+              <div class="tear" aria-hidden="true" style="--notch-bg: var(--background)"></div>
+              <div class="bottom">
+                <div class="total-row">
+                  <span class="t-label t-muted">Total</span>
+                  <span class="amount" id="total" aria-live="polite">90.00 RON</span>
+                </div>
+                <button class="btn btn-primary btn-block" type="submit"><i class="ph-bold ph-ticket" aria-hidden="true"></i>Buy tickets</button>
+                <p class="form-status" role="status" hidden><i class="ph-bold ph-check-circle" aria-hidden="true"></i><span>Done. Your tickets are in My tickets and on their way to your email.</span></p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="t-label screen-cap">Purchase notes</p>
+        <div class="panel">
+          <ul style="margin:0;padding-left:20px;display:grid;gap:8px">
+            <li>The buy box is a ticket: tear line and notches split "what you pick" from "what you pay".</li>
+            <li>Quantity accepts typing or the minus / plus controls. Values outside 1 to 10 show an inline error and the total shows a dash.</li>
+            <li>Prices and totals are always mono so digits line up.</li>
+            <li>On desktop the photo sits left, and the buy box becomes a sticky column on the right.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- (4) Tickets -->
+    <h3 class="t-h3" id="tickets" style="margin:56px 0 16px">4. My tickets</h3>
+    <div class="screens">
+      <div>
+        <p class="t-label screen-cap">Mobile, 375</p>
+        <div class="phone">
+          <div class="phone-bar">
+            <span class="wordmark"><span class="wordmark-text"><span class="wm-uni">Uni</span><span class="wm-connect">Connect</span></span></span>
+            <button class="icon-btn" type="button" aria-label="Account settings"><i class="ph ph-gear-six" aria-hidden="true"></i></button>
+          </div>
+          <div class="phone-body">
+            <h2 class="t-h1">My tickets</h2>
+            <div class="tabs" role="tablist" aria-label="Ticket lists">
+              <button type="button" role="tab" aria-selected="true">Upcoming (2)</button>
+              <button type="button" role="tab" aria-selected="false">Past</button>
+            </div>
+            <article class="ticket reveal" id="ticket-main" aria-label="Ticket for Basement jazz session">
+              <div class="head">
+                <div class="head-top">
+                  <span class="t-label" style="color:var(--primary-text)">Fri 14 Nov / 20:00</span>
+                  <span class="badge badge-success"><i class="ph-bold ph-check" aria-hidden="true"></i>Valid</span>
+                </div>
+                <h3 class="t-h2">Basement jazz session</h3>
+                <dl class="ticket-grid">
+                  <div><dt>Venue</dt><dd>Club Cultural</dd></div>
+                  <div><dt>Admit</dt><dd>1 of 2</dd></div>
+                  <div><dt>Holder</dt><dd>Ples Denisa</dd></div>
+                  <div><dt>Paid</dt><dd>45.00 RON</dd></div>
+                </dl>
+              </div>
+              <div class="tear" aria-hidden="true" style="--notch-bg: var(--background)"></div>
+              <div class="stub">
+                <div class="qr-plate">
+                  <svg class="qr" data-seed="7" viewBox="0 0 25 25" role="img" aria-label="QR code for ticket UC-7F3K-2Q9M" shape-rendering="crispEdges"></svg>
+                </div>
+                <span class="ticket-code">UC-7F3K-2Q9M</span>
+                <p class="t-small t-muted" style="margin:0;display:flex;gap:6px;align-items:center"><i class="ph ph-envelope-simple" aria-hidden="true"></i>Also emailed to you by UniConnect</p>
+              </div>
+            </article>
+            <div class="ticket-mini">
+              <div>
+                <span class="t-label" style="color:var(--primary-text)">Sun 23 Nov / 10:00</span>
+                <div class="t-h3" style="font-size:24px">5K campus run</div>
+              </div>
+              <a class="btn btn-ghost btn-sm" href="#tickets">Show QR</a>
+            </div>
+            <div class="demo-row" style="margin:20px 0 0">
+              <button class="btn btn-secondary btn-sm" type="button" id="replay"><i class="ph-bold ph-arrow-counter-clockwise" aria-hidden="true"></i>Replay reveal</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="t-label screen-cap">Ticket anatomy</p>
+        <div class="panel">
+          <ul style="margin:0;padding-left:20px;display:grid;gap:8px">
+            <li>Top half: who, when, where. Bottom half (the stub): the QR and the code, mono, letter-spaced so door staff can read it aloud.</li>
+            <li>The QR always sits on a white plate with near-black modules, in both themes, so scanners never struggle in dark mode.</li>
+            <li>Status uses a word plus a check icon, never a pulsing dot.</li>
+            <li>The reveal plays once when the ticket first scrolls into view. With reduced motion it simply appears.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== f. Motion ===== -->
+<section class="block" id="motion">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="t-label">05 / Motion</span>
+      <h2 class="t-h2">Move only on purpose</h2>
+      <p>Four places animate, each runs once per user action, nothing loops. All of it lives inside <code>@media (prefers-reduced-motion: no-preference)</code>; with reduced motion the end state is shown instantly. The live example is the ticket reveal in screen 4 (use Replay).</p>
+    </div>
+    <div class="table-scroll">
+      <table class="motion-table">
+        <thead><tr><th scope="col">Where</th><th scope="col">What</th><th scope="col">Duration</th><th scope="col">Easing</th></tr></thead>
+        <tbody>
+          <tr><td>Ticket reveal (My tickets, after purchase)</td><td>Card fades in and rises 16px, QR plate fades in after</td><td class="mono">320ms, QR 200ms +120ms delay</td><td class="mono">cubic-bezier(.2,.8,.2,1)</td></tr>
+          <tr><td>Log in / register switch</td><td>Panel cross-fade with a 4px rise</td><td class="mono">180ms</td><td class="mono">ease-out</td></tr>
+          <tr><td>Purchase confirmation</td><td>Status message fades in, focus moves to it</td><td class="mono">200ms</td><td class="mono">ease-out</td></tr>
+          <tr><td>Buttons</td><td>Background and border color only, no scale, no bounce</td><td class="mono">120ms</td><td class="mono">ease-out</td></tr>
+          <tr><td>Theme switch</td><td>None. Instant swap.</td><td class="mono">0ms</td><td class="mono">n/a</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Favicon ===== -->
+<section class="block" id="favicon">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="t-label">06 / Favicon</span>
+      <h2 class="t-h2">The U mark</h2>
+      <p>A blocky volt U for UniConnect, set on an ink ticket stub whose side notches line up with the U, so the two arms read as two people joined at the base. Ink body keeps a clear edge on light tabs, the volt U carries it on dark tabs, so no color-scheme switch is needed inside the SVG.</p>
+    </div>
+    <div class="grid-2">
+      <div class="fav-row theme-light">
+        <figure><img src="favicon.svg" width="16" height="16" alt="Favicon at 16px on light"><figcaption>16</figcaption></figure>
+        <figure><img src="favicon.svg" width="32" height="32" alt="Favicon at 32px on light"><figcaption>32</figcaption></figure>
+        <figure><img src="favicon.svg" width="64" height="64" alt="Favicon at 64px on light"><figcaption>64</figcaption></figure>
+        <figure><img src="favicon.svg" class="fav-180" width="180" height="180" alt="Favicon at 180px on light"><figcaption>180</figcaption></figure>
+      </div>
+      <div class="fav-row theme-dark">
+        <figure><img src="favicon.svg" width="16" height="16" alt="Favicon at 16px on dark"><figcaption>16</figcaption></figure>
+        <figure><img src="favicon.svg" width="32" height="32" alt="Favicon at 32px on dark"><figcaption>32</figcaption></figure>
+        <figure><img src="favicon.svg" width="64" height="64" alt="Favicon at 64px on dark"><figcaption>64</figcaption></figure>
+        <figure><img src="favicon.svg" class="fav-180" width="180" height="180" alt="Favicon at 180px on dark"><figcaption>180</figcaption></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== g. Do / Don't ===== -->
+<section class="block" id="rules">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="t-label">07 / Rules</span>
+      <h2 class="t-h2">Do / Don't</h2>
+    </div>
+    <div class="grid-2 dodont">
+      <div class="panel do">
+        <h3 class="t-h3"><i class="ph-bold ph-check" aria-hidden="true"></i>Do</h3>
+        <ul>
+          <li>Use volt lime as a fill: primary buttons, the poster block, a NEW badge. Always with ink text on it.</li>
+          <li>Use the olive <code>primary-text</code> (#4A6300) for accent text and links in light mode.</li>
+          <li>Set headlines big, condensed and uppercase. Let one headline own the screen.</li>
+          <li>Put every date, price and ticket code in JetBrains Mono.</li>
+          <li>Use the tear line and notches on ticket-like things: event cards, the buy box, tickets.</li>
+          <li>Keep corners at 4, 6 or 8px.</li>
+          <li>Keep one volt element per view where possible, so it stays loud.</li>
+        </ul>
+      </div>
+      <div class="panel dont">
+        <h3 class="t-h3"><i class="ph-bold ph-x" aria-hidden="true"></i>Don't</h3>
+        <ul>
+          <li>Don't set volt lime text on light backgrounds (1.08:1).</li>
+          <li>Don't add gradients, glows or pill-shaped buttons.</li>
+          <li>Don't animate in loops: no pulsing dots, no blinking "live", no breathing cards.</li>
+          <li>Don't put icons in boxes, circles or colored tiles.</li>
+          <li>Don't use the condensed display face below 22px or for paragraphs.</li>
+          <li>Don't render the QR in theme colors: always ink on white.</li>
+          <li>Don't use cream or warm grays. Neutrals stay cool.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">UniConnect, brand direction 02 / Volt. Fonts: Big Shoulders Display, Inter Tight, JetBrains Mono. Icons: Phosphor.</div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Theme toggle ---------- */
+  var root = document.documentElement;
+  var toggle = document.getElementById('theme-toggle');
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  function currentTheme() {
+    var t = root.getAttribute('data-theme');
+    if (t === 'light' || t === 'dark') return t;
+    return mq.matches ? 'dark' : 'light';
+  }
+  function renderToggle() {
+    var next = currentTheme() === 'dark' ? 'light' : 'dark';
+    toggle.querySelector('span').textContent = next === 'dark' ? 'Dark' : 'Light';
+    toggle.querySelector('i').className = 'ph-bold ' + (next === 'dark' ? 'ph-moon' : 'ph-sun');
+    toggle.setAttribute('aria-label', 'Switch to ' + next + ' theme');
+  }
+  toggle.addEventListener('click', function () {
+    var next = currentTheme() === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('uniconnect-theme', next); } catch (e) {}
+    renderToggle();
+  });
+  if (mq.addEventListener) mq.addEventListener('change', renderToggle);
+  renderToggle();
+
+  /* ---------- Swatches, read live from CSS variables ---------- */
+  var tokens = ['background', 'foreground', 'card', 'card-foreground', 'muted', 'muted-foreground', 'primary', 'primary-foreground', 'primary-text', 'secondary', 'accent', 'border', 'input', 'ring', 'destructive', 'success'];
+  document.querySelectorAll('[data-swatches]').forEach(function (panel) {
+    var cs = getComputedStyle(panel);
+    var box = panel.querySelector('.swatches');
+    tokens.forEach(function (name) {
+      var val = cs.getPropertyValue('--' + name).trim().toUpperCase();
+      var el = document.createElement('div');
+      el.className = 'swatch';
+      el.innerHTML = '<div class="chip" style="background:var(--' + name + ')"></div><div class="meta"><span class="name">' + name + '</span><span class="hex">' + val + '</span></div>';
+      box.appendChild(el);
+    });
+  });
+
+  /* ---------- Placeholder QR (finder squares plus seeded module grid) ---------- */
+  function drawQR(svg) {
+    var n = 25, seed = parseInt(svg.getAttribute('data-seed'), 10) || 1;
+    function rand() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+    var grid = [];
+    for (var y = 0; y < n; y++) { grid[y] = []; for (var x = 0; x < n; x++) grid[y][x] = rand() > 0.52; }
+    function reserve(x0, y0) {
+      for (var y = -1; y < 8; y++) for (var x = -1; x < 8; x++) {
+        var gx = x0 + x, gy = y0 + y;
+        if (gx < 0 || gy < 0 || gx >= n || gy >= n) continue;
+        var ring = Math.max(Math.abs(x - 3), Math.abs(y - 3));
+        grid[gy][gx] = (ring === 3 || ring <= 1);
+        if (x === -1 || y === -1 || x === 7 || y === 7) grid[gy][gx] = false;
+      }
+    }
+    reserve(0, 0); reserve(n - 7, 0); reserve(0, n - 7);
+    for (var i = 8; i < n - 8; i++) { grid[6][i] = i % 2 === 0; grid[i][6] = i % 2 === 0; }
+    for (var ay = -2; ay <= 2; ay++) for (var ax = -2; ax <= 2; ax++) {
+      var r = Math.max(Math.abs(ax), Math.abs(ay));
+      grid[18 + ay][18 + ax] = (r === 2 || r === 0);
+    }
+    var d = '';
+    for (var yy = 0; yy < n; yy++) for (var xx = 0; xx < n; xx++) if (grid[yy][xx]) d += 'M' + xx + ' ' + yy + 'h1v1h-1z';
+    svg.innerHTML = '<rect width="25" height="25" fill="#FFFFFF"/><path fill="#0A0B0D" d="' + d + '"/>';
+  }
+  document.querySelectorAll('svg.qr').forEach(drawQR);
+
+  /* ---------- Form validation ---------- */
+  var rules = {
+    email: function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) || 'Enter a valid email, like name@university.ro.'; },
+    password: function (v) { return (v.length >= 8 && /\d/.test(v)) || 'Use at least 8 characters, including a number.'; },
+    match: function (v, arg) { var o = document.getElementById(arg); return (o && v === o.value) || 'Passwords do not match.'; },
+    qty: function (v) { return (/^\d+$/.test(v.trim()) && +v >= 1 && +v <= 10) || 'Choose between 1 and 10 tickets.'; }
+  };
+  function check(el) {
+    var list = (el.getAttribute('data-rules') || '').split(' ').filter(Boolean);
+    var msg = '';
+    var isBox = el.type === 'checkbox';
+    var val = isBox ? '' : el.value;
+    for (var i = 0; i < list.length; i++) {
+      var parts = list[i].split(':'), name = parts[0], arg = parts[1];
+      if (name === 'required') {
+        if (isBox && !el.checked) { msg = 'Please accept the terms to continue.'; break; }
+        if (!isBox && !val.trim()) { msg = (el.getAttribute('data-label') || 'This field') + ' is required.'; break; }
+        continue;
+      }
+      if (!val) continue;
+      var res = rules[name] ? rules[name](val, arg) : true;
+      if (res !== true) { msg = res; break; }
+    }
+    setError(el, msg);
+    return !msg;
+  }
+  function setError(el, msg) {
+    var field = el.closest('.field');
+    var err = document.getElementById(el.id + '-error');
+    if (msg) {
+      el.setAttribute('aria-invalid', 'true');
+      if (field) field.classList.add('has-error');
+      if (err) { err.querySelector('span').textContent = msg; err.hidden = false; }
+    } else {
+      el.removeAttribute('aria-invalid');
+      if (field) field.classList.remove('has-error');
+      if (err) { err.querySelector('span').textContent = ''; err.hidden = true; }
+    }
+  }
+  document.querySelectorAll('form[data-validate]').forEach(function (form) {
+    var fields = Array.prototype.slice.call(form.querySelectorAll('[data-rules]'));
+    var status = form.querySelector('.form-status');
+    fields.forEach(function (el) {
+      el.addEventListener('blur', function () { el.dataset.touched = '1'; check(el); });
+      el.addEventListener(el.type === 'checkbox' ? 'change' : 'input', function () {
+        if (status) status.hidden = true;
+        if (el.type === 'checkbox') el.dataset.touched = '1';
+        if (el.dataset.touched) check(el);
+        /* keep confirm field in sync when the password changes */
+        fields.forEach(function (other) {
+          if (other !== el && other.dataset.touched && (other.getAttribute('data-rules') || '').indexOf('match:' + el.id) > -1) check(other);
+        });
+      });
+    });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var firstBad = null;
+      fields.forEach(function (el) { el.dataset.touched = '1'; if (!check(el) && !firstBad) firstBad = el; });
+      if (firstBad) { if (status) status.hidden = true; firstBad.focus(); return; }
+      if (status) { status.hidden = false; status.setAttribute('tabindex', '-1'); status.focus(); }
+      if (form.id === 'buy-form') replayReveal();
+    });
+  });
+
+  /* ---------- Quantity stepper and total ---------- */
+  var qty = document.getElementById('qty');
+  var total = document.getElementById('total');
+  var unit = parseFloat(document.getElementById('unit-price').getAttribute('data-price'));
+  function updateTotal() {
+    var v = qty.value.trim();
+    var ok = /^\d+$/.test(v) && +v >= 1 && +v <= 10;
+    total.textContent = ok ? (unit * +v).toFixed(2) + ' RON' : '-';
+    document.querySelectorAll('[data-step]').forEach(function (b) {
+      var s = +b.getAttribute('data-step');
+      b.disabled = ok && ((s < 0 && +v <= 1) || (s > 0 && +v >= 10));
+    });
+  }
+  document.querySelectorAll('[data-step]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var cur = parseInt(qty.value, 10);
+      if (isNaN(cur)) cur = 0;
+      var next = Math.min(10, Math.max(1, cur + parseInt(btn.getAttribute('data-step'), 10)));
+      qty.value = String(next);
+      qty.dataset.touched = '1';
+      check(qty);
+      updateTotal();
+    });
+  });
+  qty.addEventListener('input', updateTotal);
+  updateTotal();
+
+  /* ---------- Ticket reveal: once, motion-safe ---------- */
+  var motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
+  var ticket = document.getElementById('ticket-main');
+  function replayReveal() {
+    if (!motionOK.matches) return;
+    ticket.classList.add('is-pre');
+    void ticket.offsetWidth;
+    requestAnimationFrame(function () { ticket.classList.remove('is-pre'); });
+  }
+  if (motionOK.matches && 'IntersectionObserver' in window) {
+    ticket.classList.add('is-pre');
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { ticket.classList.remove('is-pre'); io.disconnect(); }
+      });
+    }, { threshold: 0.25 });
+    io.observe(ticket);
+  }
+  document.getElementById('replay').addEventListener('click', replayReveal);
+})();
+</script>
+</body>
+</html>
