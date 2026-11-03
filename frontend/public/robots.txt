@@ -1,0 +1,6 @@
+# Private and utility pages stay out of search results (they also send noindex).
+User-agent: *
+Disallow: /account/
+Disallow: /organizer
+Disallow: /login
+Disallow: /register
