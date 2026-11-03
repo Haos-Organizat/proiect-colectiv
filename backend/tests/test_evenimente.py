@@ -145,3 +145,33 @@ def test_api_evenimente_requires_organizator_role(monkeypatch: Any) -> None:
     assert data["creator_id"] == 3
     assert data["organizatie_id"] == 3
     assert data["status"] == "activ"
+
+
+def test_repository_maps_eveniment_to_events_table_columns() -> None:
+    from backend.infrastructure.evenimente_repository import EvenimentRepository
+
+    ev = Eveniment(
+        id=None,
+        titlu="Hackathon UniConnect",
+        descriere="Competiție de programare pentru studenți.",
+        categorie="academic",
+        data_ora="2026-12-01T18:00:00+02:00",
+        loc="Cluj-Napoca, FSEGA",
+        numar_locuri=150,
+        organizatie_id=3,
+        creator_id=3,
+        poza="https://example.com/cover.webp",
+    )
+
+    assert EvenimentRepository.TABLE == "events"
+    assert EvenimentRepository.to_row(ev) == {
+        "title": "Hackathon UniConnect",
+        "description": "Competiție de programare pentru studenți.",
+        "category": "academic",
+        "start_time": "2026-12-01T18:00:00+02:00",
+        "location": "Cluj-Napoca, FSEGA",
+        "capacity": 150,
+        "organizer_id": 3,
+        "status": "activ",
+        "image_url": "https://example.com/cover.webp",
+    }
