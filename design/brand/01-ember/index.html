@@ -1,0 +1,1269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UniConnect Brand Identity</title>
+<meta name="description" content="Brand direction 01 Ember for the student events app: tokens, type, components, example screens and motion rules.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&family=Schibsted+Grotesk:wght@400..900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+/* ============ TOKENS ============
+   Light is the base. Dark applies when the OS prefers dark (and no manual choice),
+   or when data-theme="dark" is set on <html>. .theme-light / .theme-dark scope
+   the tokens locally (used by swatch panels and favicon tiles). */
+:root, .theme-light {
+  --background: #F4EEE3;
+  --foreground: #17130F;
+  --card: #FBF7F0;
+  --card-foreground: #17130F;
+  --muted: #E9E1D3;
+  --muted-foreground: #5E554B;
+  --primary: #FF5B22;
+  --primary-foreground: #17130F;
+  --primary-hover: #E84A12;
+  --primary-text: #A8330B;
+  --secondary: #17130F;
+  --secondary-foreground: #F4EEE3;
+  --secondary-hover: #2E2720;
+  --accent: #E9E1D3;
+  --accent-foreground: #17130F;
+  --border: #D9CFBF;
+  --input: #8C8174;
+  --ring: #A8330B;
+  --destructive: #B0173A;
+  --destructive-foreground: #FFFFFF;
+  --destructive-hover: #921230;
+  --success: #1E7A46;
+  --success-foreground: #FFFFFF;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: #0B0A09;
+    --foreground: #F4EEE3;
+    --card: #17130F;
+    --card-foreground: #F4EEE3;
+    --muted: #211C17;
+    --muted-foreground: #A39A8E;
+    --primary: #FF5B22;
+    --primary-foreground: #0B0A09;
+    --primary-hover: #FF7240;
+    --primary-text: #FF5B22;
+    --secondary: #F4EEE3;
+    --secondary-foreground: #0B0A09;
+    --secondary-hover: #E3DACB;
+    --accent: #241E18;
+    --accent-foreground: #F4EEE3;
+    --border: #2E2720;
+    --input: #6E6458;
+    --ring: #FF5B22;
+    --destructive: #FF6B85;
+    --destructive-foreground: #0B0A09;
+    --destructive-hover: #FF8A9E;
+    --success: #4FD18B;
+    --success-foreground: #0B0A09;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"], .theme-dark {
+  --background: #0B0A09;
+  --foreground: #F4EEE3;
+  --card: #17130F;
+  --card-foreground: #F4EEE3;
+  --muted: #211C17;
+  --muted-foreground: #A39A8E;
+  --primary: #FF5B22;
+  --primary-foreground: #0B0A09;
+  --primary-hover: #FF7240;
+  --primary-text: #FF5B22;
+  --secondary: #F4EEE3;
+  --secondary-foreground: #0B0A09;
+  --secondary-hover: #E3DACB;
+  --accent: #241E18;
+  --accent-foreground: #F4EEE3;
+  --border: #2E2720;
+  --input: #6E6458;
+  --ring: #FF5B22;
+  --destructive: #FF6B85;
+  --destructive-foreground: #0B0A09;
+  --destructive-hover: #FF8A9E;
+  --success: #4FD18B;
+  --success-foreground: #0B0A09;
+  color-scheme: dark;
+}
+:root {
+  --font-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --radius-card: 16px;
+  --radius-input: 12px;
+  --radius-pill: 999px;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* fixed photo placeholder colors, identical in both themes */
+  --photo-ember: #FF5B22;
+  --photo-coal: #2A231C;
+  --photo-ash: #D9CFBF;
+  --qr-dark: #0B0A09;
+  --qr-light: #FFFFFF;
+}
+
+/* ============ BASE ============ */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+@media (min-width: 1024px) { body { font-size: 17px; } }
+h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; color: inherit; }
+p { margin: 0; }
+a { color: var(--primary-text); text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.ph, .ph-bold, .ph-fill { vertical-align: -0.125em; }
+
+/* ============ TYPE SCALE ============ */
+.t-display { font-family: var(--font-display); font-weight: 900; font-stretch: 112%; font-size: clamp(48px, 7vw + 22px, 104px); line-height: 0.9; letter-spacing: -0.02em; text-transform: uppercase; }
+.t-h1 { font-family: var(--font-display); font-weight: 850; font-stretch: 108%; font-size: clamp(36px, 4vw + 21px, 64px); line-height: 0.95; letter-spacing: -0.015em; }
+.t-h2 { font-family: var(--font-display); font-weight: 800; font-stretch: 104%; font-size: clamp(28px, 2.4vw + 19px, 44px); line-height: 1; letter-spacing: -0.01em; }
+.t-h3 { font-family: var(--font-display); font-weight: 760; font-size: clamp(22px, 1vw + 18px, 28px); line-height: 1.1; }
+.t-h4 { font-family: var(--font-display); font-weight: 700; font-size: clamp(18px, 0.4vw + 16.5px, 20px); line-height: 1.2; }
+.t-body { font-size: 1em; line-height: 1.55; }
+.t-small { font-size: 14px; line-height: 1.45; }
+.t-label { font-family: var(--font-mono); font-weight: 500; font-size: 12px; line-height: 1.3; letter-spacing: 0.08em; text-transform: uppercase; }
+@media (min-width: 1024px) { .t-label { font-size: 13px; } }
+.muted { color: var(--muted-foreground); }
+.accent-text { color: var(--primary-text); }
+
+/* ============ PAGE LAYOUT ============ */
+.wrap { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+@media (min-width: 768px) { .wrap { padding: 0 32px; } }
+.topbar { border-bottom: 1px solid var(--border); background: var(--background); position: sticky; top: 0; z-index: 10; }
+.topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 60px; }
+.doc-section { padding: 56px 0; border-bottom: 1px solid var(--border); }
+@media (min-width: 768px) { .doc-section { padding: 88px 0; } }
+.section-head { display: grid; gap: 12px; margin-bottom: 32px; max-width: 720px; }
+.section-head .t-label { color: var(--primary-text); }
+.inverse { background: var(--secondary); color: var(--secondary-foreground); }
+.inverse .muted { color: inherit; opacity: 1; }
+
+/* ============ WORDMARK ============ */
+.wordmark { font-family: var(--font-display); font-weight: 900; font-stretch: 115%; letter-spacing: -0.035em; line-height: 0.85; display: inline-flex; align-items: flex-end; color: var(--foreground); text-decoration: none; }
+.wordmark .dot { display: inline-block; width: 0.2em; height: 0.2em; background: var(--primary); margin-left: 0.06em; margin-bottom: 0.02em; }
+.wordmark.sm { font-size: 22px; }
+.wordmark .wm-uni { color: var(--primary-text); }
+
+/* ============ IDENTITY HEADER ============ */
+.identity { padding: 48px 0 56px; border-bottom: 1px solid var(--border); }
+@media (min-width: 768px) { .identity { padding: 96px 0 104px; } }
+.identity .wordmark.xl { font-size: clamp(46px, 12.4vw, 184px); font-stretch: 108%; }
+.identity-grid { display: grid; gap: 28px; margin-top: 28px; }
+@media (min-width: 900px) { .identity-grid { grid-template-columns: 1.3fr 1fr; align-items: end; } }
+.identity .lede { font-size: clamp(20px, 1.2vw + 16px, 26px); line-height: 1.35; max-width: 34ch; }
+.meta-list { display: grid; gap: 10px; margin: 0; }
+.meta-list div { display: grid; grid-template-columns: 110px 1fr; gap: 12px; border-top: 1px solid var(--border); padding-top: 10px; }
+.meta-list dt { margin: 0; }
+.meta-list dd { margin: 0; }
+
+/* ============ SWATCHES ============ */
+.theme-panels { display: grid; gap: 20px; }
+@media (min-width: 900px) { .theme-panels { grid-template-columns: 1fr 1fr; } }
+.theme-panel { background: var(--background); color: var(--foreground); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 20px; }
+.theme-panel h3 { margin-bottom: 4px; }
+.swatches { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 8px; }
+.swatch { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; padding: 6px 0; border-top: 1px solid var(--border); }
+.swatch-chip { width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--border); }
+.swatch-name { font-family: var(--font-mono); font-size: 13px; }
+.swatch-use { font-size: 13px; color: var(--muted-foreground); line-height: 1.35; }
+.swatch-hex { font-family: var(--font-mono); font-size: 13px; text-transform: uppercase; }
+.contrast { margin-top: 32px; }
+.table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--card); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 14px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-family: var(--font-mono); font-weight: 500; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted-foreground); }
+tr:last-child td { border-bottom: 0; }
+td.num { font-family: var(--font-mono); }
+
+/* ============ TYPE SPECIMEN ============ */
+.type-rows { display: grid; }
+.type-row { display: grid; gap: 8px; padding: 20px 0; border-top: 1px solid var(--border); }
+@media (min-width: 900px) { .type-row { grid-template-columns: 240px 1fr; gap: 32px; align-items: baseline; } }
+.type-spec { font-family: var(--font-mono); font-size: 12px; line-height: 1.6; color: var(--muted-foreground); }
+.type-spec strong { color: var(--foreground); font-weight: 500; display: block; letter-spacing: 0.06em; text-transform: uppercase; }
+.type-sample { overflow-wrap: anywhere; }
+
+/* ============ COMPONENTS ============ */
+.comp-grid { display: grid; gap: 20px; }
+@media (min-width: 900px) { .comp-grid { grid-template-columns: 1fr 1fr; } }
+.comp-card { background: var(--card); color: var(--card-foreground); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 20px; display: grid; gap: 16px; align-content: start; }
+.comp-card > .t-label { color: var(--muted-foreground); }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.state-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted-foreground); display: block; margin-bottom: 6px; }
+
+/* Buttons */
+.btn {
+  appearance: none; border: 1px solid transparent; border-radius: var(--radius-pill);
+  min-height: 48px; padding: 0 22px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--font-body); font-weight: 600; font-size: 16px; line-height: 1; text-decoration: none; cursor: pointer;
+  background: transparent; color: var(--foreground); white-space: nowrap;
+}
+.btn .ph, .btn .ph-bold { font-size: 18px; }
+.btn-sm { min-height: 40px; padding: 0 16px; font-size: 15px; }
+.btn-block { width: 100%; }
+.btn-primary { background: var(--primary); color: var(--primary-foreground); }
+.btn-primary:hover, .btn-primary.is-hover { background: var(--primary-hover); }
+.btn-secondary { background: var(--secondary); color: var(--secondary-foreground); }
+.btn-secondary:hover, .btn-secondary.is-hover { background: var(--secondary-hover); }
+.btn-ghost { color: var(--foreground); }
+.btn-ghost:hover, .btn-ghost.is-hover { background: var(--accent); color: var(--accent-foreground); }
+.btn-destructive { background: var(--destructive); color: var(--destructive-foreground); }
+.btn-destructive:hover, .btn-destructive.is-hover { background: var(--destructive-hover); }
+.btn:focus-visible, .btn.is-focus { outline: 2px solid var(--ring); outline-offset: 3px; }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
+.btn-primary:disabled:hover { background: var(--primary); }
+.btn-secondary:disabled:hover { background: var(--secondary); }
+.btn-ghost:disabled:hover { background: transparent; }
+.btn-destructive:disabled:hover { background: var(--destructive); }
+.btn-text { appearance: none; border: 0; background: none; padding: 8px 4px; min-height: 44px; color: var(--foreground); font: 600 15px/1 var(--font-body); display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border-radius: 8px; }
+.btn-text:hover { color: var(--primary-text); }
+
+/* Fields */
+.field { display: grid; gap: 6px; }
+.field label, .field .label { font-weight: 600; font-size: 15px; }
+.field .hint { font-size: 14px; color: var(--muted-foreground); }
+.input, .select {
+  width: 100%; min-height: 48px; padding: 0 14px;
+  font-family: var(--font-body); font-size: 16px; color: var(--foreground);
+  background: var(--card); border: 1.5px solid var(--input); border-radius: var(--radius-input);
+}
+.input::placeholder { color: var(--muted-foreground); opacity: 1; }
+.input:focus, .select:focus, .input.is-focus { outline: none; border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 28%, transparent); }
+.input[aria-invalid="true"], .select[aria-invalid="true"] { border-color: var(--destructive); }
+.input[aria-invalid="true"]:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 28%, transparent); border-color: var(--destructive); }
+.input:disabled, .select:disabled { opacity: 0.5; cursor: not-allowed; background: var(--muted); }
+.select-wrap { position: relative; }
+.select { appearance: none; padding-right: 44px; cursor: pointer; }
+.select-wrap .ph-bold { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--muted-foreground); }
+.field-error { display: flex; gap: 6px; align-items: flex-start; color: var(--destructive); font-size: 14px; font-weight: 500; line-height: 1.4; }
+.field-error[hidden] { display: none; }
+.field-error .ph-bold { margin-top: 2px; flex: none; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; cursor: pointer; }
+.check input { width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--primary); flex: none; cursor: pointer; }
+.check input:disabled { cursor: not-allowed; }
+.check input:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+/* Badges */
+.badge { display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 0 10px; border-radius: var(--radius-pill); font-family: var(--font-mono); font-weight: 500; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid transparent; white-space: nowrap; }
+.badge-primary { background: var(--primary); color: var(--primary-foreground); }
+.badge-solid { background: var(--secondary); color: var(--secondary-foreground); }
+.badge-outline { border-color: var(--input); color: var(--foreground); }
+.badge-muted { background: var(--muted); color: var(--muted-foreground); }
+.badge-success { border-color: var(--success); color: var(--success); }
+.tag { appearance: none; min-height: 40px; padding: 0 16px; border-radius: var(--radius-pill); border: 1.5px solid var(--input); background: transparent; color: var(--foreground); font: 600 14px/1 var(--font-body); cursor: pointer; white-space: nowrap; }
+.tag:hover { border-color: var(--foreground); }
+.tag[aria-pressed="true"] { background: var(--foreground); border-color: var(--foreground); color: var(--background); }
+
+/* Inline icon usage */
+.icon-line { display: flex; gap: 8px; align-items: center; font-size: 15px; }
+.icon-line .ph, .icon-line .ph-bold { font-size: 18px; color: var(--muted-foreground); flex: none; }
+
+/* ============ SCREENS ============ */
+.screens { display: grid; gap: 32px; justify-content: center; grid-template-columns: minmax(0, 375px); }
+@media (min-width: 820px) { .screens { grid-template-columns: repeat(2, minmax(0, 375px)); } }
+@media (min-width: 1220px) { .screens.three { grid-template-columns: repeat(3, minmax(0, 375px)); } }
+.screen-cap { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 10px; color: var(--muted-foreground); }
+.frame { width: 100%; background: var(--background); color: var(--foreground); border: 1px solid var(--border); border-radius: 28px; overflow: hidden; container-type: inline-size; container-name: app; }
+.frame-desktop { border-radius: 20px; margin-top: 40px; }
+.desktop-only-note { margin-top: 40px; }
+@media (max-width: 899px) { .frame-desktop-wrap { display: none; } }
+@media (min-width: 900px) { .desktop-only-note { display: none; } }
+
+.app-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.app-nav .links { display: none; gap: 4px; }
+.app-nav .end { display: flex; gap: 4px; align-items: center; }
+.icon-btn { appearance: none; border: 0; background: none; color: var(--foreground); min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; border-radius: 8px; }
+.icon-btn:hover { color: var(--primary-text); }
+.app-body { padding: 24px 16px 32px; display: grid; gap: 24px; }
+.app-hero { display: grid; gap: 14px; }
+.app-hero .t-display { font-size: 52px; }
+.app-hero .lead { font-size: 16px; color: var(--muted-foreground); max-width: 40ch; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.filters { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+.list-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.event-grid { display: grid; gap: 16px; }
+.event-card { display: grid; background: var(--card); color: var(--card-foreground); border: 1px solid var(--border); border-radius: var(--radius-card); overflow: hidden; text-decoration: none; }
+.event-card:hover .event-title { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.event-card:focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; }
+.event-info { padding: 14px 16px 16px; display: grid; gap: 8px; }
+.event-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.event-date { color: var(--primary-text); }
+.event-title { font-family: var(--font-display); font-weight: 800; font-stretch: 104%; font-size: 22px; line-height: 1.05; color: var(--card-foreground); }
+.event-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 14px; color: var(--muted-foreground); }
+.price { font-family: var(--font-mono); font-weight: 600; font-size: 14px; color: var(--card-foreground); }
+
+.photo { position: relative; aspect-ratio: 16 / 10; display: block; overflow: hidden; }
+.photo svg.art { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.photo .photo-label { position: absolute; left: 12px; bottom: 10px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+.photo-ember { background: var(--photo-ember); color: #0B0A09; }
+.photo-coal { background: var(--photo-coal); color: #F4EEE3; }
+.photo-ash { background: var(--photo-ash); color: #17130F; }
+
+@container app (min-width: 720px) {
+  .app-nav { padding: 16px 32px; }
+  .app-nav .links { display: flex; }
+  .app-nav .menu-btn { display: none; }
+  .app-body { padding: 56px 32px 48px; gap: 36px; }
+  .app-hero { grid-template-columns: 1.6fr 1fr; align-items: end; column-gap: 40px; }
+  .app-hero .t-display { font-size: 104px; grid-column: 1 / -1; }
+  .event-grid { grid-template-columns: repeat(3, 1fr); }
+  .event-grid .event-card:first-child { grid-column: span 2; }
+  .event-grid .event-card:first-child .photo { aspect-ratio: 16 / 7.5; }
+  .event-grid .event-card:first-child .event-title { font-size: 32px; }
+}
+
+/* Auth screen */
+.segmented { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border); }
+.segmented button { appearance: none; border: 0; background: none; min-height: 48px; font: 600 16px/1 var(--font-body); color: var(--muted-foreground); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.segmented button[aria-selected="true"] { color: var(--foreground); border-bottom-color: var(--primary); }
+.segmented button:focus-visible { outline-offset: -2px; }
+.form { display: grid; gap: 16px; }
+.form-status { font-size: 15px; font-weight: 500; display: flex; gap: 8px; align-items: flex-start; }
+.form-status[hidden] { display: none; }
+.form-status.ok { color: var(--success); }
+.form-status.bad { color: var(--destructive); }
+.password-wrap { position: relative; }
+.password-wrap .input { padding-right: 76px; }
+.password-wrap .reveal-pw { position: absolute; right: 4px; top: 2px; min-height: 44px; padding: 0 12px; font-size: 14px; }
+
+/* Event detail */
+.detail-meta { display: grid; gap: 8px; }
+.purchase { background: var(--card); color: var(--card-foreground); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 16px; display: grid; gap: 16px; }
+.stepper { display: flex; align-items: center; gap: 4px; }
+.stepper .input { width: 80px; text-align: center; font-family: var(--font-mono); font-weight: 600; }
+.stepper .btn-text { min-width: 44px; justify-content: center; font-size: 22px; }
+.total-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.total-amount { font-family: var(--font-mono); font-weight: 600; font-size: 22px; }
+
+/* Ticket */
+.ticket { background: var(--card); color: var(--card-foreground); border: 1px solid var(--border); border-radius: var(--radius-card); position: relative; }
+.ticket-head { padding: 18px 18px 16px; display: grid; gap: 8px; }
+.ticket-perf { position: relative; height: 0; border-top: 2px dashed var(--border); margin: 0 18px; }
+.ticket-perf::before, .ticket-perf::after { content: ""; position: absolute; top: -12px; width: 22px; height: 22px; border-radius: 50%; background: var(--background); border: 1px solid var(--border); }
+.ticket-perf::before { left: -30px; clip-path: inset(0 0 0 50%); }
+.ticket-perf::after { right: -30px; clip-path: inset(0 50% 0 0); }
+.ticket-body { padding: 18px; display: grid; gap: 14px; justify-items: center; }
+.qr { width: 196px; height: 196px; background: var(--qr-light); padding: 12px; border-radius: 10px; }
+.qr svg { display: block; width: 100%; height: 100%; }
+.ticket-code { font-family: var(--font-mono); font-weight: 600; font-size: 16px; letter-spacing: 0.1em; }
+.ticket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; width: 100%; }
+.ticket-grid div { display: grid; gap: 2px; }
+.ticket-grid .v { font-family: var(--font-mono); font-size: 14px; font-weight: 500; }
+.ticket-mini { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 14px 16px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-card); }
+
+/* Favicon showcase */
+.fav-rows { display: grid; gap: 16px; }
+@media (min-width: 900px) { .fav-rows { grid-template-columns: 1fr 1fr; } }
+.fav-tile { background: var(--background); color: var(--foreground); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 20px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; }
+.fav-tile figure { margin: 0; display: grid; gap: 8px; justify-items: start; }
+.fav-tile figcaption { font-family: var(--font-mono); font-size: 12px; color: var(--muted-foreground); }
+.fav-tile img { display: block; }
+.fav-tile img.r180 { border-radius: 40px; }
+.tab-mock { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 10px 10px 0 0; background: var(--card); border: 1px solid var(--border); border-bottom: 0; font-size: 13px; }
+
+/* Motion + do/dont */
+.notes-grid { display: grid; gap: 20px; }
+@media (min-width: 900px) { .notes-grid { grid-template-columns: 1fr 1fr; } }
+.motion-list { margin: 0; padding-left: 20px; display: grid; gap: 12px; }
+.motion-list strong { font-weight: 600; }
+.motion-list code, .mono { font-family: var(--font-mono); font-size: 0.875em; }
+.dodont ul { margin: 12px 0 0; padding-left: 20px; display: grid; gap: 8px; }
+.dodont h3 { display: flex; gap: 8px; align-items: center; }
+.dodont .do h3 .ph-bold { color: var(--success); }
+.dodont .dont h3 .ph-bold { color: var(--destructive); }
+footer { padding: 40px 0 56px; color: var(--muted-foreground); font-size: 14px; }
+
+/* ============ MOTION (only these, only with no-preference) ============ */
+@media (prefers-reduced-motion: no-preference) {
+  .btn, .tag, .input, .select, .icon-btn, .btn-text { transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease; }
+  .js .reveal { opacity: 0; }
+  .js .reveal.is-in { animation: ticket-in 360ms var(--ease-out) both; }
+  .panel-in { animation: panel-in 200ms var(--ease-out) both; }
+  .status-in { animation: status-in 200ms ease-out both; }
+}
+@keyframes ticket-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes status-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark sm" href="#top" aria-label="UniConnect, home"><span class="wm-uni">Uni</span>Connect<span class="dot" aria-hidden="true"></span></a>
+    <div class="row" style="gap:4px">
+      <span class="t-label muted" style="display:none" id="theme-state"></span>
+      <button class="btn btn-ghost btn-sm" type="button" id="theme-toggle" aria-label="Switch color theme">
+        <i class="ph-bold ph-moon" aria-hidden="true"></i><span>Dark mode</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ A. IDENTITY ============ -->
+<section class="identity" aria-labelledby="id-title">
+  <div class="wrap">
+    <p class="t-label accent-text">Brand direction 01, Ember</p>
+    <h1 id="id-title" class="sr-only">UniConnect brand identity</h1>
+    <div class="wordmark xl" aria-hidden="true" style="margin-top:20px"><span class="wm-uni">Uni</span>Connect<span class="dot"></span></div>
+    <div class="identity-grid">
+      <p class="lede">Loud on the poster, calm in the checkout. UniConnect is the campus night out set in heavy type: one ember accent, warm blacks, and nothing that blinks.</p>
+      <dl class="meta-list t-small">
+        <div><dt class="t-label muted">Name</dt><dd><strong>UniConnect</strong>. Wordmark: Uni in ember, Connect in ink, closed by a square node.</dd></div>
+        <div><dt class="t-label muted">Accent</dt><dd class="mono">#FF5B22 ember, #A8330B as text on cream</dd></div>
+        <div><dt class="t-label muted">Type</dt><dd>Archivo 700 to 900, Schibsted Grotesk, IBM Plex Mono</dd></div>
+        <div><dt class="t-label muted">Shape</dt><dd>Pill buttons, 16px cards, 12px inputs, square period</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ============ B. COLOR ============ -->
+<section class="doc-section" aria-labelledby="color-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="t-label">02 Color tokens</p>
+      <h2 id="color-title" class="t-h2">Warm black, warm cream, one ember.</h2>
+      <p class="muted">Token names follow shadcn/ui. Each panel below is rendered with its own theme scope, and the hex values are read live from the CSS variables, so what you see is what the page uses. Extra tokens outside shadcn defaults: <span class="mono">primary-text</span> (accent used as text), and hover variants.</p>
+    </div>
+    <div class="theme-panels">
+      <div class="theme-panel theme-light" data-swatches>
+        <h3 class="t-h4">Light</h3>
+        <p class="t-small muted">Cream paper, ink type. Accent as text darkens to burnt ember.</p>
+        <ul class="swatches"></ul>
+      </div>
+      <div class="theme-panel theme-dark" data-swatches>
+        <h3 class="t-h4">Dark</h3>
+        <p class="t-small muted">Warm near-black stage. Default for evening browsing.</p>
+        <ul class="swatches"></ul>
+      </div>
+    </div>
+
+    <div class="contrast">
+      <h3 class="t-h4" style="margin-bottom:12px">Contrast checks (WCAG 2.x relative luminance)</h3>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Pair</th><th>Light</th><th>Dark</th><th>Use</th></tr></thead>
+          <tbody>
+            <tr><td>foreground on background</td><td class="num">16.0 : 1</td><td class="num">17.1 : 1</td><td>Body text</td></tr>
+            <tr><td>muted-foreground on background</td><td class="num">6.3 : 1</td><td class="num">7.1 : 1</td><td>Secondary text, labels</td></tr>
+            <tr><td>muted-foreground on card</td><td class="num">6.9 : 1</td><td class="num">6.7 : 1</td><td>Card meta</td></tr>
+            <tr><td>muted-foreground on muted</td><td class="num">5.6 : 1</td><td class="num">6.1 : 1</td><td>Disabled-looking surfaces, badges</td></tr>
+            <tr><td>primary-text on background</td><td class="num">5.8 : 1 (#A8330B)</td><td class="num">6.4 : 1 (#FF5B22)</td><td>Accent text, links, dates</td></tr>
+            <tr><td>primary-text on card / muted</td><td class="num">6.2 / 5.2 : 1</td><td class="num">6.0 / 5.5 : 1</td><td>Dates on cards</td></tr>
+            <tr><td>primary-foreground on primary</td><td class="num">6.0 : 1</td><td class="num">6.4 : 1</td><td>Primary button label (dark ink on ember, never white)</td></tr>
+            <tr><td>destructive on background</td><td class="num">6.0 : 1</td><td class="num">7.2 : 1</td><td>Error messages</td></tr>
+            <tr><td>destructive-foreground on destructive</td><td class="num">6.9 : 1</td><td class="num">7.2 : 1</td><td>Destructive button</td></tr>
+            <tr><td>success on background</td><td class="num">4.6 : 1</td><td class="num">10.2 : 1</td><td>Confirmation text</td></tr>
+            <tr><td>input border on background (non-text, 3:1)</td><td class="num">3.3 : 1</td><td class="num">3.4 : 1</td><td>Field outlines</td></tr>
+            <tr><td>ring on background (non-text, 3:1)</td><td class="num">5.8 : 1</td><td class="num">6.4 : 1</td><td>Focus outline</td></tr>
+            <tr><td>white on #FF5B22 (rejected)</td><td class="num">3.0 : 1</td><td class="num">3.0 : 1</td><td>Fails 4.5:1, so ember buttons use dark labels</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ C. TYPE ============ -->
+<section class="doc-section" aria-labelledby="type-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="t-label">03 Type scale</p>
+      <h2 id="type-title" class="t-h2">Heavy poster headlines, quiet reading text.</h2>
+      <p class="muted">Archivo uses its width axis: display at 112% (slightly expanded) for a stamped, poster feel. Sizes interpolate with <span class="mono">clamp()</span> between 375px and roughly 1100px.</p>
+    </div>
+    <div class="type-rows">
+      <div class="type-row">
+        <div class="type-spec"><strong>Display</strong>Archivo 900, wdth 112<br>48px mobile, 104px desktop<br>lh 0.90, track -0.02em, uppercase</div>
+        <div class="type-sample t-display">Friday <span class="accent-text">fire.</span></div>
+      </div>
+      <div class="type-row">
+        <div class="type-spec"><strong>H1</strong>Archivo 850, wdth 108<br>36px mobile, 64px desktop<br>lh 0.95, track -0.015em</div>
+        <div class="type-sample t-h1">Neon Basement: Techno Night</div>
+      </div>
+      <div class="type-row">
+        <div class="type-spec"><strong>H2</strong>Archivo 800, wdth 104<br>28px mobile, 44px desktop<br>lh 1.0</div>
+        <div class="type-sample t-h2">This week on campus</div>
+      </div>
+      <div class="type-row">
+        <div class="type-spec"><strong>H3</strong>Archivo 760<br>22px mobile, 28px desktop<br>lh 1.1</div>
+        <div class="type-sample t-h3">Your tickets</div>
+      </div>
+      <div class="type-row">
+        <div class="type-spec"><strong>H4</strong>Archivo 700<br>18px mobile, 20px desktop<br>lh 1.2</div>
+        <div class="type-sample t-h4">Ticket details</div>
+      </div>
+      <div class="type-row">
+        <div class="type-spec"><strong>Body</strong>Schibsted Grotesk 400<br>16px mobile, 17px desktop<br>lh 1.55, max 68ch</div>
+        <p class="type-sample t-body" style="max-width:68ch">Doors open at 22:00. Bring your student card, the QR on your ticket is scanned at the entrance and works offline once it is in your inbox.</p>
+      </div>
+      <div class="type-row">
+        <div class="type-spec"><strong>Small</strong>Schibsted Grotesk 400 / 500<br>14px all sizes<br>lh 1.45</div>
+        <p class="type-sample t-small muted">Tickets are non-refundable within 24 hours of the event.</p>
+      </div>
+      <div class="type-row">
+        <div class="type-spec"><strong>Mono label</strong>IBM Plex Mono 500<br>12px mobile, 13px desktop<br>uppercase, track 0.08em</div>
+        <p class="type-sample t-label">Fri 14 Nov, 22:00 &nbsp; 35.00 RON &nbsp; UC-7Q4K-2291</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ D. COMPONENTS ============ -->
+<section class="doc-section" aria-labelledby="comp-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="t-label">04 Components</p>
+      <h2 id="comp-title" class="t-h2">Pills, plain icons, honest states.</h2>
+      <p class="muted">Live controls first, then forced states for review. Tab through the page to see real focus rings.</p>
+    </div>
+    <div class="comp-grid">
+      <div class="comp-card">
+        <p class="t-label">Buttons, live</p>
+        <div class="row">
+          <button class="btn btn-primary" type="button">Get tickets <i class="ph-bold ph-arrow-right" aria-hidden="true"></i></button>
+          <button class="btn btn-secondary" type="button">Save event</button>
+          <button class="btn btn-ghost" type="button">Cancel</button>
+          <button class="btn btn-destructive" type="button"><i class="ph-bold ph-trash" aria-hidden="true"></i> Cancel ticket</button>
+        </div>
+        <div>
+          <span class="state-label">Hover</span>
+          <div class="row">
+            <span class="btn btn-primary is-hover">Primary</span>
+            <span class="btn btn-secondary is-hover">Secondary</span>
+            <span class="btn btn-ghost is-hover">Ghost</span>
+            <span class="btn btn-destructive is-hover">Destructive</span>
+          </div>
+        </div>
+        <div>
+          <span class="state-label">Focus-visible</span>
+          <div class="row">
+            <span class="btn btn-primary is-focus">Primary</span>
+            <span class="btn btn-secondary is-focus">Secondary</span>
+            <span class="btn btn-ghost is-focus">Ghost</span>
+            <span class="btn btn-destructive is-focus">Destructive</span>
+          </div>
+        </div>
+        <div>
+          <span class="state-label">Disabled</span>
+          <div class="row">
+            <button class="btn btn-primary" type="button" disabled>Primary</button>
+            <button class="btn btn-secondary" type="button" disabled>Secondary</button>
+            <button class="btn btn-ghost" type="button" disabled>Ghost</button>
+            <button class="btn btn-destructive" type="button" disabled>Destructive</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <p class="t-label">Text input states</p>
+        <div class="field">
+          <label for="demo-default">Default</label>
+          <input class="input" id="demo-default" type="text" placeholder="Search events">
+        </div>
+        <div class="field">
+          <label for="demo-focus">Focus</label>
+          <input class="input is-focus" id="demo-focus" type="text" value="Techno">
+        </div>
+        <div class="field">
+          <label for="demo-error">Error</label>
+          <input class="input" id="demo-error" type="email" value="denisa@student" aria-invalid="true" aria-describedby="demo-error-msg">
+          <p class="field-error" id="demo-error-msg"><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span>Enter a valid email, like name@university.ro.</span></p>
+        </div>
+        <div class="field">
+          <label for="demo-disabled">Disabled</label>
+          <input class="input" id="demo-disabled" type="text" value="Locked after purchase" disabled>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <p class="t-label">Select, checkbox</p>
+        <div class="field">
+          <label for="demo-select">Faculty</label>
+          <div class="select-wrap">
+            <select class="select" id="demo-select">
+              <option>Computer Science</option>
+              <option>Economics</option>
+              <option>Letters</option>
+              <option>Law</option>
+            </select>
+            <i class="ph-bold ph-caret-down" aria-hidden="true"></i>
+          </div>
+        </div>
+        <label class="check"><input type="checkbox" checked> Email me my tickets</label>
+        <label class="check"><input type="checkbox"> Remind me 2 hours before</label>
+        <label class="check muted"><input type="checkbox" disabled> Share with friends (soon)</label>
+      </div>
+
+      <div class="comp-card">
+        <p class="t-label">Badges, tags, inline icons</p>
+        <div class="row">
+          <span class="badge badge-primary">Few left</span>
+          <span class="badge badge-solid">Music</span>
+          <span class="badge badge-outline">Free</span>
+          <span class="badge badge-muted">Sold out</span>
+          <span class="badge badge-success"><i class="ph-bold ph-check" aria-hidden="true"></i> Paid</span>
+        </div>
+        <div class="row" role="group" aria-label="Filter demo">
+          <button class="tag" type="button" aria-pressed="true">All</button>
+          <button class="tag" type="button" aria-pressed="false">Music</button>
+          <button class="tag" type="button" aria-pressed="false">Talks</button>
+        </div>
+        <div style="display:grid; gap:8px">
+          <p class="icon-line"><i class="ph ph-calendar-blank" aria-hidden="true"></i> Fri 14 Nov, 22:00</p>
+          <p class="icon-line"><i class="ph ph-map-pin" aria-hidden="true"></i> Form Space, Cluj-Napoca</p>
+          <p class="icon-line"><i class="ph ph-ticket" aria-hidden="true"></i> 2 tickets, emailed to you</p>
+          <p class="icon-line"><i class="ph ph-qr-code" aria-hidden="true"></i> Show the QR at the door</p>
+        </div>
+        <p class="t-small muted">Icons sit next to text in muted-foreground, regular weight at 18px, bold inside buttons. Never inside a box, circle or tinted chip.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ E. SCREENS ============ -->
+<section class="doc-section" aria-labelledby="screens-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="t-label">05 Example screens</p>
+      <h2 id="screens-title" class="t-h2">375px first, then the same parts at desktop.</h2>
+      <p class="muted">Forms below validate for real: blur a field, or submit empty, to see the error states.</p>
+    </div>
+
+    <div class="screens">
+      <!-- Screen 1: listing -->
+      <div>
+        <div class="screen-cap t-label"><span>01 Event listing</span><span>375</span></div>
+        <div class="frame" data-listing></div>
+      </div>
+
+      <!-- Screen 2: auth -->
+      <div>
+        <div class="screen-cap t-label"><span>02 Log in / Register</span><span>375</span></div>
+        <div class="frame">
+          <div class="app-nav">
+            <span class="wordmark sm"><span class="wm-uni">Uni</span>Connect<span class="dot" aria-hidden="true"></span></span>
+            <button class="btn-text" type="button"><i class="ph-bold ph-x" aria-hidden="true"></i> Close</button>
+          </div>
+          <div class="app-body" style="gap:20px">
+            <div style="display:grid; gap:10px">
+              <p class="t-label accent-text">Your tickets live here</p>
+              <h3 class="t-h1" style="font-size:40px">Sign in to UniConnect.</h3>
+            </div>
+            <div class="segmented" role="tablist" aria-label="Account">
+              <button type="button" role="tab" id="tab-login" aria-selected="true" aria-controls="panel-login">Log in</button>
+              <button type="button" role="tab" id="tab-register" aria-selected="false" aria-controls="panel-register" tabindex="-1">Register</button>
+            </div>
+
+            <div id="panel-login" role="tabpanel" aria-labelledby="tab-login">
+              <form class="form" novalidate data-form="login">
+                <div class="field">
+                  <label for="login-email">Email</label>
+                  <input class="input" id="login-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@university.ro" data-validate="email" aria-describedby="">
+                  <p class="field-error" id="login-email-error" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                </div>
+                <div class="field">
+                  <label for="login-password">Password</label>
+                  <div class="password-wrap">
+                    <input class="input" id="login-password" name="password" type="password" autocomplete="current-password" data-validate="required" data-required-msg="Enter your password.">
+                    <button class="btn-text reveal-pw" type="button" data-toggle-pw="login-password" aria-pressed="false">Show</button>
+                  </div>
+                  <p class="field-error" id="login-password-error" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                </div>
+                <button class="btn btn-primary btn-block" type="submit">Log in <i class="ph-bold ph-arrow-right" aria-hidden="true"></i></button>
+                <p class="form-status" role="status" hidden></p>
+                <a href="#" class="t-small" style="justify-self:start">Forgot password?</a>
+              </form>
+            </div>
+
+            <div id="panel-register" role="tabpanel" aria-labelledby="tab-register" hidden>
+              <form class="form" novalidate data-form="register">
+                <div class="field">
+                  <label for="reg-name">Full name</label>
+                  <input class="input" id="reg-name" name="name" type="text" autocomplete="name" data-validate="name">
+                  <p class="field-error" id="reg-name-error" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                </div>
+                <div class="field">
+                  <label for="reg-email">Email</label>
+                  <input class="input" id="reg-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@university.ro" data-validate="email">
+                  <p class="field-error" id="reg-email-error" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                </div>
+                <div class="field">
+                  <label for="reg-password">Password</label>
+                  <p class="hint" id="reg-password-hint">At least 8 characters, including a number.</p>
+                  <div class="password-wrap">
+                    <input class="input" id="reg-password" name="password" type="password" autocomplete="new-password" data-validate="password" aria-describedby="reg-password-hint">
+                    <button class="btn-text reveal-pw" type="button" data-toggle-pw="reg-password" aria-pressed="false">Show</button>
+                  </div>
+                  <p class="field-error" id="reg-password-error" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                </div>
+                <div class="field">
+                  <label for="reg-confirm">Confirm password</label>
+                  <input class="input" id="reg-confirm" name="confirm" type="password" autocomplete="new-password" data-validate="match" data-match="reg-password">
+                  <p class="field-error" id="reg-confirm-error" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+                </div>
+                <button class="btn btn-primary btn-block" type="submit">Create account</button>
+                <p class="form-status" role="status" hidden></p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 3: event detail -->
+      <div>
+        <div class="screen-cap t-label"><span>03 Event detail + purchase</span><span>375</span></div>
+        <div class="frame">
+          <div class="app-nav">
+            <button class="btn-text" type="button"><i class="ph-bold ph-arrow-left" aria-hidden="true"></i> Events</button>
+            <button class="btn-text" type="button"><i class="ph-bold ph-share-network" aria-hidden="true"></i> Share</button>
+          </div>
+          <div class="photo photo-ember" role="img" aria-label="Event photo placeholder">
+            <svg class="art" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="118" cy="38" r="30" fill="#0B0A09"/><rect x="0" y="72" width="160" height="28" fill="#0B0A09"/><rect x="18" y="54" width="10" height="18" fill="#0B0A09"/><rect x="34" y="46" width="10" height="26" fill="#0B0A09"/></svg>
+            <span class="photo-label" style="color:#F4EEE3">Event photo</span>
+          </div>
+          <div class="app-body" style="gap:20px">
+            <div style="display:grid; gap:10px">
+              <div class="row"><span class="badge badge-solid">Music</span><span class="badge badge-primary">Few left</span></div>
+              <h3 class="t-h1" style="font-size:36px">Neon Basement: Techno Night</h3>
+              <div class="detail-meta">
+                <p class="icon-line"><i class="ph ph-calendar-blank" aria-hidden="true"></i> Fri 14 Nov, 22:00 to 04:00</p>
+                <p class="icon-line"><i class="ph ph-map-pin" aria-hidden="true"></i> Form Space, Str. Horea 4</p>
+                <p class="icon-line"><i class="ph ph-users-three" aria-hidden="true"></i> Hosted by the CS Student League</p>
+              </div>
+            </div>
+            <p class="muted">Three local DJs, one basement, no dress code. Student card required at the door for student prices.</p>
+
+            <form class="purchase" novalidate data-form="purchase">
+              <h4 class="t-h4">Tickets</h4>
+              <div class="field">
+                <label for="ticket-type">Ticket type</label>
+                <div class="select-wrap">
+                  <select class="select" id="ticket-type" name="type">
+                    <option value="25">Student, 25.00 RON</option>
+                    <option value="35">Standard, 35.00 RON</option>
+                  </select>
+                  <i class="ph-bold ph-caret-down" aria-hidden="true"></i>
+                </div>
+              </div>
+              <div class="field">
+                <label for="ticket-qty">Quantity</label>
+                <p class="hint" id="ticket-qty-hint">Up to 10 per order.</p>
+                <div class="stepper">
+                  <button class="btn-text" type="button" data-step="-1" aria-label="Decrease quantity"><i class="ph-bold ph-minus" aria-hidden="true"></i></button>
+                  <input class="input" id="ticket-qty" name="qty" type="text" inputmode="numeric" value="2" data-validate="qty" aria-describedby="ticket-qty-hint">
+                  <button class="btn-text" type="button" data-step="1" aria-label="Increase quantity"><i class="ph-bold ph-plus" aria-hidden="true"></i></button>
+                </div>
+                <p class="field-error" id="ticket-qty-error" hidden><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span></span></p>
+              </div>
+              <div class="total-row">
+                <span class="t-label muted">Total</span>
+                <output class="total-amount" id="ticket-total" for="ticket-qty ticket-type" aria-live="polite">50.00 RON</output>
+              </div>
+              <button class="btn btn-primary btn-block" type="submit"><i class="ph-bold ph-ticket" aria-hidden="true"></i> Buy tickets</button>
+              <p class="form-status" role="status" hidden></p>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 4: my tickets -->
+      <div>
+        <div class="screen-cap t-label"><span>04 My tickets</span><span>375</span></div>
+        <div class="frame">
+          <div class="app-nav">
+            <span class="wordmark sm"><span class="wm-uni">Uni</span>Connect<span class="dot" aria-hidden="true"></span></span>
+            <button class="btn-text" type="button"><i class="ph-bold ph-user" aria-hidden="true"></i> Denisa</button>
+          </div>
+          <div class="app-body" style="gap:18px">
+            <div style="display:grid; gap:8px">
+              <p class="t-label muted">My account</p>
+              <h3 class="t-h1" style="font-size:40px">Your tickets.</h3>
+            </div>
+            <article class="ticket reveal" id="ticket-card" aria-label="Ticket for Neon Basement: Techno Night">
+              <div class="ticket-head">
+                <div class="event-top"><span class="t-label event-date">Fri 14 Nov, 22:00</span><span class="badge badge-success"><i class="ph-bold ph-check" aria-hidden="true"></i> Paid</span></div>
+                <h4 class="t-h3">Neon Basement: Techno Night</h4>
+                <p class="icon-line muted"><i class="ph ph-map-pin" aria-hidden="true"></i> Form Space, Str. Horea 4</p>
+              </div>
+              <div class="ticket-perf" aria-hidden="true"></div>
+              <div class="ticket-body">
+                <div class="qr" role="img" aria-label="Ticket QR code for UC-7Q4K-2291">
+                  <svg viewBox="-1 -1 27 27" shape-rendering="crispEdges" aria-hidden="true"><path fill="#0B0A09" d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM8 0h1v1h-1zM12 0h1v1h-1zM16 0h1v1h-1zM18 0h1v1h-1zM19 0h1v1h-1zM20 0h1v1h-1zM21 0h1v1h-1zM22 0h1v1h-1zM23 0h1v1h-1zM24 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM9 1h1v1h-1zM10 1h1v1h-1zM11 1h1v1h-1zM12 1h1v1h-1zM15 1h1v1h-1zM16 1h1v1h-1zM18 1h1v1h-1zM24 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM13 2h1v1h-1zM18 2h1v1h-1zM20 2h1v1h-1zM21 2h1v1h-1zM22 2h1v1h-1zM24 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM16 3h1v1h-1zM18 3h1v1h-1zM20 3h1v1h-1zM21 3h1v1h-1zM22 3h1v1h-1zM24 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM18 4h1v1h-1zM20 4h1v1h-1zM21 4h1v1h-1zM22 4h1v1h-1zM24 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM9 5h1v1h-1zM12 5h1v1h-1zM13 5h1v1h-1zM14 5h1v1h-1zM15 5h1v1h-1zM18 5h1v1h-1zM24 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM19 6h1v1h-1zM20 6h1v1h-1zM21 6h1v1h-1zM22 6h1v1h-1zM23 6h1v1h-1zM24 6h1v1h-1zM9 7h1v1h-1zM12 7h1v1h-1zM13 7h1v1h-1zM14 7h1v1h-1zM15 7h1v1h-1zM16 7h1v1h-1zM0 8h1v1h-1zM2 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM16 8h1v1h-1zM18 8h1v1h-1zM20 8h1v1h-1zM21 8h1v1h-1zM22 8h1v1h-1zM24 8h1v1h-1zM0 9h1v1h-1zM4 9h1v1h-1zM7 9h1v1h-1zM12 9h1v1h-1zM15 9h1v1h-1zM18 9h1v1h-1zM20 9h1v1h-1zM22 9h1v1h-1zM23 9h1v1h-1zM24 9h1v1h-1zM2 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM11 10h1v1h-1zM13 10h1v1h-1zM15 10h1v1h-1zM18 10h1v1h-1zM21 10h1v1h-1zM1 11h1v1h-1zM3 11h1v1h-1zM5 11h1v1h-1zM9 11h1v1h-1zM14 11h1v1h-1zM15 11h1v1h-1zM16 11h1v1h-1zM17 11h1v1h-1zM18 11h1v1h-1zM19 11h1v1h-1zM20 11h1v1h-1zM2 12h1v1h-1zM3 12h1v1h-1zM6 12h1v1h-1zM9 12h1v1h-1zM15 12h1v1h-1zM16 12h1v1h-1zM19 12h1v1h-1zM20 12h1v1h-1zM21 12h1v1h-1zM22 12h1v1h-1zM0 13h1v1h-1zM3 13h1v1h-1zM5 13h1v1h-1zM9 13h1v1h-1zM10 13h1v1h-1zM11 13h1v1h-1zM13 13h1v1h-1zM17 13h1v1h-1zM20 13h1v1h-1zM21 13h1v1h-1zM22 13h1v1h-1zM23 13h1v1h-1zM0 14h1v1h-1zM1 14h1v1h-1zM4 14h1v1h-1zM6 14h1v1h-1zM7 14h1v1h-1zM8 14h1v1h-1zM10 14h1v1h-1zM12 14h1v1h-1zM15 14h1v1h-1zM17 14h1v1h-1zM18 14h1v1h-1zM21 14h1v1h-1zM0 15h1v1h-1zM7 15h1v1h-1zM8 15h1v1h-1zM9 15h1v1h-1zM10 15h1v1h-1zM12 15h1v1h-1zM13 15h1v1h-1zM17 15h1v1h-1zM18 15h1v1h-1zM19 15h1v1h-1zM21 15h1v1h-1zM22 15h1v1h-1zM23 15h1v1h-1zM24 15h1v1h-1zM1 16h1v1h-1zM2 16h1v1h-1zM3 16h1v1h-1zM4 16h1v1h-1zM5 16h1v1h-1zM6 16h1v1h-1zM7 16h1v1h-1zM9 16h1v1h-1zM14 16h1v1h-1zM15 16h1v1h-1zM16 16h1v1h-1zM17 16h1v1h-1zM18 16h1v1h-1zM19 16h1v1h-1zM20 16h1v1h-1zM23 16h1v1h-1zM8 17h1v1h-1zM9 17h1v1h-1zM10 17h1v1h-1zM12 17h1v1h-1zM13 17h1v1h-1zM16 17h1v1h-1zM20 17h1v1h-1zM21 17h1v1h-1zM22 17h1v1h-1zM23 17h1v1h-1zM24 17h1v1h-1zM0 18h1v1h-1zM1 18h1v1h-1zM2 18h1v1h-1zM3 18h1v1h-1zM4 18h1v1h-1zM5 18h1v1h-1zM6 18h1v1h-1zM8 18h1v1h-1zM9 18h1v1h-1zM11 18h1v1h-1zM12 18h1v1h-1zM15 18h1v1h-1zM16 18h1v1h-1zM18 18h1v1h-1zM20 18h1v1h-1zM24 18h1v1h-1zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h1v1h-1zM9 19h1v1h-1zM12 19h1v1h-1zM13 19h1v1h-1zM14 19h1v1h-1zM15 19h1v1h-1zM16 19h1v1h-1zM20 19h1v1h-1zM22 19h1v1h-1zM23 19h1v1h-1zM0 20h1v1h-1zM2 20h1v1h-1zM3 20h1v1h-1zM4 20h1v1h-1zM6 20h1v1h-1zM8 20h1v1h-1zM11 20h1v1h-1zM12 20h1v1h-1zM13 20h1v1h-1zM15 20h1v1h-1zM16 20h1v1h-1zM17 20h1v1h-1zM18 20h1v1h-1zM19 20h1v1h-1zM20 20h1v1h-1zM21 20h1v1h-1zM0 21h1v1h-1zM2 21h1v1h-1zM3 21h1v1h-1zM4 21h1v1h-1zM6 21h1v1h-1zM8 21h1v1h-1zM10 21h1v1h-1zM12 21h1v1h-1zM13 21h1v1h-1zM14 21h1v1h-1zM15 21h1v1h-1zM16 21h1v1h-1zM18 21h1v1h-1zM19 21h1v1h-1zM20 21h1v1h-1zM21 21h1v1h-1zM0 22h1v1h-1zM2 22h1v1h-1zM3 22h1v1h-1zM4 22h1v1h-1zM6 22h1v1h-1zM9 22h1v1h-1zM11 22h1v1h-1zM12 22h1v1h-1zM13 22h1v1h-1zM15 22h1v1h-1zM21 22h1v1h-1zM22 22h1v1h-1zM0 23h1v1h-1zM6 23h1v1h-1zM11 23h1v1h-1zM15 23h1v1h-1zM16 23h1v1h-1zM19 23h1v1h-1zM21 23h1v1h-1zM0 24h1v1h-1zM1 24h1v1h-1zM2 24h1v1h-1zM3 24h1v1h-1zM4 24h1v1h-1zM5 24h1v1h-1zM6 24h1v1h-1zM10 24h1v1h-1zM11 24h1v1h-1zM13 24h1v1h-1zM15 24h1v1h-1zM18 24h1v1h-1zM20 24h1v1h-1zM22 24h1v1h-1z"/></svg>
+                </div>
+                <p class="ticket-code">UC-7Q4K-2291</p>
+                <div class="ticket-grid">
+                  <div><span class="t-label muted">Type</span><span class="v">Student</span></div>
+                  <div><span class="t-label muted">Admit</span><span class="v">1 of 2</span></div>
+                  <div><span class="t-label muted">Holder</span><span class="v">Ples Denisa</span></div>
+                  <div><span class="t-label muted">Paid</span><span class="v">25.00 RON</span></div>
+                </div>
+                <p class="icon-line t-small muted"><i class="ph ph-envelope-simple" aria-hidden="true"></i> Emailed by UniConnect to ana.pop@stud.ubbcluj.ro</p>
+                <button class="btn btn-secondary btn-block btn-sm" type="button" id="replay-reveal"><i class="ph-bold ph-arrow-counter-clockwise" aria-hidden="true"></i> Replay reveal</button>
+              </div>
+            </article>
+            <div class="ticket-mini">
+              <div style="display:grid; gap:4px">
+                <span class="t-label accent-text">Sat 22 Nov, 10:00</span>
+                <span class="t-h4">Faculty Football Cup</span>
+              </div>
+              <a class="btn-text" href="#ticket-card"><i class="ph-bold ph-qr-code" aria-hidden="true"></i> Show</a>
+            </div>
+            <div class="ticket-mini" style="opacity:0.7">
+              <div style="display:grid; gap:4px">
+                <span class="t-label muted">Past, 30 Oct</span>
+                <span class="t-h4">Halloween Quiz</span>
+              </div>
+              <span class="badge badge-muted">Used</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame-desktop-wrap">
+      <div class="screen-cap t-label" style="margin-top:56px"><span>01 Event listing, desktop</span><span>fluid, container query at 720px</span></div>
+      <div class="frame frame-desktop" style="margin-top:0" data-listing></div>
+    </div>
+    <p class="desktop-only-note t-small muted">The desktop version of the listing appears here on screens 900px and wider. It is the same markup as screen 01, switched by a container query.</p>
+  </div>
+</section>
+
+<!-- Favicon -->
+<section class="doc-section" aria-labelledby="fav-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="t-label">06 Favicon / app icon</p>
+      <h2 id="fav-title" class="t-h2">A U that connects two nodes.</h2>
+      <p class="muted">Ember rounded square with a heavy black U. Each arm is capped by a separate square node (the same square that ends the wordmark), so the U reads as the connection between two points: uni plus connect. Solid tile works on light and dark tabs, so no color-scheme switch is needed inside the SVG.</p>
+    </div>
+    <div class="fav-rows">
+      <div class="fav-tile theme-light">
+        <figure><img src="favicon.svg" width="16" height="16" alt="UniConnect icon at 16px"><figcaption>16</figcaption></figure>
+        <figure><img src="favicon.svg" width="32" height="32" alt="UniConnect icon at 32px"><figcaption>32</figcaption></figure>
+        <figure><img src="favicon.svg" width="64" height="64" alt="UniConnect icon at 64px"><figcaption>64</figcaption></figure>
+        <figure><img src="favicon.svg" width="180" height="180" alt="UniConnect icon at 180px" class="r180"><figcaption>180, light</figcaption></figure>
+        <span class="tab-mock"><img src="favicon.svg" width="16" height="16" alt=""> UniConnect, campus events</span>
+      </div>
+      <div class="fav-tile theme-dark">
+        <figure><img src="favicon.svg" width="16" height="16" alt="UniConnect icon at 16px on dark"><figcaption>16</figcaption></figure>
+        <figure><img src="favicon.svg" width="32" height="32" alt="UniConnect icon at 32px on dark"><figcaption>32</figcaption></figure>
+        <figure><img src="favicon.svg" width="64" height="64" alt="UniConnect icon at 64px on dark"><figcaption>64</figcaption></figure>
+        <figure><img src="favicon.svg" width="180" height="180" alt="UniConnect icon at 180px on dark" class="r180"><figcaption>180, dark</figcaption></figure>
+        <span class="tab-mock"><img src="favicon.svg" width="16" height="16" alt=""> UniConnect, campus events</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ F + G. MOTION, DO / DON'T ============ -->
+<section class="doc-section" aria-labelledby="motion-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="t-label">07 Motion</p>
+      <h2 id="motion-title" class="t-h2">Four moments move. Everything else holds still.</h2>
+      <p class="muted">All motion lives inside <span class="mono">@media (prefers-reduced-motion: no-preference)</span>. With reduced motion, everything appears instantly. Every animation runs once; nothing loops.</p>
+    </div>
+    <div class="notes-grid">
+      <div class="comp-card">
+        <p class="t-label">Where things animate</p>
+        <ol class="motion-list">
+          <li><strong>Ticket reveal</strong> (My tickets, after purchase): fade plus 16px rise, <code>360ms</code>, <code>cubic-bezier(0.2, 0.8, 0.2, 1)</code>, once when it enters the viewport. Live on screen 04, use Replay to see it again.</li>
+          <li><strong>Log in / Register switch</strong>: panel fade plus 8px rise, <code>200ms</code>, same easing. Live on screen 02.</li>
+          <li><strong>Form result</strong> (purchase or sign-in confirmation): opacity only, <code>200ms ease-out</code>.</li>
+          <li><strong>Control feedback</strong>: background, border and color transitions on buttons, tags and inputs, <code>150ms ease</code>. No scale, no bounce.</li>
+        </ol>
+      </div>
+      <div class="comp-card">
+        <p class="t-label">Never</p>
+        <ul class="motion-list">
+          <li>No infinite animations: no pulsing "live" dots, breathing badges, spinners on idle, marquees.</li>
+          <li>No parallax, scroll-jacking or reveal-on-scroll for regular content.</li>
+          <li>No animated theme switch; the toggle swaps tokens instantly.</li>
+          <li>Loading uses static skeleton blocks or a text label, not shimmer.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-head" style="margin-top:72px">
+      <p class="t-label">08 Do / Don't</p>
+      <h2 class="t-h2">Keep it a poster, not a casino.</h2>
+    </div>
+    <div class="notes-grid dodont">
+      <div class="comp-card do">
+        <h3 class="t-h4"><i class="ph-bold ph-check" aria-hidden="true"></i> Do</h3>
+        <ul>
+          <li>Use ember for one thing per view: the main action or the key word in a headline.</li>
+          <li>Set headlines in Archivo 800 to 900, tight leading, and let them run big on mobile too.</li>
+          <li>Put dates, prices and ticket codes in IBM Plex Mono so numbers align and read as data.</li>
+          <li>Use primary-text (#A8330B) whenever ember is text on a light surface.</li>
+          <li>Keep dark ink labels on ember buttons in both themes.</li>
+          <li>Keep QR codes black on white in both themes so scanners at the door always read them.</li>
+          <li>Show errors inline, under the field, with text, not just a red border.</li>
+        </ul>
+      </div>
+      <div class="comp-card dont">
+        <h3 class="t-h4"><i class="ph-bold ph-x" aria-hidden="true"></i> Don't</h3>
+        <ul>
+          <li>Don't put white text on ember (3.0:1 fails contrast).</li>
+          <li>Don't add a second accent color or gradients; contrast comes from black, cream and size.</li>
+          <li>Don't box icons in circles, squares or tinted chips.</li>
+          <li>Don't use pure #000 or #FFF for surfaces; the blacks and creams are warm.</li>
+          <li>Don't animate lists, cards or headings on scroll.</li>
+          <li>Don't set inputs below 16px, iOS will zoom the page.</li>
+          <li>Don't use em dashes or bullet characters in product copy.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">Brand direction 01 Ember for the student events app. UniConnect.</div>
+</footer>
+
+<template id="listing-tpl">
+  <div class="app-nav">
+    <span class="wordmark sm"><span class="wm-uni">Uni</span>Connect<span class="dot" aria-hidden="true"></span></span>
+    <nav class="links" aria-label="Main">
+      <a class="btn btn-ghost btn-sm" href="#">Events</a>
+      <a class="btn btn-ghost btn-sm" href="#">Clubs</a>
+      <a class="btn btn-ghost btn-sm" href="#">My tickets</a>
+    </nav>
+    <div class="end">
+      <a class="btn btn-secondary btn-sm" href="#">Log in</a>
+      <button class="icon-btn menu-btn" type="button" aria-label="Open menu"><i class="ph ph-list" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <div class="app-body">
+    <div class="app-hero">
+      <p class="t-label accent-text">Cluj-Napoca, this week</p>
+      <h3 class="t-display">Campus <span class="accent-text">after dark.</span></h3>
+      <p class="lead">Parties, talks, matches and open mics from every faculty. Buy in two taps, your ticket lands in your inbox.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#">Browse events <i class="ph-bold ph-arrow-right" aria-hidden="true"></i></a>
+        <a class="btn btn-ghost" href="#">How tickets work</a>
+      </div>
+    </div>
+    <div class="filters" role="group" aria-label="Filter by category">
+      <button class="tag" type="button" aria-pressed="true">All</button>
+      <button class="tag" type="button" aria-pressed="false">Music</button>
+      <button class="tag" type="button" aria-pressed="false">Talks</button>
+      <button class="tag" type="button" aria-pressed="false">Sport</button>
+      <button class="tag" type="button" aria-pressed="false">Culture</button>
+    </div>
+    <div class="list-head"><h4 class="t-h3">This week</h4><a class="t-small" href="#">See all</a></div>
+    <div class="event-grid">
+      <a class="event-card" href="#">
+        <span class="photo photo-ember" role="img" aria-label="Event photo placeholder">
+          <svg class="art" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="118" cy="38" r="30" fill="#0B0A09"/><rect x="0" y="72" width="160" height="28" fill="#0B0A09"/><rect x="18" y="54" width="10" height="18" fill="#0B0A09"/><rect x="34" y="46" width="10" height="26" fill="#0B0A09"/></svg>
+          <span class="photo-label" style="color:#F4EEE3">Event photo</span>
+        </span>
+        <span class="event-info">
+          <span class="event-top"><span class="t-label event-date">Fri 14 Nov, 22:00</span><span class="badge badge-primary">Few left</span></span>
+          <span class="event-title">Neon Basement: Techno Night</span>
+          <span class="event-foot"><span><i class="ph ph-map-pin" aria-hidden="true"></i> Form Space</span><span class="price">from 25 RON</span></span>
+        </span>
+      </a>
+      <a class="event-card" href="#">
+        <span class="photo photo-coal" role="img" aria-label="Event photo placeholder">
+          <svg class="art" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="60" y="20" width="40" height="56" fill="#FF5B22"/><rect x="0" y="76" width="160" height="24" fill="#3A3128"/></svg>
+          <span class="photo-label">Event photo</span>
+        </span>
+        <span class="event-info">
+          <span class="event-top"><span class="t-label event-date">Wed 19 Nov, 18:30</span><span class="badge badge-outline">Free</span></span>
+          <span class="event-title">Startup Pitch Night</span>
+          <span class="event-foot"><span><i class="ph ph-map-pin" aria-hidden="true"></i> Aula Magna</span><span class="price">0 RON</span></span>
+        </span>
+      </a>
+      <a class="event-card" href="#">
+        <span class="photo photo-ash" role="img" aria-label="Event photo placeholder">
+          <svg class="art" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="80" cy="50" r="26" fill="none" stroke="#17130F" stroke-width="6"/><rect x="0" y="48" width="160" height="4" fill="#17130F"/></svg>
+          <span class="photo-label">Event photo</span>
+        </span>
+        <span class="event-info">
+          <span class="event-top"><span class="t-label event-date">Sat 22 Nov, 10:00</span><span class="badge badge-muted">Sold out</span></span>
+          <span class="event-title">Faculty Football Cup</span>
+          <span class="event-foot"><span><i class="ph ph-map-pin" aria-hidden="true"></i> Campus Arena</span><span class="price">15 RON</span></span>
+        </span>
+      </a>
+    </div>
+  </div>
+</template>
+
+<script>
+(function () {
+  "use strict";
+  document.documentElement.classList.add("js");
+
+  /* ---------- Theme toggle ---------- */
+  var root = document.documentElement;
+  var toggle = document.getElementById("theme-toggle");
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  function effectiveTheme() {
+    return root.getAttribute("data-theme") || (mq.matches ? "dark" : "light");
+  }
+  function syncToggle() {
+    var dark = effectiveTheme() === "dark";
+    toggle.querySelector("span").textContent = dark ? "Light mode" : "Dark mode";
+    toggle.querySelector("i").className = "ph-bold " + (dark ? "ph-sun" : "ph-moon");
+    toggle.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+  }
+  toggle.addEventListener("click", function () {
+    root.setAttribute("data-theme", effectiveTheme() === "dark" ? "light" : "dark");
+    syncToggle();
+  });
+  if (mq.addEventListener) mq.addEventListener("change", syncToggle);
+  syncToggle();
+
+  /* ---------- Swatches read from the live CSS variables ---------- */
+  var TOKENS = [
+    ["background", "Page"], ["foreground", "Body text"],
+    ["card", "Cards, inputs"], ["card-foreground", "Text on cards"],
+    ["muted", "Quiet surfaces"], ["muted-foreground", "Secondary text"],
+    ["primary", "Ember, main action"], ["primary-foreground", "Label on ember"],
+    ["primary-text", "Ember as text (extra)"],
+    ["secondary", "Inverse button"], ["secondary-foreground", "Label on secondary"],
+    ["accent", "Hover surface"], ["border", "Dividers"],
+    ["input", "Field outline"], ["ring", "Focus ring"],
+    ["destructive", "Errors, delete"], ["success", "Paid, confirmed"]
+  ];
+  document.querySelectorAll("[data-swatches]").forEach(function (panel) {
+    var cs = getComputedStyle(panel);
+    var ul = panel.querySelector(".swatches");
+    TOKENS.forEach(function (t) {
+      var val = cs.getPropertyValue("--" + t[0]).trim();
+      var li = document.createElement("li");
+      li.className = "swatch";
+      li.innerHTML = '<span class="swatch-chip" style="background:var(--' + t[0] + ')"></span>' +
+        '<span><span class="swatch-name">' + t[0] + '</span><br><span class="swatch-use">' + t[1] + '</span></span>' +
+        '<span class="swatch-hex">' + val + '</span>';
+      ul.appendChild(li);
+    });
+  });
+
+  /* ---------- Listing screen (same markup, mobile + desktop) ---------- */
+  var tpl = document.getElementById("listing-tpl");
+  document.querySelectorAll("[data-listing]").forEach(function (frame) {
+    frame.appendChild(tpl.content.cloneNode(true));
+  });
+  document.addEventListener("click", function (e) {
+    var tag = e.target.closest(".tag");
+    if (tag) {
+      tag.parentElement.querySelectorAll(".tag").forEach(function (t) { t.setAttribute("aria-pressed", "false"); });
+      tag.setAttribute("aria-pressed", "true");
+    }
+    var a = e.target.closest('a[href="#"]');
+    if (a) e.preventDefault();
+  });
+
+  /* ---------- Validation ---------- */
+  var RULES = {
+    required: function (v, el) { return v.trim() ? "" : (el.dataset.requiredMsg || "This field is required."); },
+    name: function (v) { return v.trim().length >= 2 ? "" : "Enter your full name."; },
+    email: function (v) {
+      v = v.trim();
+      if (!v) return "Enter your email address.";
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? "" : "Enter a valid email, like name@university.ro.";
+    },
+    password: function (v) {
+      if (!v) return "Enter a password.";
+      if (v.length < 8 || !/\d/.test(v)) return "Use at least 8 characters, including a number.";
+      return "";
+    },
+    match: function (v, el) {
+      var other = document.getElementById(el.dataset.match);
+      if (!v) return "Confirm your password.";
+      return v === other.value ? "" : "Passwords do not match.";
+    },
+    qty: function (v) {
+      v = v.trim();
+      var n = Number(v);
+      return /^\d+$/.test(v) && n >= 1 && n <= 10 ? "" : "Choose between 1 and 10 tickets.";
+    }
+  };
+
+  function describedBy(el, id, add) {
+    var ids = (el.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+    ids = ids.filter(function (x) { return x !== id; });
+    if (add) ids.push(id);
+    if (ids.length) el.setAttribute("aria-describedby", ids.join(" "));
+    else el.removeAttribute("aria-describedby");
+  }
+
+  function validate(el) {
+    var msg = RULES[el.dataset.validate](el.value, el);
+    var errId = el.id + "-error";
+    var err = document.getElementById(errId);
+    if (msg) {
+      el.setAttribute("aria-invalid", "true");
+      err.querySelector("span").textContent = msg;
+      err.hidden = false;
+      describedBy(el, errId, true);
+    } else {
+      el.removeAttribute("aria-invalid");
+      err.hidden = true;
+      err.querySelector("span").textContent = "";
+      describedBy(el, errId, false);
+    }
+    return !msg;
+  }
+
+  function animateIn(node, cls) {
+    node.classList.remove(cls);
+    void node.offsetWidth;
+    node.classList.add(cls);
+  }
+
+  function showStatus(form, ok, text) {
+    var s = form.querySelector(".form-status");
+    s.className = "form-status " + (ok ? "ok" : "bad");
+    s.innerHTML = '<i class="ph-bold ' + (ok ? "ph-check-circle" : "ph-warning-circle") + '" aria-hidden="true"></i><span></span>';
+    s.querySelector("span").textContent = text;
+    s.hidden = false;
+    animateIn(s, "status-in");
+  }
+
+  document.querySelectorAll("form[data-form]").forEach(function (form) {
+    var fields = Array.prototype.slice.call(form.querySelectorAll("[data-validate]"));
+    fields.forEach(function (el) {
+      if (el.getAttribute("aria-describedby") === "") el.removeAttribute("aria-describedby");
+      el.addEventListener("blur", function () { el.dataset.touched = "1"; validate(el); });
+      el.addEventListener("input", function () {
+        if (el.dataset.touched) validate(el);
+        form.querySelectorAll('[data-match="' + el.id + '"]').forEach(function (c) { if (c.dataset.touched) validate(c); });
+        var st = form.querySelector(".form-status");
+        if (st && !st.hidden && st.classList.contains("bad")) st.hidden = true;
+      });
+    });
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var firstBad = null;
+      fields.forEach(function (el) {
+        el.dataset.touched = "1";
+        if (!validate(el) && !firstBad) firstBad = el;
+      });
+      if (firstBad) {
+        firstBad.focus();
+        showStatus(form, false, "Check the highlighted field" + (fields.filter(function (f) { return f.getAttribute("aria-invalid"); }).length > 1 ? "s." : "."));
+        return;
+      }
+      var kind = form.dataset.form;
+      if (kind === "login") showStatus(form, true, "Welcome back to UniConnect. This is a demo, nothing was sent.");
+      if (kind === "register") showStatus(form, true, "Your UniConnect account is ready. Check your inbox to confirm (demo).");
+      if (kind === "purchase") {
+        var q = Number(document.getElementById("ticket-qty").value);
+        showStatus(form, true, q + (q === 1 ? " ticket" : " tickets") + " reserved. They are in My tickets and on their way to your inbox (demo).");
+      }
+    });
+  });
+
+  /* ---------- Password show / hide ---------- */
+  document.querySelectorAll("[data-toggle-pw]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var input = document.getElementById(btn.dataset.togglePw);
+      var show = input.type === "password";
+      input.type = show ? "text" : "password";
+      btn.textContent = show ? "Hide" : "Show";
+      btn.setAttribute("aria-pressed", String(show));
+    });
+  });
+
+  /* ---------- Auth tabs ---------- */
+  var tabs = [document.getElementById("tab-login"), document.getElementById("tab-register")];
+  function selectTab(tab) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute("aria-selected", String(on));
+      t.tabIndex = on ? 0 : -1;
+      var panel = document.getElementById(t.getAttribute("aria-controls"));
+      panel.hidden = !on;
+      if (on) animateIn(panel, "panel-in");
+    });
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener("click", function () { selectTab(t); });
+    t.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        var next = tabs[(i + 1) % 2];
+        selectTab(next); next.focus(); e.preventDefault();
+      }
+    });
+  });
+
+  /* ---------- Quantity + total ---------- */
+  var qty = document.getElementById("ticket-qty");
+  var type = document.getElementById("ticket-type");
+  var total = document.getElementById("ticket-total");
+  function updateTotal() {
+    var v = qty.value.trim();
+    var n = Number(v);
+    if (/^\d+$/.test(v) && n >= 1 && n <= 10) total.textContent = (n * Number(type.value)).toFixed(2) + " RON";
+    else total.textContent = "-- RON";
+  }
+  qty.addEventListener("input", updateTotal);
+  type.addEventListener("change", updateTotal);
+  document.querySelectorAll("[data-step]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var n = parseInt(qty.value, 10);
+      if (isNaN(n)) n = 1;
+      n = Math.min(10, Math.max(1, n + Number(b.dataset.step)));
+      qty.value = String(n);
+      qty.dataset.touched = "1";
+      validate(qty);
+      updateTotal();
+    });
+  });
+  updateTotal();
+
+  /* ---------- Ticket reveal (once on view, replayable) ---------- */
+  var ticket = document.getElementById("ticket-card");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { ticket.classList.add("is-in"); io.disconnect(); }
+      });
+    }, { threshold: 0.25 });
+    io.observe(ticket);
+  } else {
+    ticket.classList.add("is-in");
+  }
+  document.getElementById("replay-reveal").addEventListener("click", function () {
+    animateIn(ticket, "is-in");
+  });
+})();
+</script>
+</body>
+</html>
