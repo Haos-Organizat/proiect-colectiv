@@ -20,13 +20,23 @@ export type LoginInput = z.infer<typeof loginSchema>;
 
 export const registerSchema = z
   .object({
-    name: z.string().trim().min(2, 'Enter your full name.').max(80, 'Keep it under 80 characters.'),
+    // Same limits as backend/application/auth/validator.py.
+    firstName: z
+      .string()
+      .trim()
+      .min(1, 'Enter your first name.')
+      .max(30, 'Keep it under 30 characters.'),
+    lastName: z
+      .string()
+      .trim()
+      .min(1, 'Enter your last name.')
+      .max(30, 'Keep it under 30 characters.'),
     email,
-    university: z.string().trim().max(120, 'Keep it under 120 characters.'),
     password: z
       .string()
       .min(8, 'Use at least 8 characters.')
-      .regex(/\d/, 'Add at least one number.'),
+      .regex(/[A-Z]/, 'Add at least one uppercase letter.')
+      .regex(/[a-z]/, 'Add at least one lowercase letter.'),
     confirmPassword: z.string().min(1, 'Repeat your password.'),
     isOrganizer: z.boolean(),
     acceptTerms: z.literal(true, { error: 'Accept the terms to create an account.' }),
@@ -71,13 +81,18 @@ export const eventFormSchema = z
       .number({ error: 'Enter how many people can attend.' })
       .int('Use a whole number.')
       .min(1, 'Capacity must be at least 1.')
-      .max(100000),
+      .max(10000, 'Capacity can be at most 10,000.'),
     maxPerOrder: z
       .number({ error: 'Enter a limit per order.' })
       .int('Use a whole number.')
       .min(1, 'Allow at least 1 ticket per order.')
       .max(10, 'Allow at most 10 tickets per order.'),
-    imageUrl: z.string().min(1, 'Add a cover photo.'),
+    // Optional: the backend has no image upload yet.
+    imageUrl: z.string(),
+  })
+  .refine((v) => `${v.venue}, ${v.city}`.length <= 100, {
+    path: ['venue'],
+    message: 'Venue and city together must be under 100 characters.',
   })
   .refine((v) => v.endTime > v.startTime, {
     path: ['endTime'],

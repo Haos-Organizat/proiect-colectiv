@@ -29,12 +29,16 @@ Demo accounts (mock mode only):
 | Student   | `student@uniconnect.test`   | `student123` |
 | Organizer | `organizer@uniconnect.test` | `student123` |
 
-You can also register a new account; tick "I organize events" to get an organizer account.
+You can also register a new account; in mock mode, tick "I organize events" to get an organizer account.
 To wipe mock data, run `ucResetMocks()` in the browser console. To see loading skeletons, slow the mock down with `localStorage.setItem('uc-mock-latency', '3000')` and reload (remove the key to go back to normal).
 
 ### Real mode (with the Flask API)
 
-Set `VITE_USE_MOCKS=false` (or remove it) and run the full stack from the repo root with `just dev`. Requests go to `/api/v1/...`, which Vite proxies to Flask on port 5000. Restart `npm run dev` after changing `.env.local`.
+Set `VITE_USE_MOCKS=false` in `frontend/.env.local`, start the full stack from the repo root (see the root README), and restart `npm run dev` after changing `.env.local`.
+
+Requests go to `/api/...`, which Vite proxies to Flask on port 5000. What the backend has today (register, login, logout, me, create event) goes through `src/api/flask.ts`, which translates its snake_case and Romanian fields. Every other screen shows "This part of UniConnect is not available on the server yet" until the endpoint exists. The current list is in `docs/api-contract.md`, section 0.
+
+Real accounts are created as participants. To test organizer pages, register, then set `role` to `organizator` for that user in Supabase Studio (http://localhost:54323, table `users`) and log in again.
 
 ## Pages
 
@@ -58,6 +62,7 @@ Everything the frontend calls is in [`docs/api-contract.md`](../docs/api-contrac
 ```text
 src/api/client.ts       request(): the only place that calls fetch, switches to mocks
 src/api/endpoints.ts    one function per backend endpoint
+src/api/flask.ts        adapters for the endpoints the Flask backend already has
 src/api/mock/           fake backend + seed data for VITE_USE_MOCKS=true
 src/components/ui/      Button, Field + Input/Select/Textarea/Checkbox, Badge
 src/components/         Header, footer, EventCard, TicketCard, page states

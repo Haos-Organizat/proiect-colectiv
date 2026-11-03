@@ -319,6 +319,8 @@ const routes: [string, RegExp, Handler][] = [
       const input = body as EventPayload;
       const event: OrganizerEvent = {
         ...input,
+        // The photo is optional; fall back to a neutral campus shot.
+        imageUrl: input.imageUrl || '/mock/events/hero.webp',
         id: `e_${randomCode(8)}`,
         slug: slugify(input.title),
         organizer: { id: user.id, name: user.name },
