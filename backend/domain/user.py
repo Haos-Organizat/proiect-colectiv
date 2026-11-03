@@ -1,23 +1,36 @@
 from dataclasses import dataclass
 from datetime import date, datetime
-from typing import Optional
 
 
 @dataclass
 class User:
-    id: Optional[int]
+    id: int | None
     email: str
     password_hash: str
     first_name: str
     last_name: str
-    birth_date: Optional[date] = None
-    phone: Optional[str] = None
+    birth_date: date | None = None
+    phone: str | None = None
     role: str = "participant"  # Criteriu: rol implicit 'participant'
     status: str = "activ"  # Criteriu: status implicit 'activ'
-    created_at: Optional[datetime] = None
+    created_at: datetime | None = None
+
+    @property
+    def is_authenticated(self) -> bool:
+        return True
+
+    @property
+    def is_active(self) -> bool:
+        return self.status == "activ"
+
+    @property
+    def is_anonymous(self) -> bool:
+        return False
+
+    def get_id(self) -> str:
+        return str(self.id) if self.id is not None else ""
 
     def to_dict(self):
-        
         return {
             "id": self.id,
             "email": self.email,
