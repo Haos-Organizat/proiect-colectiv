@@ -8,6 +8,24 @@
       "port": 5173
     },
     {
+      "name": "backend",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": [
+        "run",
+        "--project",
+        "backend",
+        "python",
+        "-m",
+        "flask",
+        "--app",
+        "backend/api/index.py",
+        "run",
+        "--port",
+        "5000"
+      ],
+      "port": 5000
+    },
+    {
       "name": "brand",
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "5180", "--directory", "design/brand"],

@@ -174,7 +174,7 @@ function EventForm({ event }: { event?: OrganizerEvent }) {
           const payload = toPayload({ ...values, price: isFree ? 0 : values.price }, status);
           if (event) await organizerApi.updateEvent(event.id, payload);
           else await organizerApi.createEvent(payload);
-          navigate('/organizer');
+          navigate('/organizer', { state: { saved: values.title } });
         } catch (err) {
           if (err instanceof ApiError && Object.keys(err.fields).length) {
             Object.entries(err.fields).forEach(([f, message], i) =>
@@ -262,7 +262,7 @@ function EventForm({ event }: { event?: OrganizerEvent }) {
 
         <Section title="Cover photo">
           <Field error={errors.imageUrl?.message} hint>
-            <FieldLabel>Photo</FieldLabel>
+            <FieldLabel>Photo (optional)</FieldLabel>
             {imageUrl && (
               <img
                 src={imageUrl}

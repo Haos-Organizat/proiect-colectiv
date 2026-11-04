@@ -1,5 +1,5 @@
-import { ArrowSquareOut, PencilSimple, Plus } from '@phosphor-icons/react';
-import { Link } from 'react-router';
+import { ArrowSquareOut, CheckCircle, PencilSimple, Plus } from '@phosphor-icons/react';
+import { Link, useLocation } from 'react-router';
 import { organizerApi } from '@/api/endpoints';
 import { ErrorState } from '@/components/PageState';
 import { OrganizerRowSkeleton, SkeletonGroup } from '@/components/Skeletons';
@@ -18,6 +18,7 @@ const STATUS: Record<EventStatus, { label: string; variant: 'success' | 'muted' 
 
 export function OrganizerDashboardPage() {
   const events = useFetch(() => organizerApi.events(), 'organizer-events');
+  const saved = (useLocation().state as { saved?: string } | null)?.saved;
 
   const totals = events.data?.reduce(
     (acc, e) => ({
@@ -42,6 +43,16 @@ export function OrganizerDashboardPage() {
           </Link>
         </Button>
       </div>
+
+      {saved && (
+        <p
+          role="status"
+          className="mb-8 flex items-center gap-2 rounded-[16px] border-[1.5px] border-success bg-card p-5 font-semibold motion-safe:animate-fade-in"
+        >
+          <CheckCircle weight="bold" aria-hidden className="size-5 shrink-0 text-success" />
+          Saved "{saved}".
+        </p>
+      )}
 
       {totals && (
         <dl className="mb-10 grid grid-cols-3 border-y border-border">

@@ -47,6 +47,34 @@ If running directly on your host machine without containers:
 
 ---
 
+### Option C: Windows without containers
+
+1. **Install** (once), from PowerShell:
+   ```bash
+   winget install Docker.DockerDesktop
+   winget install astral-sh.uv
+   winget install Casey.Just
+   ```
+   Start Docker Desktop, accept its terms and wait for "Engine running". Node 20+ and Git for Windows must already be installed.
+2. **Open Git Bash** (the `just` recipes use `sh`) in the project folder and run:
+   ```bash
+   just setup
+   just start-db
+   ```
+   The first `start-db` downloads the Supabase images (2 to 3 GB) and applies every migration.
+3. **Fill in `.env`** with the values from `npx supabase status`:
+   - `SUPABASE_KEY` and `SUPABASE_SERVICE_ROLE_KEY`: the **Secret** (service_role) key. It bypasses row-level security, so it stays in `.env` only.
+   - `SUPABASE_ANON_KEY`: the **Publishable** (anon) key.
+   - `SECRET_KEY`: any long random string (signs the login cookie).
+4. **Pick the frontend mode** in `frontend/.env.local`: `VITE_USE_MOCKS=false` to use the real backend, `true` for mock data (see `frontend/README.md`).
+5. **Start everything**:
+   ```bash
+   just dev
+   ```
+   App at http://localhost:5173, Supabase Studio at http://localhost:54323.
+
+---
+
 ## Project Structure & Architecture
 
 ```text

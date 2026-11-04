@@ -6,11 +6,30 @@ A working reference already exists: `frontend/src/api/mock/server.ts` implements
 
 ---
 
+## 0. Status: what the Flask backend implements today
+
+| Endpoint | Backend | Frontend |
+| :--- | :--- | :--- |
+| `POST /api/auth/register` | ✅ | connected (then logs in automatically) |
+| `POST /api/auth/login` | ✅ | connected |
+| `POST /api/auth/logout` | ✅ | connected |
+| `GET /api/auth/me` | ✅ | connected |
+| `POST /api/evenimente` (create event, organizer) | ✅ | connected |
+| `GET /api/events`, `GET /api/events/:slug` | ❌ | shows "not available on the server yet" |
+| `POST /api/orders` | ❌ | same |
+| `GET /api/me/tickets`, `GET /api/me/tickets/:id` | ❌ | same |
+| `GET /api/organizer/events`, `GET/PATCH /api/organizer/events/:id` | ❌ | same |
+| `POST /api/organizer/uploads` | ❌ | photo upload fails; the photo is optional |
+
+The implemented endpoints use the backend team's own field names (snake_case and Romanian, see section 3a). The frontend adapts to them in `frontend/src/api/flask.ts`, so **do not rename them** without updating that file. For endpoints still to build, sections 3b onwards describe what the frontend expects; if you prefer the snake_case/Romanian style for those too, agree on the shape with the frontend first and add an adapter next to the existing ones.
+
+---
+
 ## 1. Conventions
 
 | Topic | Rule |
 | :--- | :--- |
-| Base path | `/api/v1`. Register Flask blueprints with `url_prefix="/api/v1/..."` (see `AGENTS.md`). |
+| Base path | `/api` (what the existing blueprints use). |
 | Hosts | The frontend only uses relative paths. Vite proxies `/api` to `localhost:5000` in dev, Vercel routes it to `backend/api/index.py` in prod. Same origin, so no CORS setup is needed. |
 | Format | JSON in and out, `Content-Type: application/json`. Only the image upload is `multipart/form-data`. |
 | Field names | `camelCase` in JSON (the database can stay `snake_case`, convert in the schema layer). |
@@ -27,7 +46,16 @@ Any endpoint marked **auth** returns `401` when there is no valid session. Endpo
 
 ### Errors
 
-Every non-2xx response has this body:
+The frontend (`frontend/src/api/client.ts`) understands all of these, so existing endpoints can keep their style:
+
+| Body | Used by | Shown as |
+| :--- | :--- | :--- |
+| `{ "errors": { "email": "..." } }` | register, create event (400/409) | each message under its field |
+| `{ "error": "Email sau parolă greșite" }` | login, auth guards (401/403) | message above the form |
+| `{ "error": { "code", "message", "fields" } }` | recommended for new endpoints | both of the above |
+| HTML 404 page | routes that do not exist yet | "This part of UniConnect is not available on the server yet." |
+
+The recommended body for new endpoints:
 
 ```json
 {
@@ -80,45 +108,57 @@ Order         { id, eventId, quantity, total: Money, tickets: Ticket[], emailedT
 
 ## 3. Endpoints
 
-### Auth
+### 3a. Implemented today
 
-#### `GET /api/v1/auth/me`
-Called once on every page load to know who is logged in.
-- **200** `User`
-- **401** when logged out (the frontend treats this as "guest", not an error)
+Shapes below are what the Flask app actually sends and accepts.
 
-#### `POST /api/v1/auth/register`
-Register page.
-
+#### `POST /api/auth/register`
 ```json
-{ "name": "Ples Denisa", "email": "denisa.ples@stud.ubbcluj.ro", "password": "secret123",
-  "university": "Babes-Bolyai University", "role": "student" }
+{ "first_name": "Ples", "last_name": "Denisa", "email": "denisa.ples@stud.ubbcluj.ro",
+  "password": "Campus2026", "confirm_password": "Campus2026",
+  "birth_date": null, "phone": null }
 ```
+- Validation (`backend/application/auth/validator.py`, mirrored in `frontend/src/types/schemas.ts`): first and last name required, max 30 chars; valid email; password at least 8 chars with an uppercase and a lowercase letter; `confirm_password` must match.
+- **201** the user (below). Does **not** start a session; the frontend calls login right after.
+- **400** `{ "errors": { field: message } }`, **409** `{ "errors": { "email": "Acest email este deja înregistrat." } }`.
+- Every new account gets `role: "participant"`. To make an organizer, set `users.role = 'organizator'` in Supabase Studio (http://localhost:54323) until there is an admin flow.
 
-Validation (same as the frontend, enforce it again):
-- `name`: 2 to 80 chars, trimmed
-- `email`: valid format, unique (case-insensitive) → otherwise `409 email_taken` with `fields.email`
-- `password`: at least 8 chars, at least one digit
-- `university`: optional, max 120 chars, `null` when empty
-- `role`: `student` or `organizer`. Decide as a team whether organizers need approval; if so, still return `role: "organizer"` and gate publishing (see create event).
-
-Responses: **201** `User` and the session cookie is set (the user is logged in right away). **422** with `fields` on validation errors.
-
-#### `POST /api/v1/auth/login`
+User object returned by register, login and me:
 ```json
-{ "email": "denisa.ples@stud.ubbcluj.ro", "password": "secret123" }
+{ "id": 1, "email": "denisa.ples@stud.ubbcluj.ro", "first_name": "Ples", "last_name": "Denisa",
+  "birth_date": null, "phone": null, "role": "participant", "status": "activ" }
 ```
-- **200** `User` + session cookie
-- **401** `invalid_credentials`, message "Email or password is incorrect." (do not reveal which one)
+`role` is `participant` or `organizator`; the frontend maps them to `student` and `organizer`.
 
-#### `POST /api/v1/auth/logout`
-Clears the session cookie. **204**.
+#### `POST /api/auth/login`
+`{ "email", "password", "remember"? }` → **200** user + Flask session cookie (httpOnly, SameSite=Lax). **401** `{ "error": "Email sau parolă greșite" }`.
+
+#### `POST /api/auth/logout` (auth)
+Clears the session. **200** `{ "message": "..." }`.
+
+#### `GET /api/auth/me` (auth)
+**200** user, **401** `{ "error": "Neautentificat" }` when logged out (the frontend treats it as "guest").
+
+#### `POST /api/evenimente` (organizator)
+```json
+{ "titlu": "Campus Sound Night", "descriere": "Four student bands...", "categorie": "muzica",
+  "data_ora": "2026-11-14T17:00:00.000Z", "loc": "Central Park Stage, Cluj-Napoca",
+  "numar_locuri": 800, "poza": "https://..." }
+```
+- `categorie` must be one of `CATEGORII_PERMISE` in `backend/application/evenimente/validator.py`. The frontend sends `petrecere`, `muzica`, `tehnologie`, `cariera`, `cultura`, `sport`, `workshop`, `voluntariat`.
+- `data_ora` in the future, `numar_locuri` 1 to 10,000, `poza` optional.
+- **201** the event, saved in the `events` table. **400** `{ "errors": ... }`, **401** logged out, **403** not an organizer.
+- Not stored yet although the form collects them: end time, price, max tickets per order, draft/published status.
 
 ---
 
+### 3b. To build next
+
+Sections below describe what the frontend calls for the remaining screens.
+
 ### Public events
 
-#### `GET /api/v1/events?category=&q=`
+#### `GET /api/events?category=&q=`
 Home page (first 6) and the events list.
 - Only `published` events whose `endsAt` is in the future.
 - `category` (optional): one of the categories above.
@@ -128,7 +168,7 @@ Home page (first 6) and the events list.
 
 Pagination is not needed yet. If you add it later, use `?limit=&cursor=` and tell the frontend.
 
-#### `GET /api/v1/events/:slug`
+#### `GET /api/events/:slug`
 Event detail page.
 - **200** `EventDetail`
 - **404** if the slug does not exist or the event is not `published`.
@@ -137,7 +177,7 @@ Event detail page.
 
 ### Orders and tickets
 
-#### `POST /api/v1/orders` (auth)
+#### `POST /api/orders` (auth)
 "Pay" / "Get free tickets" button on the event page.
 
 ```json
@@ -160,13 +200,13 @@ The backend must, **in one database transaction**:
 
 **Payments:** no provider is chosen yet. Until it is, treat every order as paid. When one is added (e.g. Stripe or Netopia), this endpoint will likely return a checkout URL instead, and tickets are created by the payment webhook. Talk to the frontend before changing the response.
 
-#### `GET /api/v1/me/tickets` (auth)
+#### `GET /api/me/tickets` (auth)
 My tickets page.
 - All tickets of the logged-in user, any status, past events included (the frontend splits upcoming and past).
 - Sorted by `event.startsAt` ascending.
 - **200** `Ticket[]`
 
-#### `GET /api/v1/me/tickets/:id` (auth)
+#### `GET /api/me/tickets/:id` (auth)
 Single ticket (for a future full-screen QR view).
 - **200** `Ticket`, **404** if it does not exist or belongs to someone else (do not return 403, it leaks existence).
 
@@ -176,15 +216,15 @@ Single ticket (for a future full-screen QR view).
 
 All of these only see events where `organizer.id` is the logged-in user.
 
-#### `GET /api/v1/organizer/events`
+#### `GET /api/organizer/events`
 Organizer dashboard. All statuses, including drafts and cancelled.
 - **200** `OrganizerEvent[]` sorted by `startsAt`.
 
-#### `GET /api/v1/organizer/events/:id`
+#### `GET /api/organizer/events/:id`
 Edit event page.
 - **200** `OrganizerEvent`, **404** if not found or not theirs.
 
-#### `POST /api/v1/organizer/events`
+#### `POST /api/organizer/events`
 Create event form ("Publish" or "Save draft").
 
 ```json
@@ -218,13 +258,13 @@ Validation:
 The backend sets `id`, `slug`, `organizer`, `ticketsLeft = capacity`, `ticketsSold = 0`, `revenue = 0`.
 - **201** `OrganizerEvent`, **422** with `fields` keyed by the names above (`title`, `price`, `capacity`, ...).
 
-#### `PATCH /api/v1/organizer/events/:id`
+#### `PATCH /api/organizer/events/:id`
 Edit form ("Save changes", "Save draft", "Publish") and "Cancel event". Body is any subset of the create fields, or just `{ "status": "cancelled" }`.
 - Changing `capacity` below `ticketsSold` → `422` with `fields.capacity`.
 - Cancelling: set `status: "cancelled"`, mark all its tickets `cancelled`, and **email every ticket holder**. Refunds are out of scope until payments exist.
 - **200** the updated `OrganizerEvent`.
 
-#### `POST /api/v1/organizer/uploads`
+#### `POST /api/organizer/uploads`
 Cover photo picker in the event form. `multipart/form-data` with one field `file`.
 - Accept `image/jpeg`, `image/png`, `image/webp`, max 5 MB → otherwise `422` / `413 file_too_large` with `fields.file`.
 - Store it (Supabase Storage bucket, public read) and return its public URL.
@@ -236,23 +276,18 @@ Cover photo picker in the event form. `multipart/form-data` with one field `file
 
 | Feature | Suggested endpoint |
 | :--- | :--- |
-| Door check-in by scanning the QR | `POST /api/v1/organizer/check-in` with `{ "qrPayload": "..." }` → verify signature, ticket belongs to one of the organizer's events, `status` is `valid`; set it to `used` and return the `Ticket`. `409 already_used` if scanned twice. |
-| Password reset | `POST /api/v1/auth/password-reset` with `{ "email" }`, always `204` (do not reveal if the email exists). Supabase emails land in Inbucket locally. |
-| Resend ticket email | `POST /api/v1/me/tickets/:id/resend` → `204`. |
+| Door check-in by scanning the QR | `POST /api/organizer/check-in` with `{ "qrPayload": "..." }` → verify signature, ticket belongs to one of the organizer's events, `status` is `valid`; set it to `used` and return the `Ticket`. `409 already_used` if scanned twice. |
+| Password reset | `POST /api/auth/password-reset` with `{ "email" }`, always `204` (do not reveal if the email exists). Supabase emails land in Inbucket locally. |
+| Resend ticket email | `POST /api/me/tickets/:id/resend` → `204`. |
 
-## 5. Suggested tables
+## 5. Database
 
-A starting point for `supabase/migrations/`, adjust as you like as long as the API shapes above stay the same.
+The schema lives in `supabase/migrations/` (`users`, `venues`, `events`, `ticket_types`, `tickets`), with row-level security enabled on every table: only the backend, using the service_role key, can read or write them.
 
-```text
-profiles  id (= auth.users.id), name, role, university, created_at
-events    id, organizer_id -> profiles, slug unique, title, category, description,
-          starts_at, ends_at, venue, city, image_url, price_amount int, currency,
-          capacity int, max_per_order int, tickets_sold int default 0,
-          status, created_at, updated_at
-orders    id, user_id -> profiles, event_id -> events, quantity, total_amount, currency, created_at
-tickets   id, order_id -> orders, event_id -> events, user_id -> profiles, code unique,
-          qr_secret, status, holder_name, purchased_at, checked_in_at
-```
+Gaps to close before the remaining endpoints can work:
 
-`ticketsLeft` = `capacity - tickets_sold`, and `revenue` = sum of `orders.total_amount` for the event; compute them, do not store them twice.
+- `tickets` has `UNIQUE (user_id, event_id)`, so a user can hold only one ticket per event, while the purchase screen allows up to `maxPerOrder` (10). Drop the constraint or add an `orders` table and allow several tickets per order.
+- Prices live in `ticket_types.price` (DECIMAL). The frontend works with one price per event in bani (integer); either create one ticket type per event or add `events.price_amount`.
+- `events` has no `slug` (the event page URL uses one) and no `max_per_order`.
+- `tickets` needs a signed QR payload column (for example `qr_secret`) next to `code`.
+- `ticketsLeft` = `capacity` minus the event's tickets, and `revenue` = sum of the event's order totals; compute them, do not store them twice.

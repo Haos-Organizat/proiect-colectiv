@@ -161,9 +161,9 @@ export function RegisterPage() {
   } = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: '',
+      firstName: '',
+      lastName: '',
       email: '',
-      university: '',
       password: '',
       confirmPassword: '',
       isOrganizer: wantsOrganizer,
@@ -179,10 +179,11 @@ export function RegisterPage() {
     setFormError(null);
     try {
       const created = await authApi.register({
-        name: values.name,
+        firstName: values.firstName,
+        lastName: values.lastName,
         email: values.email,
         password: values.password,
-        university: values.university || null,
+        confirmPassword: values.confirmPassword,
         role: values.isOrganizer ? 'organizer' : 'student',
       });
       setUser(created);
@@ -199,26 +200,27 @@ export function RegisterPage() {
     >
       <Seo title="Create account" noindex />
       <form noValidate onSubmit={handleSubmit(onSubmit)} className="grid gap-5">
-        <Field error={errors.name?.message}>
-          <FieldLabel>Full name</FieldLabel>
-          <Input autoComplete="name" {...register('name')} />
-          <FieldError />
-        </Field>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field error={errors.firstName?.message}>
+            <FieldLabel>First name</FieldLabel>
+            <Input autoComplete="given-name" {...register('firstName')} />
+            <FieldError />
+          </Field>
+          <Field error={errors.lastName?.message}>
+            <FieldLabel>Last name</FieldLabel>
+            <Input autoComplete="family-name" {...register('lastName')} />
+            <FieldError />
+          </Field>
+        </div>
         <Field error={errors.email?.message}>
           <FieldLabel>Email</FieldLabel>
           <Input type="email" autoComplete="email" inputMode="email" {...register('email')} />
           <FieldError />
         </Field>
-        <Field error={errors.university?.message} hint>
-          <FieldLabel>University (optional)</FieldLabel>
-          <Input autoComplete="organization" {...register('university')} />
-          <FieldHint>Helps us show events from your campus first.</FieldHint>
-          <FieldError />
-        </Field>
         <Field error={errors.password?.message} hint>
           <FieldLabel>Password</FieldLabel>
           <Input type="password" autoComplete="new-password" {...register('password')} />
-          <FieldHint>At least 8 characters, including a number.</FieldHint>
+          <FieldHint>At least 8 characters, with an uppercase and a lowercase letter.</FieldHint>
           <FieldError />
         </Field>
         <Field error={errors.confirmPassword?.message}>
@@ -226,11 +228,15 @@ export function RegisterPage() {
           <Input type="password" autoComplete="new-password" {...register('confirmPassword')} />
           <FieldError />
         </Field>
-        <Field>
-          <Checkbox {...register('isOrganizer')}>
-            I organize events for a student organization
-          </Checkbox>
-        </Field>
+        {/* The real backend creates every account as a participant; organizers are set
+            by an admin for now (see docs/api-contract.md). Only the mock honors this. */}
+        {USE_MOCKS && (
+          <Field>
+            <Checkbox {...register('isOrganizer')}>
+              I organize events for a student organization
+            </Checkbox>
+          </Field>
+        )}
         <Field error={errors.acceptTerms?.message}>
           <Checkbox {...register('acceptTerms')}>
             I accept the{' '}

@@ -25,10 +25,10 @@ alias db-reset := reset-db
 export-reqs:
     cd backend && uv export --format requirements-txt -o requirements.txt --no-hashes
 
-# Start the full stack locally
+# Start the full stack locally (Flask runs from the repo root: the code imports `backend.*`)
 dev: start-db
     @echo "Starting full local environment..."
-    cd backend && uv run flask run --host=0.0.0.0 --port=5000 & \
+    uv run --project backend python -m flask --app backend/api/index.py run --host=0.0.0.0 --port=5000 & \
     cd frontend && npm run dev -- --host 0.0.0.0
 
 # Lint backend and frontend
