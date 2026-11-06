@@ -15,7 +15,7 @@ interface FlaskUser {
   last_name: string;
   birth_date: string | null;
   phone: string | null;
-  role: 'participant' | 'organizator';
+  role: 'participant' | 'organizator' | 'admin';
   status: 'activ' | 'inactiv';
 }
 
@@ -24,7 +24,7 @@ function toUser(u: FlaskUser): User {
     id: String(u.id),
     name: `${u.first_name} ${u.last_name}`.trim(),
     email: u.email,
-    role: u.role === 'organizator' ? 'organizer' : 'student',
+    role: u.role === 'admin' ? 'admin' : u.role === 'organizator' ? 'organizer' : 'student',
     university: null,
   };
 }
