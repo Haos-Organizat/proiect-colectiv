@@ -35,7 +35,12 @@ export function SiteHeader() {
 
   const links = [
     { to: '/events', label: 'Events' },
-    ...(user ? [{ to: '/account/tickets', label: 'My tickets' }] : []),
+    ...(user
+      ? [
+          { to: '/account/tickets', label: 'My tickets' },
+          { to: '/profile', label: 'Profile' },
+        ]
+      : []),
     ...(user?.role === 'organizer' ? [{ to: '/organizer', label: 'Organizer' }] : []),
   ];
 

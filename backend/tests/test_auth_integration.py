@@ -16,7 +16,13 @@ def real_supabase_client() -> Client:
             "SUPABASE_SERVICE_ROLE_KEY nu este setata in .env, sarim testele de integrare reala."
         )
 
-    return create_client(url, key)
+    client = create_client(url, key)
+    try:
+        client.table("users").select("id").limit(1).execute()
+    except Exception:  # noqa: BLE001
+        pytest.skip("Supabase local nu ruleaza la " + url + ", sarim testele de integrare reala.")
+
+    return client
 
 
 @pytest.fixture

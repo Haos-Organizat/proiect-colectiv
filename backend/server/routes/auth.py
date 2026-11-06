@@ -28,7 +28,10 @@ def register() -> tuple[Any, int]:
         phone=data.get("phone"),
     )
 
-    result: dict[str, Any] = auth_service.register_user(dto)
+    try:
+        result: dict[str, Any] = auth_service.register_user(dto)
+    except Exception as e:  # noqa: BLE001
+        return jsonify({"error": f"Eroare la conectarea cu baza de date: {e}"}), 500
 
     if "errors" in result:
         return jsonify({"errors": result["errors"]}), int(result["code"])
@@ -57,7 +60,10 @@ def login() -> tuple[Any, int]:
         or data.get("tine_ma_minte", False)
     )
 
-    result = auth_service.authenticate_user(email, password)
+    try:
+        result = auth_service.authenticate_user(email, password)
+    except Exception as e:  # noqa: BLE001
+        return jsonify({"error": f"Eroare la conectarea cu baza de date: {e}"}), 500
 
     if "error" in result:
         return jsonify({"error": result["error"]}), int(result["code"])
@@ -93,3 +99,86 @@ def me() -> tuple[Any, int]:
             "status": getattr(current_user, "status", "activ"),
         }
     ), 200
+
+
+# 4. ENDPOINT VIZUALIZARE PROFIL (GET)
+@auth_bp.route("/api/auth/profile", methods=["GET"])
+@auth_bp.route("/api/profile", methods=["GET"])
+@login_required
+def get_profile() -> tuple[Any, int]:
+    """Returnează datele utilizatorului curent (prenume, nume, email) pentru pagina de profil."""
+    user_data = (
+        current_user.to_dict()
+        if hasattr(current_user, "to_dict")
+        else {
+            "id": getattr(current_user, "id", None),
+            "email": getattr(current_user, "email", None),
+            "first_name": getattr(current_user, "first_name", ""),
+            "last_name": getattr(current_user, "last_name", ""),
+        }
+    )
+
+    # Mapăm/asigurăm compatibilitatea cu cerințele (first_name/last_name sau prenume/nume)
+    response_data = {
+        "email": user_data.get("email"),
+        "first_name": user_data.get("first_name") or user_data.get("prenume", ""),
+        "last_name": user_data.get("last_name") or user_data.get("nume", ""),
+    }
+    return jsonify(response_data), 200
+
+
+# 5. ENDPOINT MODIFICARE PROFIL (PUT)
+@auth_bp.route("/api/auth/profile", methods=["PUT"])
+@auth_bp.route("/api/profile", methods=["PUT"])
+@login_required
+def update_profile() -> tuple[Any, int]:
+    """Modifică doar prenumele și numele utilizatorului. Emailul rămâne neschimbat."""
+    data: Any = request.get_json() or {}
+
+    # Preluăm noile valori pentru prenume și nume (acceptă atât first_name/last_name cât și prenume/nume)
+    new_first_name = data.get("first_name") or data.get("prenume")
+    new_last_name = data.get("last_name") or data.get("nume")
+
+    # Validări obligatorii
+    errors = {}
+    if not new_first_name or not str(new_first_name).strip():
+        errors["first_name"] = "Prenumele este obligatoriu."
+    if not new_last_name or not str(new_last_name).strip():
+        errors["last_name"] = "Numele este obligatoriu."
+
+    if errors:
+        return jsonify({"errors": errors}), 400
+
+    try:
+        import backend.api.index as api_index
+
+        supabase_obj: Any = getattr(api_index, "supabase_client", getattr(api_index, "supabase", None))
+        user_repo = UserRepository(supabase_obj)
+
+        current_user.first_name = str(new_first_name).strip()
+        current_user.last_name = str(new_last_name).strip()
+        user_repo.update(current_user)
+
+        updated_data = (
+            current_user.to_dict()
+            if hasattr(current_user, "to_dict")
+            else {
+                "email": current_user.email,
+                "first_name": current_user.first_name,
+                "last_name": current_user.last_name,
+            }
+        )
+
+        return jsonify(
+            {
+                "message": "Profil actualizat cu succes",
+                "profile": {
+                    "email": updated_data.get("email"),
+                    "first_name": updated_data.get("first_name") or updated_data.get("prenume"),
+                    "last_name": updated_data.get("last_name") or updated_data.get("nume"),
+                },
+            }
+        ), 200
+
+    except Exception as e:  # noqa: BLE001
+        return jsonify({"error": str(e)}), 500

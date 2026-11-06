@@ -33,6 +33,7 @@ const RegisterPage = lazy(() =>
 const TicketsPage = lazy(() =>
   import('@/pages/TicketsPage').then((m) => ({ default: m.TicketsPage })),
 );
+const ProfilePage = lazy(() => import('@/pages/ProfilePage'));
 const OrganizerDashboardPage = lazy(() =>
   import('@/pages/organizer/OrganizerDashboardPage').then((m) => ({
     default: m.OrganizerDashboardPage,
@@ -119,6 +120,14 @@ const router = createBrowserRouter([
         element: (
           <RequireAuth>
             <TicketsPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/profile',
+        element: (
+          <RequireAuth>
+            <ProfilePage />
           </RequireAuth>
         ),
       },
