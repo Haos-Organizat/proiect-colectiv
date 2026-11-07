@@ -126,3 +126,46 @@ export const flaskEvents = {
         }),
       ),
 };
+
+
+export type OrganizerRequestStatus = 'in_asteptare' | 'aprobata' | 'respinsa';
+
+interface FlaskOrganizerRequest {
+  id: number;
+  organization_name: string;
+  message: string | null;
+  status: OrganizerRequestStatus;
+  created_at: string | null;
+}
+
+export interface OrganizerRequest {
+  id: string;
+  organizationName: string;
+  message: string | null;
+  status: OrganizerRequestStatus;
+}
+
+function toOrganizerRequest(r: FlaskOrganizerRequest): OrganizerRequest {
+  return {
+    id: String(r.id),
+    organizationName: r.organization_name,
+    message: r.message,
+    status: r.status,
+  };
+}
+
+
+export const flaskOrganizerRequests = {
+  mine: () =>
+    request<{ cerere: FlaskOrganizerRequest | null }>('/cereri-organizator/mea').then((r) =>
+      r.cerere ? toOrganizerRequest(r.cerere) : null,
+    ),
+
+  create: (input: { organizationName: string; message: string }) =>
+    request<FlaskOrganizerRequest>('/cereri-organizator', {
+      method: 'POST',
+      body: { organization_name: input.organizationName, message: input.message },
+    })
+      .then(toOrganizerRequest)
+      .catch(mapFieldErrors({ organization_name: 'organizationName' })),
+};

@@ -47,7 +47,9 @@ def load_user(user_id):
 
 # Conexiunea Supabase
 supabase_url: str = os.environ.get("SUPABASE_URL", "http://localhost:54321")
-supabase_key: str = os.environ.get("SUPABASE_KEY") or os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
+supabase_key: str = os.environ.get("SUPABASE_KEY") or os.environ.get(
+    "SUPABASE_SERVICE_ROLE_KEY", ""
+)
 
 if not supabase_key:
     supabase_key = "dummy-local-development-key-placeholder"
@@ -58,10 +60,12 @@ app.supabase_client = supabase
 
 # 2. APOI importăm și înregistrăm blueprint-urile
 from backend.server.routes.auth import auth_bp
+from backend.server.routes.cereri_organizator import cereri_organizator_bp
 from backend.server.routes.evenimente import evenimente_bp
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(evenimente_bp)
+app.register_blueprint(cereri_organizator_bp)
 
 
 @app.route("/api/health", methods=["GET"])
