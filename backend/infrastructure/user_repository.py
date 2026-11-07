@@ -69,3 +69,14 @@ class UserRepository:
             user.id = response.data[0]["id"]
 
         return user
+
+    def update(self, user: User) -> User:
+        if not self.supabase or user.id is None:
+            return user
+
+        user_data: dict[str, Any] = {
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+        }
+        self.supabase.table("users").update(user_data).eq("id", int(user.id)).execute()
+        return user

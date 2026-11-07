@@ -33,6 +33,7 @@ const RegisterPage = lazy(() =>
 const TicketsPage = lazy(() =>
   import('@/pages/TicketsPage').then((m) => ({ default: m.TicketsPage })),
 );
+const ProfilePage = lazy(() => import('@/pages/ProfilePage'));
 const AdminPage = lazy(() =>
   import('@/pages/AdminPage').then((m) => ({ default: m.AdminPage })),
 );
@@ -126,6 +127,14 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: '/profile',
+        element: (
+          <RequireAuth>
+            <ProfilePage />
+          </RequireAuth>
+        ),
+      },
+      {
         path: '/organizer',
         element: (
           <RequireAuth role="organizer">
@@ -149,7 +158,6 @@ const router = createBrowserRouter([
           </RequireAuth>
         ),
       },
-      { path: '*', element: <NotFoundPage /> },
       {
         path: '/admin',
         element: (
@@ -158,6 +166,7 @@ const router = createBrowserRouter([
           </RequireAuth>
         ),
       },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ]);

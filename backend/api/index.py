@@ -6,11 +6,16 @@ from flask import Flask, jsonify
 from flask_login import LoginManager
 from supabase import Client, create_client
 
-# Forțăm Python să recunoască folderul rădăcină al backend-ului
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Forțăm Python să recunoască rădăcina proiectului și folderul backend-ului
+BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = os.path.dirname(BACKEND_DIR)
+for path in (PROJECT_ROOT, BACKEND_DIR):
+    if path not in sys.path:
+        sys.path.append(path)
 
-# Încărcăm variabilele de mediu din fișierul .env aflat în rădăcina proiectului
-load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"))
+# Încărcăm variabilele de mediu din fișierul .env aflat în rădăcina proiectului (sau backend)
+load_dotenv(os.path.join(PROJECT_ROOT, ".env"))
+load_dotenv(os.path.join(BACKEND_DIR, ".env"))
 
 # 1. ÎNTÂI creăm instanța aplicației Flask
 app = Flask(__name__)
@@ -42,7 +47,7 @@ def load_user(user_id):
 
 # Conexiunea Supabase
 supabase_url: str = os.environ.get("SUPABASE_URL", "http://localhost:54321")
-supabase_key: str = os.environ.get("SUPABASE_KEY", "")
+supabase_key: str = os.environ.get("SUPABASE_KEY") or os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
 
 if not supabase_key:
     supabase_key = "dummy-local-development-key-placeholder"
