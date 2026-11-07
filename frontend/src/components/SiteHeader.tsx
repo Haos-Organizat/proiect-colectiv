@@ -41,7 +41,10 @@ export function SiteHeader() {
           { to: '/profile', label: 'Profile' },
         ]
       : []),
-    ...(user?.role === 'organizer' ? [{ to: '/organizer', label: 'Organizer' }] : []),
+    ...(user?.role === 'organizer' || user?.role === 'admin'
+      ? [{ to: '/organizer', label: 'Organizer' }]
+      : []),
+    ...(user?.role === 'admin' ? [{ to: '/admin', label: 'Admin' }] : []),
   ];
 
   const handleLogout = async () => {

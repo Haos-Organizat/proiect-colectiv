@@ -34,6 +34,9 @@ const TicketsPage = lazy(() =>
   import('@/pages/TicketsPage').then((m) => ({ default: m.TicketsPage })),
 );
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'));
+const AdminPage = lazy(() =>
+  import('@/pages/AdminPage').then((m) => ({ default: m.AdminPage })),
+);
 const OrganizerDashboardPage = lazy(() =>
   import('@/pages/organizer/OrganizerDashboardPage').then((m) => ({
     default: m.OrganizerDashboardPage,
@@ -72,7 +75,7 @@ function RequireAuth({ role, children }: { role?: UserRole; children: ReactNode 
   const location = useLocation();
   if (user === undefined) return <PageSkeleton />;
   if (!user) return <Navigate to="/login" replace state={{ from: location.pathname }} />;
-  if (role && user.role !== role) {
+  if (role && user.role !== role && user.role !== 'admin') {
     return (
       <div className="mx-auto grid max-w-[1200px] justify-items-start gap-4 px-4 py-16 md:px-8">
         <h1 className="type-h2">Organizer accounts only.</h1>
@@ -152,6 +155,14 @@ const router = createBrowserRouter([
         element: (
           <RequireAuth role="organizer">
             <EditEventPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/admin',
+        element: (
+          <RequireAuth role="admin">
+            <AdminPage />
           </RequireAuth>
         ),
       },

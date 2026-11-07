@@ -6,7 +6,7 @@
  * money is an integer in minor units (bani) plus an ISO 4217 currency code.
  */
 
-export type UserRole = 'student' | 'organizer';
+export type UserRole = 'student' | 'organizer' | 'admin';
 
 export interface User {
   id: string;

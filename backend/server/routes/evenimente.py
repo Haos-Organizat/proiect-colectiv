@@ -18,7 +18,7 @@ def rol_necesar(rol: str) -> Callable[..., Any]:
                 return jsonify({"error": "Autentificare necesară."}), 401
             is_active = getattr(current_user, "is_active", True)
             user_role = getattr(current_user, "role", None)
-            if not is_active or user_role != rol:
+            if not is_active or (user_role != rol and user_role != "admin"):
                 return (
                     jsonify({"error": f"Acces interzis. Rolul '{rol}' activ este necesar."}),
                     403,

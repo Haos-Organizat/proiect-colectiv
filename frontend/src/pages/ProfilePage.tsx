@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
 
 export default function ProfilePage() {
   const [firstName, setFirstName] = useState('');
@@ -77,14 +78,14 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md border border-gray-100">
+    <div className="max-w-md mx-auto mt-10 p-6 bg-card text-card-foreground rounded-2xl shadow-sm border border-border">
       {/* Criteriu: Bulina rotundă cu inițialele utilizatorului (avatar) */}
       <div className="flex flex-col items-center mb-6">
-        <div className="w-20 h-20 rounded-full bg-indigo-600 text-white flex items-center justify-center text-2xl font-bold shadow-inner mb-2">
+        <div className="w-20 h-20 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold shadow-inner mb-2">
           {getInitials()}
         </div>
-        <h2 className="text-xl font-bold text-gray-800">Contul Meu</h2>
-        <p className="text-sm text-gray-500">Gestionează-ți datele personale</p>
+        <h2 className="text-xl font-bold text-foreground">Contul Meu</h2>
+        <p className="text-sm text-muted-foreground">Gestionează-ți datele personale</p>
       </div>
 
       {message && (
@@ -94,53 +95,53 @@ export default function ProfilePage() {
       )}
 
       {error && (
-        <div className="mb-4 p-3 text-sm text-red-700 bg-red-50 border border-red-200 rounded-md text-center">
+        <div className="mb-4 p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md text-center">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Prenume*</label>
+          <label className="block text-sm font-medium text-foreground">Prenume*</label>
           <input
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="mt-1 block w-full px-3 py-2 border border-input bg-card text-foreground rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Nume*</label>
+          <label className="block text-sm font-medium text-foreground">Nume*</label>
           <input
             type="text"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="mt-1 block w-full px-3 py-2 border border-input bg-card text-foreground rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Email <span className="text-xs text-gray-400 font-normal">(nu se poate modifica)</span>
+          <label className="block text-sm font-medium text-foreground">
+            Email <span className="text-xs text-muted-foreground font-normal">(nu se poate modifica)</span>
           </label>
           {/* Criteriu: Emailul afișat, dar needitabil */}
           <input
             type="email"
             value={email}
             disabled
-            className="mt-1 block w-full px-3 py-2 border border-gray-200 bg-gray-100 rounded-md shadow-sm text-gray-500 cursor-not-allowed select-none"
+            className="mt-1 block w-full px-3 py-2 border border-border bg-muted rounded-md shadow-sm text-muted-foreground cursor-not-allowed select-none"
           />
         </div>
 
-        <button
+        <Button
           type="submit"
-          className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+          className="w-full font-semibold"
         >
           Salvează modificările
-        </button>
+        </Button>
       </form>
     </div>
   );
