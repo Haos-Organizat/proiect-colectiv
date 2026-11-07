@@ -30,8 +30,8 @@ def register() -> tuple[Any, int]:
 
     try:
         result: dict[str, Any] = auth_service.register_user(dto)
-    except Exception as e:  # noqa: BLE001
-        return jsonify({"error": f"Eroare la conectarea cu baza de date: {e}"}), 500
+    except Exception:  # noqa: BLE001
+        return jsonify({"error": "A apărut o eroare, încearcă din nou."}), 500
 
     if "errors" in result:
         return jsonify({"errors": result["errors"]}), int(result["code"])
@@ -62,8 +62,8 @@ def login() -> tuple[Any, int]:
 
     try:
         result = auth_service.authenticate_user(email, password)
-    except Exception as e:  # noqa: BLE001
-        return jsonify({"error": f"Eroare la conectarea cu baza de date: {e}"}), 500
+    except Exception:  # noqa: BLE001
+        return jsonify({"error": "A apărut o eroare, încearcă din nou."}), 500
 
     if "error" in result:
         return jsonify({"error": result["error"]}), int(result["code"])
