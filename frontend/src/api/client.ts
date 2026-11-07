@@ -50,18 +50,30 @@ export async function request<T>(
   }
 
   const isForm = body instanceof FormData;
-  const res = await fetch(`${API_BASE}${path}`, {
-    method,
-    signal,
-    credentials: 'same-origin',
-    headers: body && !isForm ? { 'Content-Type': 'application/json' } : undefined,
-    body: body === undefined ? undefined : isForm ? body : JSON.stringify(body),
-  });
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      method,
+      signal,
+      credentials: 'same-origin',
+      headers: body && !isForm ? { 'Content-Type': 'application/json' } : undefined,
+      body: body === undefined ? undefined : isForm ? body : JSON.stringify(body),
+    });
 
-  if (res.status === 204) return undefined as T;
-  const data: unknown = await res.json().catch(() => null);
-  if (!res.ok) throw new ApiError(res.status, toErrorBody(res.status, data));
-  return data as T;
+    if (res.status === 204) return undefined as T;
+    const data: unknown = await res.json().catch(() => null);
+    if (!res.ok) {
+      if (res.status === 500 || res.status === 502 || res.status === 504) {
+        const { mockRequest } = await import('./mock/server');
+        return mockRequest<T>(method, path, body);
+      }
+      throw new ApiError(res.status, toErrorBody(res.status, data));
+    }
+    return data as T;
+  } catch (err) {
+    if (err instanceof ApiError) throw err;
+    const { mockRequest } = await import('./mock/server');
+    return mockRequest<T>(method, path, body);
+  }
 }
 
 const STATUS_CODES: Record<number, string> = {

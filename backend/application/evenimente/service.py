@@ -8,7 +8,7 @@ class EvenimentService:
     def __init__(
         self,
         eveniment_repository: Any,
-        creator_id: int | None,
+        creator_id: int | None = None,
         organizatie_id: int | None = None,
     ) -> None:
         self.eveniment_repository = eveniment_repository
@@ -42,3 +42,7 @@ class EvenimentService:
 
         saved_ev = self.eveniment_repository.save(ev)
         return {"eveniment": saved_ev.to_dict(), "code": 201}
+
+    def search_evenimente(self, titlu: str = "") -> list[dict[str, Any]]:
+        evenimente = self.eveniment_repository.search_by_title(titlu)
+        return [ev.to_dict() for ev in evenimente]

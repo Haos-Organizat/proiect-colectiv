@@ -54,3 +54,19 @@ def create_eveniment() -> tuple[Any, int]:
         return jsonify({"errors": result["errors"]}), int(result["code"])
 
     return jsonify(result["eveniment"]), int(result["code"])
+
+
+@evenimente_bp.route("/api/evenimente", methods=["GET"])
+@evenimente_bp.route("/api/events", methods=["GET"])
+def get_evenimente() -> tuple[Any, int]:
+    """Căutare evenimente după cuvinte în titlu (accesibil vizitatorilor)."""
+    import backend.api.index as api_index
+
+    supabase_obj: Any = getattr(api_index, "supabase_client", getattr(api_index, "supabase", None))
+    repo = EvenimentRepository(supabase_obj)
+    service = EvenimentService(eveniment_repository=repo)
+
+    # Căutarea se face în titlu conform criteriilor de acceptare (parametrul titlu sau q)
+    query = request.args.get("titlu") or request.args.get("q") or ""
+    rezultate = service.search_evenimente(query)
+    return jsonify(rezultate), 200
