@@ -175,3 +175,98 @@ def test_repository_maps_eveniment_to_events_table_columns() -> None:
         "status": "activ",
         "image_url": "https://example.com/cover.webp",
     }
+
+
+
+def test_search_evenimente_by_title_service() -> None:
+    from backend.infrastructure.evenimente_repository import EvenimentRepository
+
+    repo = EvenimentRepository(supabase_client=None)
+    ev1 = Eveniment(
+        id=None,
+        titlu="Hackathon UniConnect 2026",
+        descriere="Hackathon studențesc.",
+        categorie="tehnologie",
+        data_ora="2026-11-20T10:00:00Z",
+        loc="Campus",
+        numar_locuri=100,
+        organizatie_id=1,
+        creator_id=1,
+    )
+    ev2 = Eveniment(
+        id=None,
+        titlu="Concert Rock Acustic",
+        descriere="Muzică live.",
+        categorie="muzica",
+        data_ora="2026-11-22T19:00:00Z",
+        loc="Club",
+        numar_locuri=50,
+        organizatie_id=1,
+        creator_id=1,
+    )
+    repo.save(ev1)
+    repo.save(ev2)
+
+    service = EvenimentService(eveniment_repository=repo)
+
+    # 1. Căutare după cuvânt parțial (case-insensitive) în titlu
+    rezultate = service.search_evenimente("hackathon")
+    assert len(rezultate) == 1
+    assert rezultate[0]["titlu"] == "Hackathon UniConnect 2026"
+
+    # 2. Căutare cu majuscule
+    rezultate_upper = service.search_evenimente("ROCK")
+    assert len(rezultate_upper) == 1
+    assert rezultate_upper[0]["titlu"] == "Concert Rock Acustic"
+
+    # 3. Căutare după termen inexistent -> returnează listă goală
+    rezultate_none = service.search_evenimente("sport")
+    assert len(rezultate_none) == 0
+
+    # 4. Fără filtru -> returnează toate
+    toate = service.search_evenimente("")
+    assert len(toate) == 2
+
+
+def test_api_cautare_evenimente_public_vizitator(monkeypatch: Any) -> None:
+    app = api_index.app
+    app.config["TESTING"] = True
+
+    from backend.infrastructure.evenimente_repository import EvenimentRepository
+
+    repo = EvenimentRepository(supabase_client=None)
+    ev = Eveniment(
+        id=1,
+        titlu="Workshop Inteligență Artificială",
+        descriere="Workshop practic de AI.",
+        categorie="workshop",
+        data_ora="2026-12-05T14:00:00Z",
+        loc="Amfiteatru",
+        numar_locuri=60,
+        organizatie_id=1,
+        creator_id=1,
+    )
+    repo._local_storage.append(ev)
+
+    monkeypatch.setattr("backend.server.routes.evenimente.EvenimentRepository", lambda _db=None: repo)
+    monkeypatch.setattr(api_index, "supabase_client", None, raising=False)
+    monkeypatch.setattr(api_index, "supabase", None, raising=False)
+
+    client = app.test_client()
+
+    # Ca vizitator (fără autentificare), căutăm după cuvinte în titlu
+    res_cuvant = client.get("/api/evenimente?titlu=Workshop")
+    assert res_cuvant.status_code == 200
+    data = res_cuvant.get_json()
+    assert len(data) == 1
+    assert data[0]["titlu"] == "Workshop Inteligență Artificială"
+
+    # Suport și pentru parametrul q
+    res_q = client.get("/api/evenimente?q=inteligență")
+    assert res_q.status_code == 200
+    assert len(res_q.get_json()) == 1
+
+    # Când nu se găsește niciun eveniment
+    res_gol = client.get("/api/evenimente?titlu=inexistent")
+    assert res_gol.status_code == 200
+    assert res_gol.get_json() == []

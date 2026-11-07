@@ -44,3 +44,33 @@ class EvenimentRepository:
             eveniment.id = len(self._local_storage) + 1
         self._local_storage.append(eveniment)
         return eveniment
+
+    @staticmethod
+    def from_row(row: dict[str, Any]) -> Eveniment:
+        return Eveniment(
+            id=row.get("id"),
+            titlu=row.get("title", ""),
+            descriere=row.get("description", ""),
+            categorie=row.get("category", ""),
+            data_ora=str(row.get("start_time", "")),
+            loc=row.get("location", ""),
+            numar_locuri=row.get("capacity", 0),
+            organizatie_id=row.get("organizer_id"),
+            creator_id=row.get("organizer_id"),
+            status=row.get("status", "activ"),
+            poza=row.get("image_url"),
+        )
+
+    def search_by_title(self, query: str = "") -> list[Eveniment]:
+        q = (query or "").strip().lower()
+        if self.supabase is not None:
+            stmt = self.supabase.table(self.TABLE).select("*")
+            if q:
+                stmt = stmt.ilike("title", f"%{q}%")
+            response = stmt.execute()
+            rows = getattr(response, "data", None) or []
+            return [self.from_row(r) for r in rows]
+
+        if not q:
+            return list(self._local_storage)
+        return [ev for ev in self._local_storage if q in ev.titlu.lower()]
