@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { OrganizerRequestSection } from '@/components/OrganizerRequestSection';
 
 export default function ProfilePage() {
   const [firstName, setFirstName] = useState('');
@@ -125,7 +126,10 @@ export default function ProfilePage() {
 
         <div>
           <label className="block text-sm font-medium text-foreground">
-            Email <span className="text-xs text-muted-foreground font-normal">(nu se poate modifica)</span>
+            Email{' '}
+            <span className="text-xs text-muted-foreground font-normal">
+              (nu se poate modifica)
+            </span>
           </label>
           {/* Criteriu: Emailul afișat, dar needitabil */}
           <input
@@ -136,13 +140,12 @@ export default function ProfilePage() {
           />
         </div>
 
-        <Button
-          type="submit"
-          className="w-full font-semibold"
-        >
+        <Button type="submit" className="w-full font-semibold">
           Salvează modificările
         </Button>
       </form>
+
+      <OrganizerRequestSection />
     </div>
   );
 }

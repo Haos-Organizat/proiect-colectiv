@@ -250,6 +250,10 @@ export function RegisterPage() {
         <Button type="submit" disabled={isSubmitting}>
           <UserPlus /> {isSubmitting ? 'Creating account' : 'Create account'}
         </Button>
+        <p className="text-sm text-muted-foreground">
+          Run a student organization or club? Create your account first, then request an organizer
+          account from your <span className="font-semibold text-foreground">Profile</span> page.
+        </p>
       </form>
     </AuthShell>
   );
