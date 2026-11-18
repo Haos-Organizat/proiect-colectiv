@@ -39,26 +39,36 @@ class EvenimentRepository:
             response = self.supabase.table(self.TABLE).select("*").eq("id", int(event_id)).execute()
             rows = getattr(response, "data", None) or []
             if rows:
-                row = rows[0]
-                return Eveniment(
-                    id=row.get("id"),
-                    titlu=row.get("title", ""),
-                    descriere=row.get("description", ""),
-                    categorie=row.get("category", ""),
-                    data_ora=str(row.get("start_time", "")),
-                    loc=row.get("location", ""),
-                    numar_locuri=row.get("capacity") or 0,
-                    organizatie_id=row.get("organizer_id"),
-                    creator_id=row.get("organizer_id"),
-                    status=row.get("status", "activ"),
-                    poza=row.get("image_url"),
-                )
+                return self.from_row(rows[0])
             return None
 
         for ev in self._local_storage:
             if ev.id == int(event_id):
                 return ev
         return None
+
+    def list_all(self) -> list[Eveniment]:
+        if self.supabase is not None:
+            response = self.supabase.table(self.TABLE).select("*").execute()
+            rows = getattr(response, "data", None) or []
+            return [self.from_row(r) for r in rows]
+        return list(self._local_storage)
+
+    @staticmethod
+    def from_row(row: dict[str, Any]) -> Eveniment:
+        return Eveniment(
+            id=row.get("id"),
+            titlu=row.get("title", ""),
+            descriere=row.get("description", ""),
+            categorie=row.get("category", ""),
+            data_ora=str(row.get("start_time", "")),
+            loc=row.get("location", ""),
+            numar_locuri=row.get("capacity") or 0,
+            organizatie_id=row.get("organizer_id"),
+            creator_id=row.get("organizer_id"),
+            status=row.get("status", "activ"),
+            poza=row.get("image_url"),
+        )
 
     def add_inscriere(self, inscriere: dict[str, Any]) -> None:
         self._local_inscrieri.append(inscriere)

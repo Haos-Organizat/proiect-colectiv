@@ -66,6 +66,162 @@ class EvenimentService:
         details["bilet_id"] = bilet_id
         return {"eveniment": details, "code": 200}
 
+    def list_evenimente(
+        self, categorie: str | None = None, query: str | None = None
+    ) -> list[dict[str, Any]]:
+        list_fn = getattr(self.eveniment_repository, "list_all", None)
+        evenimente: list[Eveniment] = list_fn() if callable(list_fn) else []
+        cat_filter = (categorie or "").strip().lower()
+        q_filter = (query or "").strip().lower()
+
+        aliases: dict[str, set[str]] = {
+            "sport": {"sport"},
+            "tech": {"tech", "it", "tehnologie"},
+            "it": {"tech", "it", "tehnologie"},
+            "culture": {"culture", "cultura", "cultură", "cultural", "arta", "artă"},
+            "cultura": {"culture", "cultura", "cultură", "cultural", "arta", "artă"},
+            "cultură": {"culture", "cultura", "cultură", "cultural", "arta", "artă"},
+            "party": {"party", "petrecere", "petreceri"},
+            "petrecere": {"party", "petrecere", "petreceri"},
+            "petreceri": {"party", "petrecere", "petreceri"},
+            "volunteering": {"volunteering", "voluntariat"},
+            "voluntariat": {"volunteering", "voluntariat"},
+            "education": {
+                "education",
+                "educatie",
+                "educație",
+                "academic",
+                "academice",
+                "workshop",
+                "conferinta",
+                "conferință",
+            },
+            "educatie": {
+                "education",
+                "educatie",
+                "educație",
+                "academic",
+                "academice",
+                "workshop",
+                "conferinta",
+                "conferință",
+            },
+            "educație": {
+                "education",
+                "educatie",
+                "educație",
+                "academic",
+                "academice",
+                "workshop",
+                "conferinta",
+                "conferință",
+            },
+            "other": {"other", "altele", "social", "sociale"},
+            "altele": {"other", "altele", "social", "sociale"},
+        }
+        allowed_cats = aliases.get(cat_filter, {cat_filter}) if cat_filter else set()
+
+        result: list[dict[str, Any]] = []
+        for ev in evenimente:
+            if allowed_cats and ev.categorie.strip().lower() not in allowed_cats:
+                continue
+            if q_filter and q_filter not in f"{ev.titlu} {ev.loc}".lower():
+                continue
+            get_inscrieri_fn = getattr(
+                self.eveniment_repository, "get_inscrieri_by_eveniment", None
+            )
+            inscrieri = (
+                get_inscrieri_fn(ev.id) if callable(get_inscrieri_fn) and ev.id is not None else []
+            )
+            active_count = sum(
+                1
+                for i in inscrieri
+                if isinstance(i, dict) and str(i.get("status", "")).strip().lower() == "activa"
+            )
+            item = ev.to_dict()
+            item["locuri_ramase"] = max(0, ev.numar_locuri - active_count)
+            result.append(item)
+        return result
+
+    def list_evenimente(
+        self, categorie: str | None = None, query: str | None = None
+    ) -> list[dict[str, Any]]:
+        list_fn = getattr(self.eveniment_repository, "list_all", None)
+        evenimente: list[Eveniment] = list_fn() if callable(list_fn) else []
+        cat_filter = (categorie or "").strip().lower()
+        q_filter = (query or "").strip().lower()
+
+        aliases: dict[str, set[str]] = {
+            "sport": {"sport"},
+            "tech": {"tech", "it", "tehnologie"},
+            "it": {"tech", "it", "tehnologie"},
+            "culture": {"culture", "cultura", "cultură", "cultural", "arta", "artă"},
+            "cultura": {"culture", "cultura", "cultură", "cultural", "arta", "artă"},
+            "cultură": {"culture", "cultura", "cultură", "cultural", "arta", "artă"},
+            "party": {"party", "petrecere", "petreceri"},
+            "petrecere": {"party", "petrecere", "petreceri"},
+            "petreceri": {"party", "petrecere", "petreceri"},
+            "volunteering": {"volunteering", "voluntariat"},
+            "voluntariat": {"volunteering", "voluntariat"},
+            "education": {
+                "education",
+                "educatie",
+                "educație",
+                "academic",
+                "academice",
+                "workshop",
+                "conferinta",
+                "conferință",
+            },
+            "educatie": {
+                "education",
+                "educatie",
+                "educație",
+                "academic",
+                "academice",
+                "workshop",
+                "conferinta",
+                "conferință",
+            },
+            "educație": {
+                "education",
+                "educatie",
+                "educație",
+                "academic",
+                "academice",
+                "workshop",
+                "conferinta",
+                "conferință",
+            },
+            "other": {"other", "altele", "social", "sociale"},
+            "altele": {"other", "altele", "social", "sociale"},
+        }
+        allowed_cats = aliases.get(cat_filter, {cat_filter}) if cat_filter else set()
+
+        result: list[dict[str, Any]] = []
+        for ev in evenimente:
+            if allowed_cats and ev.categorie.strip().lower() not in allowed_cats:
+                continue
+            if q_filter and q_filter not in f"{ev.titlu} {ev.loc}".lower():
+                continue
+            get_inscrieri_fn = getattr(
+                self.eveniment_repository, "get_inscrieri_by_eveniment", None
+            )
+            inscrieri = (
+                get_inscrieri_fn(ev.id)
+                if callable(get_inscrieri_fn) and ev.id is not None
+                else []
+            )
+            active_count = sum(
+                1
+                for i in inscrieri
+                if isinstance(i, dict) and str(i.get("status", "")).strip().lower() == "activa"
+            )
+            item = ev.to_dict()
+            item["locuri_ramase"] = max(0, ev.numar_locuri - active_count)
+            result.append(item)
+        return result
+
     def create_eveniment(self, data: dict[str, Any]) -> dict[str, Any]:
         errors = EvenimentValidator.validate(data)
         if errors:

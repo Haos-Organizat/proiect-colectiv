@@ -38,6 +38,21 @@ def get_categorii() -> tuple[Any, int]:
     return jsonify(CATEGORII_PRINCIPALE), 200
 
 
+@evenimente_bp.route("/api/evenimente", methods=["GET"])
+@evenimente_bp.route("/api/events", methods=["GET"])
+def list_evenimente() -> tuple[Any, int]:
+    """Returnează lista de evenimente filtrată opțional după categorie și căutare."""
+    import backend.api.index as api_index
+
+    supabase_obj: Any = getattr(api_index, "supabase_client", getattr(api_index, "supabase", None))
+    repo = EvenimentRepository(supabase_obj)
+    service = EvenimentService(eveniment_repository=repo)
+
+    categorie = request.args.get("category") or request.args.get("categorie")
+    query = request.args.get("q") or request.args.get("titlu")
+    return jsonify(service.list_evenimente(categorie=categorie, query=query)), 200
+
+
 @evenimente_bp.route("/api/evenimente/<event_id>", methods=["GET"])
 @evenimente_bp.route("/api/events/<event_id>", methods=["GET"])
 def get_eveniment_details(event_id: str) -> tuple[Any, int]:

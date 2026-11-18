@@ -1,4 +1,4 @@
-import type { EventCategory, User } from '@/types/api';
+import type { EventCategory, EventSummary, User } from '@/types/api';
 import { ApiError, request } from './client';
 
 /*
@@ -89,6 +89,86 @@ const CATEGORY_TO_FLASK: Record<EventCategory, string> = {
   workshop: 'workshop',
 };
 
+const FLASK_TO_CATEGORY: Record<string, EventCategory> = {
+  sport: 'sport',
+  it: 'tech',
+  tehnologie: 'tech',
+  tech: 'tech',
+  cultura: 'culture',
+  cultură: 'culture',
+  cultural: 'culture',
+  culture: 'culture',
+  arta: 'culture',
+  artă: 'culture',
+  petrecere: 'party',
+  petreceri: 'party',
+  party: 'party',
+  voluntariat: 'volunteering',
+  volunteering: 'volunteering',
+  educatie: 'education',
+  educație: 'education',
+  education: 'education',
+  academic: 'education',
+  academice: 'education',
+  conferinta: 'education',
+  conferință: 'education',
+  altele: 'other',
+  other: 'other',
+  social: 'other',
+  sociale: 'other',
+  muzica: 'concert',
+  muzică: 'concert',
+  concert: 'concert',
+  cariera: 'career',
+  carieră: 'career',
+  career: 'career',
+  workshop: 'workshop',
+};
+
+interface FlaskEventItem {
+  id: number | string;
+  slug?: string;
+  title?: string;
+  titlu?: string;
+  category?: string;
+  categorie?: string;
+  startsAt?: string;
+  data_ora?: string;
+  endsAt?: string;
+  venue?: string;
+  loc?: string;
+  city?: string;
+  imageUrl?: string;
+  poza?: string | null;
+  price?: { amount: number; currency: 'RON' };
+  capacity?: number;
+  numar_locuri?: number;
+  locuri?: number;
+  ticketsLeft?: number;
+  locuri_ramase?: number;
+}
+
+function toEventSummary(raw: FlaskEventItem): EventSummary {
+  const id = String(raw.id);
+  const startsAt = raw.startsAt ?? raw.data_ora ?? new Date().toISOString();
+  const rawCat = (raw.category ?? raw.categorie ?? '').trim().toLowerCase();
+  const capacity = raw.capacity ?? raw.numar_locuri ?? raw.locuri ?? 0;
+  const ticketsLeft = raw.ticketsLeft ?? raw.locuri_ramase ?? capacity;
+  return {
+    id,
+    slug: raw.slug ?? id,
+    title: raw.title ?? raw.titlu ?? '',
+    category: FLASK_TO_CATEGORY[rawCat] ?? 'other',
+    startsAt,
+    endsAt: raw.endsAt ?? startsAt,
+    venue: raw.venue ?? raw.loc ?? '',
+    city: raw.city ?? '',
+    imageUrl: raw.imageUrl || raw.poza || '/mock/events/hero.webp',
+    price: raw.price ?? { amount: 0, currency: 'RON' },
+    ticketsLeft: Math.max(0, ticketsLeft),
+  };
+}
+
 export interface CreateEventInput {
   title: string;
   category: EventCategory;
@@ -101,6 +181,16 @@ export interface CreateEventInput {
 }
 
 export const flaskEvents = {
+  list: (params: { category?: EventCategory; q?: string } = {}) => {
+    const search = new URLSearchParams();
+    if (params.category) search.set('category', params.category);
+    if (params.q) search.set('q', params.q);
+    const qs = search.toString();
+    return request<FlaskEventItem[]>(`/events${qs ? `?${qs}` : ''}`).then((items) =>
+      items.map(toEventSummary),
+    );
+  },
+
   /** POST /api/evenimente. Price, end time and per-order limit are not stored yet. */
   create: (input: CreateEventInput) =>
     request<{ id: number }>('/evenimente', {
