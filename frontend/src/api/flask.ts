@@ -77,14 +77,16 @@ export const flaskAuth = {
 
 /** Frontend category -> value accepted by the backend validator (CATEGORII_PERMISE). */
 const CATEGORY_TO_FLASK: Record<EventCategory, string> = {
-  party: 'petrecere',
-  concert: 'muzica',
-  tech: 'tehnologie',
-  career: 'cariera',
-  culture: 'cultura',
   sport: 'sport',
-  workshop: 'workshop',
+  tech: 'it',
+  culture: 'cultura',
+  party: 'petreceri',
   volunteering: 'voluntariat',
+  education: 'educatie',
+  other: 'altele',
+  concert: 'muzica',
+  career: 'cariera',
+  workshop: 'workshop',
 };
 
 export interface CreateEventInput {

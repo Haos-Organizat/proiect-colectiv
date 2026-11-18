@@ -8,12 +8,63 @@ class EvenimentService:
     def __init__(
         self,
         eveniment_repository: Any,
-        creator_id: int | None,
+        creator_id: int | None = None,
         organizatie_id: int | None = None,
     ) -> None:
         self.eveniment_repository = eveniment_repository
         self.creator_id = creator_id
         self.organizatie_id = organizatie_id if organizatie_id is not None else creator_id
+
+    def get_eveniment_by_id(self, event_id: Any, user_id: int | None = None) -> dict[str, Any]:
+        if isinstance(event_id, bool):
+            return {"error": "Evenimentul nu a fost găsit.", "code": 404}
+        try:
+            parsed_id = int(event_id)
+        except (ValueError, TypeError):
+            return {"error": "Evenimentul nu a fost găsit.", "code": 404}
+
+        if parsed_id <= 0:
+            return {"error": "Evenimentul nu a fost găsit.", "code": 404}
+
+        get_by_id_fn = getattr(self.eveniment_repository, "get_by_id", None)
+        ev: Eveniment | None = get_by_id_fn(parsed_id) if callable(get_by_id_fn) else None
+        if ev is None:
+            return {"error": "Evenimentul nu a fost găsit.", "code": 404}
+
+        get_inscrieri_fn = getattr(self.eveniment_repository, "get_inscrieri_by_eveniment", None)
+        inscrieri: list[dict[str, Any]] = (
+            get_inscrieri_fn(parsed_id) if callable(get_inscrieri_fn) else []
+        )
+
+        # Locurile rămase se calculează doar din înscrierile cu status activa.
+        inscrieri_active = [
+            i
+            for i in inscrieri
+            if isinstance(i, dict) and str(i.get("status", "")).strip().lower() == "activa"
+        ]
+        locuri_ramase = max(0, ev.numar_locuri - len(inscrieri_active))
+
+        get_org_fn = getattr(self.eveniment_repository, "get_organizatie_nume", None)
+        organizatie = (
+            get_org_fn(ev.organizatie_id or ev.creator_id) if callable(get_org_fn) else None
+        ) or "Organizație studențească"
+
+        este_inscris = False
+        bilet_id: Any = None
+        if user_id is not None:
+            for i in inscrieri_active:
+                uid = i.get("user_id") if i.get("user_id") is not None else i.get("utilizator_id")
+                if uid is not None and int(uid) == int(user_id):
+                    este_inscris = True
+                    bilet_id = i.get("id")
+                    break
+
+        details = ev.to_dict()
+        details["locuri_ramase"] = locuri_ramase
+        details["organizatie"] = organizatie
+        details["este_inscris"] = este_inscris
+        details["bilet_id"] = bilet_id
+        return {"eveniment": details, "code": 200}
 
     def create_eveniment(self, data: dict[str, Any]) -> dict[str, Any]:
         errors = EvenimentValidator.validate(data)

@@ -1,10 +1,20 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CalendarBlank, Clock, MapPin, Minus, Plus, Ticket, Users } from '@phosphor-icons/react';
-import { useState } from 'react';
+import {
+  Buildings,
+  CalendarBlank,
+  CheckCircle,
+  Clock,
+  MapPin,
+  Minus,
+  Plus,
+  Ticket,
+  Users,
+} from '@phosphor-icons/react';
+import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { Link, useLocation, useNavigate, useParams } from 'react-router';
 import { ApiError } from '@/api/client';
-import { eventsApi, ordersApi } from '@/api/endpoints';
+import { eventsApi, ordersApi, ticketsApi } from '@/api/endpoints';
 import { ErrorState, FormAlert } from '@/components/PageState';
 import { Seo } from '@/components/Seo';
 import { EventDetailSkeleton } from '@/components/Skeletons';
@@ -21,18 +31,191 @@ import {
   formatTime,
   snippet,
 } from '@/lib/format';
-import type { EventDetail } from '@/types/api';
+import {
+  EVENT_CATEGORIES,
+  type EventCategory,
+  type EventDetail,
+  type EventStatus,
+  type Ticket as UserTicket,
+} from '@/types/api';
 import { orderSchema, type OrderInput } from '@/types/schemas';
+
+const FLASK_TO_CATEGORY: Record<string, EventCategory> = {
+  petrecere: 'party',
+  petreceri: 'party',
+  muzica: 'concert',
+  muzică: 'concert',
+  tehnologie: 'tech',
+  it: 'tech',
+  academic: 'education',
+  academice: 'education',
+  conferinta: 'education',
+  conferință: 'education',
+  cariera: 'career',
+  carieră: 'career',
+  cultura: 'culture',
+  cultură: 'culture',
+  cultural: 'culture',
+  arta: 'culture',
+  artă: 'culture',
+  social: 'other',
+  sociale: 'other',
+  sport: 'sport',
+  workshop: 'workshop',
+  educatie: 'education',
+  educație: 'education',
+  voluntariat: 'volunteering',
+  altele: 'other',
+};
+
+interface FlaskInscriere {
+  id?: number | string;
+  user_id?: number | string;
+  utilizator_id?: number | string;
+  status?: string;
+}
+
+interface RawEventResponse {
+  id?: string | number;
+  slug?: string;
+  title?: string;
+  titlu?: string;
+  description?: string;
+  descriere?: string;
+  category?: string;
+  categorie?: string;
+  startsAt?: string;
+  data_ora?: string;
+  endsAt?: string;
+  data_sfarsit?: string;
+  venue?: string;
+  loc?: string;
+  city?: string;
+  imageUrl?: string;
+  poza?: string | null;
+  price?: { amount: number; currency: 'RON' };
+  capacity?: number;
+  numar_locuri?: number;
+  locuri?: number;
+  ticketsLeft?: number;
+  locuri_ramase?: number;
+  maxPerOrder?: number;
+  organizer?: { id: string; name: string };
+  organizatie?: string;
+  organizatie_id?: number | string | null;
+  creator_id?: number | string | null;
+  status?: EventStatus | 'activ' | 'anulat' | 'inactiv';
+  isRegistered?: boolean;
+  este_inscris?: boolean;
+  userTicketId?: string | null;
+  bilet_id?: number | string | null;
+  inscrieri?: FlaskInscriere[];
+}
+
+export interface EventDetailView extends EventDetail {
+  status: EventStatus | 'activ' | 'anulat' | 'inactiv';
+  isRegistered: boolean;
+  userTicketId: string | null;
+}
+
+function toCategory(raw?: string): EventCategory {
+  if (!raw) return 'culture';
+  const normalized = raw.trim().toLowerCase();
+  if ((EVENT_CATEGORIES as readonly string[]).includes(normalized)) {
+    return normalized as EventCategory;
+  }
+  return FLASK_TO_CATEGORY[normalized] ?? 'culture';
+}
+
+function normalizeEventDetail(raw: RawEventResponse, currentUserId?: string): EventDetailView {
+  const id = String(raw.id ?? '');
+  const title = raw.title ?? raw.titlu ?? '';
+  const description = raw.description ?? raw.descriere ?? '';
+  const category = toCategory(raw.category ?? raw.categorie);
+  const startsAt = raw.startsAt ?? raw.data_ora ?? new Date().toISOString();
+  const endsAt = raw.endsAt ?? raw.data_sfarsit ?? startsAt;
+  const venue = raw.venue ?? raw.loc ?? '';
+  const city = raw.city ?? '';
+  const imageUrl = raw.imageUrl || raw.poza || '/mock/events/hero.webp';
+  const price = raw.price ?? { amount: 0, currency: 'RON' as const };
+  const capacity = raw.capacity ?? raw.numar_locuri ?? raw.locuri ?? 0;
+
+  // Remaining seats are calculated only from registrations with status "activa"
+  const activeInscrieri = Array.isArray(raw.inscrieri)
+    ? raw.inscrieri.filter(
+        (i) =>
+          String(i.status ?? '')
+            .trim()
+            .toLowerCase() === 'activa',
+      )
+    : null;
+
+  const ticketsLeft =
+    raw.ticketsLeft ??
+    raw.locuri_ramase ??
+    (activeInscrieri !== null ? Math.max(0, capacity - activeInscrieri.length) : capacity);
+
+  const organizerName = raw.organizer?.name ?? raw.organizatie ?? 'Student Organization';
+  const organizerId = String(raw.organizer?.id ?? raw.organizatie_id ?? raw.creator_id ?? '');
+
+  let isRegistered = Boolean(raw.isRegistered ?? raw.este_inscris);
+  let userTicketId =
+    raw.userTicketId != null
+      ? String(raw.userTicketId)
+      : raw.bilet_id != null
+        ? String(raw.bilet_id)
+        : null;
+
+  if (!isRegistered && currentUserId && activeInscrieri) {
+    const match = activeInscrieri.find(
+      (i) => String(i.user_id ?? i.utilizator_id ?? '') === String(currentUserId),
+    );
+    if (match) {
+      isRegistered = true;
+      userTicketId = match.id != null ? String(match.id) : null;
+    }
+  }
+
+  return {
+    id,
+    slug: raw.slug ?? id,
+    title,
+    category,
+    startsAt,
+    endsAt,
+    venue,
+    city,
+    imageUrl,
+    price,
+    capacity,
+    ticketsLeft: Math.max(0, ticketsLeft),
+    maxPerOrder: raw.maxPerOrder ?? 1,
+    description,
+    organizer: { id: organizerId, name: organizerName },
+    status: raw.status ?? 'published',
+    isRegistered,
+    userTicketId,
+  };
+}
+
+function formatLocation(venue: string, city: string): string {
+  if (!city || venue.toLowerCase().includes(city.toLowerCase())) {
+    return venue;
+  }
+  return `${venue}, ${city}`;
+}
 
 export function EventDetailPage() {
   const { slug = '' } = useParams();
-  const event = useFetch(() => eventsApi.get(slug), slug);
+  const { user } = useAuth();
+  const event = useFetch(() => eventsApi.get(slug) as Promise<RawEventResponse>, slug);
 
   if (event.status === 'loading') return <EventDetailSkeleton />;
   if (event.status === 'error') {
     return (
       <div className="mx-auto max-w-[1200px] px-4 py-16 md:px-8">
         <Seo title="Event not found" noindex />
+        {event.error.status === 404 && <p className="type-label mb-3 text-primary-text">404</p>}
         <ErrorState
           error={event.error}
           onRetry={event.error.status === 404 ? undefined : event.retry}
@@ -41,7 +224,14 @@ export function EventDetailPage() {
     );
   }
 
-  const e = event.data;
+  const e = normalizeEventDetail(event.data, user?.id);
+  const isCancelled = e.status === 'cancelled' || e.status === 'anulat' || e.status === 'inactiv';
+  const locationLabel = formatLocation(e.venue, e.city);
+  const timeRange =
+    e.endsAt && e.endsAt !== e.startsAt
+      ? `${formatTime(e.startsAt)} to ${formatTime(e.endsAt)}`
+      : formatTime(e.startsAt);
+
   return (
     <article>
       <Seo
@@ -56,14 +246,15 @@ export function EventDetailPage() {
           <div className="grid content-start gap-4">
             <p className="flex flex-wrap gap-2">
               <Badge variant="primary">{CATEGORY_LABELS[e.category]}</Badge>
-              {e.ticketsLeft === 0 && <Badge variant="solid">Sold out</Badge>}
+              {isCancelled && <Badge variant="muted">Cancelled</Badge>}
+              {!isCancelled && e.ticketsLeft === 0 && <Badge variant="solid">Sold out</Badge>}
             </p>
             <h1 className="type-h1">{e.title}</h1>
             <p className="text-muted-foreground">by {e.organizer.name}</p>
           </div>
           <img
             src={e.imageUrl}
-            alt=""
+            alt={e.title}
             width={1200}
             height={800}
             className="aspect-[3/2] w-full rounded-[16px] object-cover"
@@ -75,12 +266,9 @@ export function EventDetailPage() {
         <div className="grid content-start gap-8">
           <dl className="grid gap-4 sm:grid-cols-2">
             <Fact icon={CalendarBlank} label="Date" value={formatDay(e.startsAt)} />
-            <Fact
-              icon={Clock}
-              label="Time"
-              value={`${formatTime(e.startsAt)} to ${formatTime(e.endsAt)}`}
-            />
-            <Fact icon={MapPin} label="Venue" value={`${e.venue}, ${e.city}`} />
+            <Fact icon={Clock} label="Time" value={timeRange} />
+            <Fact icon={MapPin} label="Venue" value={locationLabel} />
+            <Fact icon={Buildings} label="Organizer" value={e.organizer.name} />
             <Fact icon={Users} label="Seats left" value={`${e.ticketsLeft} of ${e.capacity}`} />
           </dl>
           <div className="grid gap-3">
@@ -97,7 +285,7 @@ export function EventDetailPage() {
 }
 
 /** schema.org Event data so search engines can show date, place and price. */
-function EventJsonLd({ event: e }: { event: EventDetail }) {
+function EventJsonLd({ event: e }: { event: EventDetailView }) {
   const data = {
     '@context': 'https://schema.org',
     '@type': 'Event',
@@ -143,12 +331,37 @@ function Fact({ icon: Icon, label, value }: { icon: typeof MapPin; label: string
   );
 }
 
-function PurchaseCard({ event }: { event: EventDetail }) {
+function PurchaseCard({ event }: { event: EventDetailView }) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [serverError, setServerError] = useState<string | null>(null);
-  const max = Math.min(event.maxPerOrder, event.ticketsLeft);
+  const [matchedTicket, setMatchedTicket] = useState<UserTicket | null>(null);
+  const max = Math.max(1, Math.min(event.maxPerOrder, Math.max(1, event.ticketsLeft)));
+
+  useEffect(() => {
+    if (!user || event.isRegistered) {
+      return;
+    }
+    let active = true;
+    ticketsApi
+      .mine()
+      .then((tickets) => {
+        if (!active) return;
+        const found = tickets.find(
+          (t) =>
+            (t.event.id === event.id || t.event.slug === event.slug) &&
+            (t.status === 'valid' || (t.status as string) === 'activa'),
+        );
+        if (found) setMatchedTicket(found);
+      })
+      .catch(() => {
+        // Tickets endpoint may not be available yet; ignore.
+      });
+    return () => {
+      active = false;
+    };
+  }, [user, event.id, event.slug, event.isRegistered]);
 
   const {
     register,
@@ -158,7 +371,7 @@ function PurchaseCard({ event }: { event: EventDetail }) {
     setError,
     formState: { errors, isSubmitting },
   } = useForm<OrderInput>({
-    resolver: zodResolver(orderSchema(event.maxPerOrder, event.ticketsLeft)),
+    resolver: zodResolver(orderSchema(event.maxPerOrder, Math.max(1, event.ticketsLeft))),
     defaultValues: { quantity: 1 },
     mode: 'onBlur',
     reValidateMode: 'onChange',
@@ -188,6 +401,56 @@ function PurchaseCard({ event }: { event: EventDetail }) {
 
   const shell = 'grid gap-5 rounded-[16px] border border-border bg-card p-5 text-card-foreground';
 
+  const isCancelled =
+    event.status === 'cancelled' || event.status === 'anulat' || event.status === 'inactiv';
+  const isPast = new Date(event.startsAt) <= new Date();
+  const isRegistered = Boolean(user && (event.isRegistered || matchedTicket !== null));
+  const ticketId = event.userTicketId ?? matchedTicket?.id ?? null;
+  const ticketHref = ticketId
+    ? `/account/tickets?ticket=${encodeURIComponent(ticketId)}`
+    : '/account/tickets';
+
+  // 1. Past or cancelled event: disabled button
+  if (isCancelled || isPast) {
+    return (
+      <div className={shell}>
+        <p className="type-h3">{isCancelled ? 'Event cancelled' : 'Event ended'}</p>
+        <p className="text-muted-foreground">
+          {isCancelled
+            ? 'This event has been cancelled. Registration is no longer available.'
+            : 'This event has already taken place. Registration is closed.'}
+        </p>
+        <Button type="button" disabled>
+          <Ticket /> {isCancelled ? 'Event cancelled' : 'Event ended'}
+        </Button>
+        {isRegistered && (
+          <Button variant="outline" asChild>
+            <Link to={ticketHref}>View ticket</Link>
+          </Button>
+        )}
+      </div>
+    );
+  }
+
+  // 2. Already registered: status button and link to ticket
+  if (isRegistered) {
+    return (
+      <div className={shell}>
+        <p className="type-h3">You're registered</p>
+        <p className="text-muted-foreground">Your spot for this event is confirmed.</p>
+        <Button type="button" disabled>
+          <CheckCircle weight="bold" /> You're registered
+        </Button>
+        <Button variant="outline" asChild>
+          <Link to={ticketHref}>
+            <Ticket /> View ticket
+          </Link>
+        </Button>
+      </div>
+    );
+  }
+
+  // 3. Full event: Sold out
   if (event.ticketsLeft === 0) {
     return (
       <div className={shell}>
@@ -195,6 +458,9 @@ function PurchaseCard({ event }: { event: EventDetail }) {
         <p className="text-muted-foreground">
           All {event.capacity} tickets are gone. Check other events this week.
         </p>
+        <Button type="button" disabled>
+          <Ticket /> Sold out
+        </Button>
         <Button variant="outline" asChild>
           <Link to="/events">Browse events</Link>
         </Button>
@@ -202,6 +468,7 @@ function PurchaseCard({ event }: { event: EventDetail }) {
     );
   }
 
+  // 4. Unauthenticated: Log in to register / buy
   if (!user) {
     return (
       <div className={shell}>
@@ -214,7 +481,7 @@ function PurchaseCard({ event }: { event: EventDetail }) {
         </p>
         <Button asChild>
           <Link to="/login" state={{ from: location.pathname }}>
-            <Ticket /> Log in to buy
+            <Ticket /> Log in to register
           </Link>
         </Button>
         <Button variant="ghost" asChild>
@@ -226,6 +493,7 @@ function PurchaseCard({ event }: { event: EventDetail }) {
     );
   }
 
+  // 5. Authenticated, not registered, seats available
   return (
     <form noValidate onSubmit={handleSubmit(onSubmit)} className={shell}>
       <div className="flex items-baseline justify-between">
@@ -284,7 +552,7 @@ function PurchaseCard({ event }: { event: EventDetail }) {
         {isSubmitting
           ? 'Placing order'
           : event.price.amount === 0
-            ? 'Get free tickets'
+            ? 'Register'
             : validQty === 0
               ? 'Pay'
               : `Pay ${formatPrice(total)}`}
