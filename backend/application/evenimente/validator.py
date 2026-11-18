@@ -1,6 +1,16 @@
 from datetime import UTC, datetime
 from typing import Any
 
+CATEGORII_PRINCIPALE: list[str] = [
+    "sport",
+    "IT",
+    "cultură",
+    "petreceri",
+    "voluntariat",
+    "educație",
+    "altele",
+]
+
 CATEGORII_PERMISE: set[str] = {
     "academic",
     "academice",
@@ -23,9 +33,16 @@ CATEGORII_PERMISE: set[str] = {
     "muzica",
     "muzică",
     "petrecere",
+    "petreceri",
     "educatie",
     "educație",
     "altele",
+    "tech",
+    "culture",
+    "party",
+    "volunteering",
+    "education",
+    "other",
 }
 
 

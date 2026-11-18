@@ -16,18 +16,27 @@ export interface User {
   university: string | null;
 }
 
-export const EVENT_CATEGORIES = [
-  'party',
-  'concert',
-  'tech',
-  'career',
-  'culture',
-  'sport',
-  'workshop',
-  'volunteering',
-] as const;
+export type EventCategory =
+  | 'sport'
+  | 'tech'
+  | 'culture'
+  | 'party'
+  | 'volunteering'
+  | 'education'
+  | 'other'
+  | 'concert'
+  | 'career'
+  | 'workshop';
 
-export type EventCategory = (typeof EVENT_CATEGORIES)[number];
+export const EVENT_CATEGORIES: readonly EventCategory[] = [
+  'sport',
+  'tech',
+  'culture',
+  'party',
+  'volunteering',
+  'education',
+  'other',
+];
 
 export interface Money {
   /** Integer in minor units: 4500 means 45.00. */

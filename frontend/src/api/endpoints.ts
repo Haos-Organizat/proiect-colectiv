@@ -35,6 +35,9 @@ export const authApi = USE_MOCKS ? mockAuth : flaskAuth;
 
 export const eventsApi = {
   list: (params: { category?: EventCategory; q?: string } = {}) => {
+    if (!USE_MOCKS) {
+      return flaskEvents.list(params);
+    }
     const search = new URLSearchParams();
     if (params.category) search.set('category', params.category);
     if (params.q) search.set('q', params.q);

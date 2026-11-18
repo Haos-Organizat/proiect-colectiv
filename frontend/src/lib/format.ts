@@ -42,14 +42,16 @@ export function formatDateTime(iso: string) {
 }
 
 export const CATEGORY_LABELS: Record<EventCategory, string> = {
-  party: 'Parties',
-  concert: 'Concerts',
-  tech: 'Tech',
-  career: 'Careers',
-  culture: 'Culture',
   sport: 'Sport',
-  workshop: 'Workshops',
+  tech: 'IT',
+  culture: 'Culture',
+  party: 'Parties',
   volunteering: 'Volunteering',
+  education: 'Education',
+  other: 'Other',
+  concert: 'Concerts',
+  career: 'Careers',
+  workshop: 'Workshops',
 };
 
 /** Trims text to a search-snippet friendly length without cutting a word in half. */

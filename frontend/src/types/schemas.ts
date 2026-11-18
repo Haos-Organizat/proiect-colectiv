@@ -1,5 +1,17 @@
 import { z } from 'zod';
-import { EVENT_CATEGORIES } from './api';
+
+const EVENT_CATEGORY_ENUM = [
+  'sport',
+  'tech',
+  'culture',
+  'party',
+  'volunteering',
+  'education',
+  'other',
+  'concert',
+  'career',
+  'workshop',
+] as const;
 
 /*
  * Frontend validation for every form. The backend must enforce the same rules;
@@ -62,7 +74,9 @@ export type OrderInput = z.infer<ReturnType<typeof orderSchema>>;
 export const eventFormSchema = z
   .object({
     title: z.string().trim().min(4, 'Give the event a title of at least 4 characters.').max(90),
-    category: z.enum(EVENT_CATEGORIES, { error: 'Pick a category.' }),
+    category: z.enum(EVENT_CATEGORY_ENUM, {
+      error: 'Pick a category.',
+    }),
     description: z
       .string()
       .trim()
