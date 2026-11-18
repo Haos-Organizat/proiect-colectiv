@@ -91,6 +91,8 @@ export function OrganizerRequestSection() {
           {current?.status === 'respinsa' && (
             <p className="text-sm text-muted-foreground">
               Cererea anterioară a fost respinsă. Poți trimite una nouă.
+              {current.rejectionReason && <> Motiv: {current.rejectionReason}</>} Poți trimite una
+              nouă.
             </p>
           )}
           <Button type="button" variant="outline" onClick={() => setOpen(true)}>

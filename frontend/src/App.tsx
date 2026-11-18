@@ -34,8 +34,9 @@ const TicketsPage = lazy(() =>
   import('@/pages/TicketsPage').then((m) => ({ default: m.TicketsPage })),
 );
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'));
-const AdminPage = lazy(() =>
-  import('@/pages/AdminPage').then((m) => ({ default: m.AdminPage })),
+const AdminPage = lazy(() => import('@/pages/AdminPage').then((m) => ({ default: m.AdminPage })));
+const AdminRequestsPage = lazy(() =>
+  import('@/pages/AdminRequestsPage').then((m) => ({ default: m.AdminRequestsPage })),
 );
 const OrganizerDashboardPage = lazy(() =>
   import('@/pages/organizer/OrganizerDashboardPage').then((m) => ({
@@ -163,6 +164,14 @@ const router = createBrowserRouter([
         element: (
           <RequireAuth role="admin">
             <AdminPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: '/admin/cereri',
+        element: (
+          <RequireAuth role="admin">
+            <AdminRequestsPage />
           </RequireAuth>
         ),
       },

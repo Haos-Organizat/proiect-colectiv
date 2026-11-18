@@ -33,6 +33,15 @@ export function SiteHeader() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  function PendingBadge({ count }: { count?: number }) {
+    if (!count) return null;
+    return (
+      <span className="ml-1.5 inline-grid min-w-5 place-items-center rounded-full bg-primary px-1.5 align-middle text-xs leading-5 font-bold text-primary-foreground no-underline">
+        {count}
+        <span className="sr-only"> cereri în așteptare</span>
+      </span>
+    );
+  }
   const links = [
     { to: '/events', label: 'Events' },
     ...(user
@@ -120,6 +129,7 @@ export function SiteHeader() {
                       }
                     >
                       {l.label}
+                      <PendingBadge count={l.badge} />
                     </NavLink>
                   ))}
                 </nav>
