@@ -3,11 +3,19 @@ from typing import Any, Protocol
 MAX_NUME_ORGANIZATIE = 60
 MAX_MESAJ = 300
 
+STATUSURI = {"in_asteptare", "aprobata", "respinsa"}
+
 
 class CereriRepository(Protocol):
     def ultima_cerere(self, user_id: int) -> dict[str, Any] | None: ...
     def nume_organizatie_folosit(self, nume: str) -> bool: ...
     def creeaza(self, user_id: int, nume: str, mesaj: str | None) -> dict[str, Any]: ...
+    def lista(self, status: str) -> list[dict[str, Any]]: ...
+    def utilizatori(self, ids: list[int]) -> dict[int, dict[str, Any]]: ...
+    def numar_in_asteptare(self) -> int: ...
+    def gaseste(self, cerere_id: int) -> dict[str, Any] | None: ...
+    def aproba(self, cerere_id: int) -> str: ...
+    def respinge(self, cerere_id: int, motiv: str | None) -> bool: ...
 
 
 def cerere_publica(cerere: dict[str, Any] | None) -> dict[str, Any] | None:
@@ -62,3 +70,60 @@ class CereriOrganizatorService:
 
         cerere = self.repo.creeaza(user.id, nume, mesaj or None)
         return {"cerere": cerere_publica(cerere), "code": 201}
+
+    def lista_pentru_admin(self, status: str) -> dict[str, Any]:
+        if status not in STATUSURI:
+            return {"error": "Status invalid.", "code": 400}
+
+        cereri = self.repo.lista(status)
+        utilizatori = self.repo.utilizatori(sorted({c["user_id"] for c in cereri}))
+
+        rezultat = []
+        for cerere in cereri:
+            u = utilizatori.get(cerere["user_id"], {})
+            nume = f"{u.get('first_name', '')} {u.get('last_name', '')}".strip()
+            rezultat.append(
+                {**(cerere_publica(cerere) or {}), "user_name": nume, "user_email": u.get("email")}
+            )
+        return {"cereri": rezultat, "code": 200}
+
+    def numar_in_asteptare(self) -> int:
+        return self.repo.numar_in_asteptare()
+
+    def _verifica_in_asteptare(self, cerere_id: int) -> dict[str, Any] | None:
+
+        cerere = self.repo.gaseste(cerere_id)
+        if cerere is None:
+            return {"error": "Cererea nu există.", "code": 404}
+        if cerere["status"] != "in_asteptare":
+            return {"error": "Cererea a fost deja rezolvată.", "code": 409}
+        return None
+
+    def aproba(self, cerere_id: int) -> dict[str, Any]:
+        eroare = self._verifica_in_asteptare(cerere_id)
+        if eroare:
+            return eroare
+
+        rezultat = self.repo.aproba(cerere_id)
+        if rezultat == "negasita":
+            return {"error": "Cererea nu există.", "code": 404}
+        if rezultat != "aprobata":
+            return {"error": "Cererea a fost deja rezolvată.", "code": 409}
+        return {"cerere": cerere_publica(self.repo.gaseste(cerere_id)), "code": 200}
+
+    def respinge(self, cerere_id: int, data: dict[str, Any]) -> dict[str, Any]:
+        motiv_brut = data.get("motiv")
+        motiv = str(motiv_brut).strip() if motiv_brut is not None else ""
+        if len(motiv) > MAX_MESAJ:
+            return {
+                "errors": {"motiv": f"Motivul poate avea maximum {MAX_MESAJ} de caractere."},
+                "code": 400,
+            }
+
+        eroare = self._verifica_in_asteptare(cerere_id)
+        if eroare:
+            return eroare
+
+        if not self.repo.respinge(cerere_id, motiv or None):
+            return {"error": "Cererea a fost deja rezolvată.", "code": 409}
+        return {"cerere": cerere_publica(self.repo.gaseste(cerere_id)), "code": 200}
