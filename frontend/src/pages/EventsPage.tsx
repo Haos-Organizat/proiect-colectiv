@@ -1,5 +1,5 @@
 import { MagnifyingGlass } from '@phosphor-icons/react';
-import { useState, type FormEvent } from 'react';
+import { useMemo, useState, type FormEvent } from 'react';
 import { useSearchParams } from 'react-router';
 import { eventsApi } from '@/api/endpoints';
 import { EventCard } from '@/components/EventCard';
@@ -25,8 +25,8 @@ export function EventsPage() {
   const [query, setQuery] = useState(q);
 
   const events = useFetch(
-    () => eventsApi.list({ category, q: q || undefined }),
-    `${category}|${q}`,
+    () => eventsApi.list({ category }),
+    `${category}`,
   );
 
   const update = (next: { category?: EventCategory; q?: string }) => {
@@ -36,10 +36,24 @@ export function EventsPage() {
     setParams(p, { replace: true });
   };
 
+  const onQueryChange = (val: string) => {
+    setQuery(val);
+    if (!val.trim() && q) {
+      update({ category, q: undefined });
+    }
+  };
+
   const onSearch = (e: FormEvent) => {
     e.preventDefault();
-    update({ category, q: query.trim() });
+    update({ category, q: query.trim() || undefined });
   };
+
+  const displayedEvents = useMemo(() => {
+    if (!events.data) return [];
+    const term = query.trim().toLowerCase();
+    if (!term) return events.data;
+    return events.data.filter((e) => e.title.toLowerCase().includes(term));
+  }, [events.data, query]);
 
   return (
     <div className="mx-auto max-w-[1200px] px-4 py-10 md:px-8 md:py-16">
@@ -60,8 +74,8 @@ export function EventsPage() {
           <Input
             type="search"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by name or venue"
+            onChange={(e) => onQueryChange(e.target.value)}
+            placeholder="Search by title"
             enterKeyHint="search"
           />
         </Field>
@@ -105,7 +119,7 @@ export function EventsPage() {
       {events.status === 'error' && <ErrorState error={events.error} onRetry={events.retry} />}
       {events.status === 'loading' && <EventGridSkeleton />}
       {events.status === 'success' &&
-        (events.data.length === 0 ? (
+        (displayedEvents.length === 0 ? (
           <div className="grid justify-items-start gap-4 rounded-[16px] border border-border bg-card p-6">
             <p className="font-semibold">
               No events match that. Try another scene or clear the search.
@@ -123,7 +137,7 @@ export function EventsPage() {
           </div>
         ) : (
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {events.data.map((e) => (
+            {displayedEvents.map((e) => (
               <li key={e.id} className="grid">
                 <EventCard event={e} />
               </li>

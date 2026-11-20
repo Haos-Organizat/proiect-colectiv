@@ -52,7 +52,7 @@ interface Seed {
 const seeds: Seed[] = [
   {
     slug: 'campus-sound-night',
-    title: 'Campus Sound Night',
+    title: 'Concert Rock Live',
     category: 'concert',
     days: 4,
     start: [20, 0],

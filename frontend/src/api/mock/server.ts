@@ -202,7 +202,7 @@ const routes: [string, RegExp, Handler][] = [
       return db.events
         .filter((e) => e.status === 'published' && new Date(e.endsAt) > new Date())
         .filter((e) => !category || e.category === category)
-        .filter((e) => !q || `${e.title} ${e.venue} ${e.city}`.toLowerCase().includes(q))
+        .filter((e) => !q || e.title.toLowerCase().includes(q))
         .sort((a, b) => a.startsAt.localeCompare(b.startsAt))
         .map(summary);
     },
