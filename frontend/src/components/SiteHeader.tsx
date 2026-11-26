@@ -5,6 +5,7 @@ import { Link, NavLink, useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { Wordmark } from '@/components/Wordmark';
 import { useAuth } from '@/hooks/useAuth';
+import { usePendingRequestCount } from '@/hooks/usePendingRequestCount'
 import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
 
@@ -28,12 +29,7 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     isActive && 'text-primary-text underline decoration-2',
   );
 
-export function SiteHeader() {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  function PendingBadge({ count }: { count?: number }) {
+ function PendingBadge({ count }: { count?: number }) {
     if (!count) return null;
     return (
       <span className="ml-1.5 inline-grid min-w-5 place-items-center rounded-full bg-primary px-1.5 align-middle text-xs leading-5 font-bold text-primary-foreground no-underline">
@@ -42,6 +38,11 @@ export function SiteHeader() {
       </span>
     );
   }
+export function SiteHeader() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const links = [
     { to: '/events', label: 'Events' },
     ...(user
@@ -73,6 +74,7 @@ export function SiteHeader() {
           {links.map((l) => (
             <NavLink key={l.to} to={l.to} className={navLinkClass}>
               {l.label}
+              <PendingBadge count={l.badge} />
             </NavLink>
           ))}
         </nav>

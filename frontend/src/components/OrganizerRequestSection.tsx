@@ -90,7 +90,7 @@ export function OrganizerRequestSection() {
         <>
           {current?.status === 'respinsa' && (
             <p className="text-sm text-muted-foreground">
-              Cererea anterioară a fost respinsă. Poți trimite una nouă.
+              Cererea anterioară a fost respinsă. 
               {current.rejectionReason && <> Motiv: {current.rejectionReason}</>} Poți trimite una
               nouă.
             </p>

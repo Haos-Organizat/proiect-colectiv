@@ -26,6 +26,7 @@ def cerere_publica(cerere: dict[str, Any] | None) -> dict[str, Any] | None:
         "organization_name": cerere["organization_name"],
         "message": cerere.get("message"),
         "status": cerere["status"],
+        "rejection_reason": cerere.get("rejection_reason"),
         "created_at": cerere.get("created_at"),
     }
 

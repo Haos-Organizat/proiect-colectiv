@@ -135,6 +135,7 @@ interface FlaskOrganizerRequest {
   organization_name: string;
   message: string | null;
   status: OrganizerRequestStatus;
+  rejection_reason: string| null;
   created_at: string | null;
 }
 
@@ -143,6 +144,8 @@ export interface OrganizerRequest {
   organizationName: string;
   message: string | null;
   status: OrganizerRequestStatus;
+  rejectionReason: string | null;
+  createdAt: strind | null; 
 }
 
 function toOrganizerRequest(r: FlaskOrganizerRequest): OrganizerRequest {
@@ -151,6 +154,8 @@ function toOrganizerRequest(r: FlaskOrganizerRequest): OrganizerRequest {
     organizationName: r.organization_name,
     message: r.message,
     status: r.status,
+    rejectionReason: r.rejection_reason ?? null,
+    createdAt: r.created_at,
   };
 }
 
