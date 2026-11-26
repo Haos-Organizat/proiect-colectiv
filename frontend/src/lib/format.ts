@@ -49,9 +49,6 @@ export const CATEGORY_LABELS: Record<EventCategory, string> = {
   volunteering: 'Volunteering',
   education: 'Education',
   other: 'Other',
-  concert: 'Concerts',
-  career: 'Careers',
-  workshop: 'Workshops',
 };
 
 /** Trims text to a search-snippet friendly length without cutting a word in half. */

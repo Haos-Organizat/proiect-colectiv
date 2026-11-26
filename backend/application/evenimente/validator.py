@@ -11,39 +11,7 @@ CATEGORII_PRINCIPALE: list[str] = [
     "altele",
 ]
 
-CATEGORII_PERMISE: set[str] = {
-    "academic",
-    "academice",
-    "cariera",
-    "carieră",
-    "sport",
-    "voluntariat",
-    "cultura",
-    "cultură",
-    "cultural",
-    "social",
-    "sociale",
-    "workshop",
-    "conferinta",
-    "conferință",
-    "tehnologie",
-    "it",
-    "arta",
-    "artă",
-    "muzica",
-    "muzică",
-    "petrecere",
-    "petreceri",
-    "educatie",
-    "educație",
-    "altele",
-    "tech",
-    "culture",
-    "party",
-    "volunteering",
-    "education",
-    "other",
-}
+CATEGORII_PERMISE: set[str] = {c.lower() for c in CATEGORII_PRINCIPALE}
 
 
 class EvenimentValidator:

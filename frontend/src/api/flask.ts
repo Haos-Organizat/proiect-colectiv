@@ -75,18 +75,15 @@ export const flaskAuth = {
   logout: () => request<unknown>('/auth/logout', { method: 'POST' }).then(() => undefined),
 };
 
-/** Frontend category -> value accepted by the backend validator (CATEGORII_PERMISE). */
+/** Frontend category -> value accepted by the backend validator (CATEGORII_PRINCIPALE). */
 const CATEGORY_TO_FLASK: Record<EventCategory, string> = {
   sport: 'sport',
-  tech: 'it',
-  culture: 'cultura',
+  tech: 'IT',
+  culture: 'cultură',
   party: 'petreceri',
   volunteering: 'voluntariat',
-  education: 'educatie',
+  education: 'educație',
   other: 'altele',
-  concert: 'muzica',
-  career: 'cariera',
-  workshop: 'workshop',
 };
 
 const FLASK_TO_CATEGORY: Record<string, EventCategory> = {
@@ -116,13 +113,13 @@ const FLASK_TO_CATEGORY: Record<string, EventCategory> = {
   other: 'other',
   social: 'other',
   sociale: 'other',
-  muzica: 'concert',
-  muzică: 'concert',
-  concert: 'concert',
-  cariera: 'career',
-  carieră: 'career',
-  career: 'career',
-  workshop: 'workshop',
+  muzica: 'other',
+  muzică: 'other',
+  concert: 'other',
+  cariera: 'other',
+  carieră: 'other',
+  career: 'other',
+  workshop: 'other',
 };
 
 interface FlaskEventItem {

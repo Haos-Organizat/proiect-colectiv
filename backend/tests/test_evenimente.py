@@ -23,7 +23,7 @@ def _valid_payload() -> dict[str, Any]:
     return {
         "titlu": "Hackathon UniConnect",
         "descriere": "Competiție de programare pentru studenți.",
-        "categorie": "academic",
+        "categorie": "IT",
         "data_ora": future_dt,
         "loc": "Cluj-Napoca, FSEGA",
         "locuri": 150,
@@ -267,6 +267,11 @@ def test_categorii_evenimente_list_and_validation() -> None:
         payload["categorie"] = cat
         assert EvenimentValidator.validate(payload) == {}
 
+    for invalid_cat in ("workshop", "concert", "career", "tech", "academic"):
+        payload = _valid_payload()
+        payload["categorie"] = invalid_cat
+        assert "categorie" in EvenimentValidator.validate(payload)
+
     app = api_index.app
     app.config["TESTING"] = True
     client = app.test_client()
@@ -282,7 +287,7 @@ def test_repository_maps_eveniment_to_events_table_columns() -> None:
         id=None,
         titlu="Hackathon UniConnect",
         descriere="Competiție de programare pentru studenți.",
-        categorie="academic",
+        categorie="IT",
         data_ora="2026-12-01T18:00:00+02:00",
         loc="Cluj-Napoca, FSEGA",
         numar_locuri=150,
@@ -295,7 +300,7 @@ def test_repository_maps_eveniment_to_events_table_columns() -> None:
     assert EvenimentRepository.to_row(ev) == {
         "title": "Hackathon UniConnect",
         "description": "Competiție de programare pentru studenți.",
-        "category": "academic",
+        "category": "IT",
         "start_time": "2026-12-01T18:00:00+02:00",
         "location": "Cluj-Napoca, FSEGA",
         "capacity": 150,
