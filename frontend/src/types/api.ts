@@ -17,14 +17,13 @@ export interface User {
 }
 
 export const EVENT_CATEGORIES = [
-  'party',
-  'concert',
-  'tech',
-  'career',
-  'culture',
   'sport',
-  'workshop',
+  'tech',
+  'culture',
+  'party',
   'volunteering',
+  'education',
+  'other',
 ] as const;
 
 export type EventCategory = (typeof EVENT_CATEGORIES)[number];

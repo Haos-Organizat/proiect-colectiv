@@ -1,32 +1,17 @@
 from datetime import UTC, datetime
 from typing import Any
 
-CATEGORII_PERMISE: set[str] = {
-    "academic",
-    "academice",
-    "cariera",
-    "carieră",
+CATEGORII_PRINCIPALE: list[str] = [
     "sport",
-    "voluntariat",
-    "cultura",
+    "IT",
     "cultură",
-    "cultural",
-    "social",
-    "sociale",
-    "workshop",
-    "conferinta",
-    "conferință",
-    "tehnologie",
-    "it",
-    "arta",
-    "artă",
-    "muzica",
-    "muzică",
-    "petrecere",
-    "educatie",
+    "petreceri",
+    "voluntariat",
     "educație",
     "altele",
-}
+]
+
+CATEGORII_PERMISE: set[str] = {c.lower() for c in CATEGORII_PRINCIPALE}
 
 
 class EvenimentValidator:

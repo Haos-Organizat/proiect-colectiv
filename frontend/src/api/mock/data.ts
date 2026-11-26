@@ -53,7 +53,7 @@ const seeds: Seed[] = [
   {
     slug: 'campus-sound-night',
     title: 'Campus Sound Night',
-    category: 'concert',
+    category: 'other',
     days: 4,
     start: [20, 0],
     hours: 4,
@@ -83,7 +83,7 @@ const seeds: Seed[] = [
   {
     slug: 'autumn-careers-fair',
     title: 'Autumn Careers Fair',
-    category: 'career',
+    category: 'other',
     days: 12,
     start: [10, 0],
     hours: 7,
@@ -158,7 +158,7 @@ const seeds: Seed[] = [
   {
     slug: 'design-sprint-workshop',
     title: 'Design Sprint Workshop',
-    category: 'workshop',
+    category: 'other',
     days: 7,
     start: [14, 0],
     hours: 4,
