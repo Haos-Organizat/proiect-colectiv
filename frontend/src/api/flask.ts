@@ -216,7 +216,6 @@ export const flaskEvents = {
       ),
 };
 
-
 export type OrganizerRequestStatus = 'in_asteptare' | 'aprobata' | 'respinsa';
 
 interface FlaskOrganizerRequest {
@@ -224,6 +223,7 @@ interface FlaskOrganizerRequest {
   organization_name: string;
   message: string | null;
   status: OrganizerRequestStatus;
+  rejection_reason: string | null;
   created_at: string | null;
 }
 
@@ -232,6 +232,8 @@ export interface OrganizerRequest {
   organizationName: string;
   message: string | null;
   status: OrganizerRequestStatus;
+  rejectionReason: string | null;
+  createdAt: string | null;
 }
 
 function toOrganizerRequest(r: FlaskOrganizerRequest): OrganizerRequest {
@@ -240,9 +242,10 @@ function toOrganizerRequest(r: FlaskOrganizerRequest): OrganizerRequest {
     organizationName: r.organization_name,
     message: r.message,
     status: r.status,
+    rejectionReason: r.rejection_reason ?? null,
+    createdAt: r.created_at,
   };
 }
-
 
 export const flaskOrganizerRequests = {
   mine: () =>
@@ -257,4 +260,45 @@ export const flaskOrganizerRequests = {
     })
       .then(toOrganizerRequest)
       .catch(mapFieldErrors({ organization_name: 'organizationName' })),
+};
+
+interface FlaskAdminOrganizerRequest extends FlaskOrganizerRequest {
+  user_name: string;
+  user_email: string | null;
+}
+
+export interface AdminOrganizerRequest extends OrganizerRequest {
+  userName: string;
+  userEmail: string | null;
+}
+
+export const flaskAdminRequests = {
+  list: (status: OrganizerRequestStatus) =>
+    request<FlaskAdminOrganizerRequest[]>(
+      `/admin/cereri-organizator?status=${encodeURIComponent(status)}`,
+    ).then((rows) =>
+      rows.map((r): AdminOrganizerRequest => ({
+        ...toOrganizerRequest(r),
+        userName: r.user_name,
+        userEmail: r.user_email,
+      })),
+    ),
+
+  pendingCount: () =>
+    request<{ in_asteptare: number }>('/admin/cereri-organizator/numar').then(
+      (r) => r.in_asteptare,
+    ),
+
+  approve: (id: string) =>
+    request<FlaskOrganizerRequest>(`/admin/cereri-organizator/${id}/aproba`, {
+      method: 'POST',
+    }).then(toOrganizerRequest),
+
+  reject: (id: string, reason: string) =>
+    request<FlaskOrganizerRequest>(`/admin/cereri-organizator/${id}/respinge`, {
+      method: 'POST',
+      body: { motiv: reason },
+    })
+      .then(toOrganizerRequest)
+      .catch(mapFieldErrors({ motiv: 'reason' })),
 };
