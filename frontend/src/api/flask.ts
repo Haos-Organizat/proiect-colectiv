@@ -127,7 +127,6 @@ export const flaskEvents = {
       ),
 };
 
-
 export type OrganizerRequestStatus = 'in_asteptare' | 'aprobata' | 'respinsa';
 
 interface FlaskOrganizerRequest {
@@ -135,7 +134,7 @@ interface FlaskOrganizerRequest {
   organization_name: string;
   message: string | null;
   status: OrganizerRequestStatus;
-  rejection_reason: string| null;
+  rejection_reason: string | null;
   created_at: string | null;
 }
 
@@ -145,7 +144,7 @@ export interface OrganizerRequest {
   message: string | null;
   status: OrganizerRequestStatus;
   rejectionReason: string | null;
-  createdAt: strind | null; 
+  createdAt: string | null;
 }
 
 function toOrganizerRequest(r: FlaskOrganizerRequest): OrganizerRequest {
@@ -158,7 +157,6 @@ function toOrganizerRequest(r: FlaskOrganizerRequest): OrganizerRequest {
     createdAt: r.created_at,
   };
 }
-
 
 export const flaskOrganizerRequests = {
   mine: () =>
